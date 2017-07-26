@@ -11,6 +11,7 @@ import MCProConsoleAnalyticsGeneralPage from './pages/analytics-general'
 import MCUserManagePage from './pages/user'
 import {messages} from './Message'
 import './App.css';
+import config from './Config.json'
 
 
 class App extends Component {
@@ -22,7 +23,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-          <Router>
+          <Router basename="/ygopro/console">
               <div className="container">
                 <MCProConsoleNavigationBar />
                   <Route exact path="/" component={MCProConsoleWelcomePage} />

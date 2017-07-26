@@ -1,5 +1,5 @@
 {
-  "serverHost": "http://127.0.0.1:9999/",
-  "imageServerHost": "http://138.68.11.131:4567/",
+  "serverHost": "http://localhost:9999/",
+  "imageServerHost": "",
   "analyticsServerHost": ""
 }
