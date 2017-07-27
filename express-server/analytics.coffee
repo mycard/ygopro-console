@@ -5,8 +5,16 @@ PAGE_LIMIT = 100
 HISTORY_QUERY_SQL = "select * from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text order by start_time desc limit #{PAGE_LIMIT} offset $3"
 HISTORY_COUNT_SQL = "select count(*) from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text"
 
-runCommands = () ->
-
+runCommands = (callback) ->
+  answer = []
+  promises = []
+  for command in custom_commands
+    `let name = command.name`
+    target_pool = if command.target == 'mycard' then mycardPool else ygoproPool
+    promises.push target_pool.query(command.query).then (result) ->
+      answer.push { name: name, result: result.rows }
+  Promise.all(promises).then ->
+    callback.call this, answer
 
 queryHistory = (name, type, start, callback) ->
   type = "%" if type == 'all' or !type
@@ -28,3 +36,4 @@ queryHistoryCount = (name, type, callback) ->
 
 module.exports.queryHistory = queryHistory
 module.exports.queryHistoryCount = queryHistoryCount
+module.exports.runCommands = runCommands

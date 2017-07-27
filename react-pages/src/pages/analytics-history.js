@@ -17,10 +17,15 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
         }
     }
 
+    componentDidMount()
+    {
+        this.queryHistory();
+    }
+
     queryHistory() {
         let name = this.queryName.value;
         let type = this.queryType.value;
-        message_object.doFetch("query history count" + name + type, config.serverHost + "analytics/history/count?name=" + name + "&type=" + type, {}, function (result) {
+        message_object.doFetch("query history count" + name + type, config.serverHost + "analyze/history/count?name=" + name + "&type=" + type, {}, function (result) {
             result.text().then(function (result) {
                 this.setState({pageCount: Math.max(parseInt(result), 1)});
             }.bind(this));
@@ -52,7 +57,7 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
         if (!page) page = 1;
         let name = this.queryName.value;
         let type = this.queryType.value;
-        message_object.doFetch("query history" + name + type + page, config.serverHost + "analytics/history?name=" + name + "&type=" + type + "&page=" + page, {}, function (result) {
+        message_object.doFetch("query history" + name + type + page, config.serverHost + "analyze/history?name=" + name + "&type=" + type + "&page=" + page, {}, function (result) {
             result.json().then(function (result) {
                 this.setState({historyData: result, activePage: page});
             }.bind(this));
@@ -100,7 +105,7 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
                             <tr key={data.usernamea + "vs" + data.usernameb + data.start_time}>
                                 <td className={data.userscorea > data.userscoreb ? "game-winner" : data.userscorea < 0 ? "game-runner" : "game-loser"}>{data.usernamea}</td>
                                 <td className={data.userscoreb > data.userscorea ? "game-winner" : data.userscoreb < 0 ? "game-runner" : "game-loser"}>{data.usernameb}</td>
-                                <td style={data.type == 'athletic' ? {"font-weight": "bold"} : {}}>{data.type == 'entertain' ? '娱乐' : '竞技'}</td>
+                                <td style={data.type === 'athletic' ? {"font-weight": "bold"} : {}}>{data.type === 'entertain' ? '娱乐' : '竞技'}</td>
                                 <td>{data.userscorea}:{data.userscoreb}</td>
                                 {
                                     data.type === 'entertain' ?

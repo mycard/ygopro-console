@@ -9,9 +9,8 @@ server = express()
 # React Static File
 server.use express.static('react-pages/build')
 
-server.use '/analytics/*', authorizeRouter
-
 server.use '/user/*', authorizeRouter
+server.use '/analyze/*', authorizeRouter
 
 server.get '/user/:target_username', (req, res) ->
   target_username = req.params.target_username
@@ -28,7 +27,7 @@ server.post '/user/:target_username/dp/:value', (req, res) ->
   user.setUserDp target_username, dp, ->
     res.end "ok"
 
-server.get '/analytics/history', (req, res) ->
+server.get '/analyze/history', (req, res) ->
   name = req.query.name
   type = req.query.type
   page = req.query.page
@@ -36,11 +35,17 @@ server.get '/analytics/history', (req, res) ->
   analytics.queryHistory name, type, page, (result) ->
     res.json result
 
-server.get '/analytics/history/count', (req, res) ->
+server.get '/analyze/history/count', (req, res) ->
   name = req.query.name
   type = req.query.type
   analytics.queryHistoryCount name, type, (result) ->
     res.end result.toString()
+
+server.get '/analyze/custom', (req, res) ->
+  analytics.runCommands (result) ->
+    res.json result
+
+server.post '/analyze/custom', (req, res) ->
 
 # React Router File
 server.get '*', (req, res) ->

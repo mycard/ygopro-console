@@ -62,8 +62,12 @@ class MCProConsoleMessagePusher extends Component
         let method = parameters.method;
         if (method === undefined) method = 'GET';
         this.addMessage(key, method + ' ' + uri, 'info', 60000);
-        // USER AND SIGNATURE
+        // REMOVE QUERIES
         let originUri = uri;
+        let index = originUri.indexOf('?');
+        if (index > 0)
+            originUri = originUri.slice(0, index);
+        // USER AND SIGNATURE
         if (window.localStorage.token)
         {
             let url = new URL(uri);

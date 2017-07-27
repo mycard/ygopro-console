@@ -16,9 +16,9 @@
 
   server.use(express.static('react-pages/build'));
 
-  server.use('/analytics/*', authorizeRouter);
-
   server.use('/user/*', authorizeRouter);
+
+  server.use('/analyze/*', authorizeRouter);
 
   server.get('/user/:target_username', function(req, res) {
     var target_username;
@@ -42,7 +42,7 @@
     });
   });
 
-  server.get('/analytics/history', function(req, res) {
+  server.get('/analyze/history', function(req, res) {
     var name, page, type;
     name = req.query.name;
     type = req.query.type;
@@ -55,7 +55,7 @@
     });
   });
 
-  server.get('/analytics/history/count', function(req, res) {
+  server.get('/analyze/history/count', function(req, res) {
     var name, type;
     name = req.query.name;
     type = req.query.type;
@@ -63,6 +63,14 @@
       return res.end(result.toString());
     });
   });
+
+  server.get('/analyze/custom', function(req, res) {
+    return analytics.runCommands(function(result) {
+      return res.json(result);
+    });
+  });
+
+  server.post('/analyze/custom', function(req, res) {});
 
   server.get('*', function(req, res) {
     return res.sendFile(path.resolve('react-pages/build', 'index.html'));

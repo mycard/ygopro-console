@@ -12,7 +12,25 @@
 
   HISTORY_COUNT_SQL = "select count(*) from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text";
 
-  runCommands = function() {};
+  runCommands = function(callback) {
+    var answer, command, i, len, promises, target_pool;
+    answer = [];
+    promises = [];
+    for (i = 0, len = custom_commands.length; i < len; i++) {
+      command = custom_commands[i];
+      let name = command.name;
+      target_pool = command.target === 'mycard' ? mycardPool : ygoproPool;
+      promises.push(target_pool.query(command.query).then(function(result) {
+        return answer.push({
+          name: name,
+          result: result.rows
+        });
+      }));
+    }
+    return Promise.all(promises).then(function() {
+      return callback.call(this, answer);
+    });
+  };
 
   queryHistory = function(name, type, start, callback) {
     if (type === 'all' || !type) {
@@ -45,6 +63,8 @@
   module.exports.queryHistory = queryHistory;
 
   module.exports.queryHistoryCount = queryHistoryCount;
+
+  module.exports.runCommands = runCommands;
 
 }).call(this);
 
