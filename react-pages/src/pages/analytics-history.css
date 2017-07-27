@@ -1,0 +1,37 @@
+span.positive-score-change
+{
+    color: darkred;
+    font-weight: bold;
+}
+
+span.draw-score-change
+{
+    font-weight: bold;
+}
+
+span.negative-score-change
+{
+    color: darkgreen;
+    font-weight: bold;
+}
+
+td.game-winner
+{
+    color:darkred;
+    font-weight: bold;
+}
+
+td.game-runner
+{
+    color: mediumblue;
+}
+
+td.game-loser
+{
+
+}
+
+span.not-enough-time
+{
+    color: mediumvioletred;
+}

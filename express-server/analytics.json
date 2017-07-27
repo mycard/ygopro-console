@@ -1,0 +1,6 @@
+[
+  {
+    "name": "今日拔线",
+    "query": "select count(*) from"
+  }
+]

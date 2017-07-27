@@ -1,6 +1,7 @@
 express = require 'express'
 user = require './user'
-author = require('./author').authorize
+analytics = require './analytics'
+authorizeRouter = require('./author').authorizeRouter
 path = require 'path'
 
 server = express()
@@ -8,14 +9,9 @@ server = express()
 # React Static File
 server.use express.static('react-pages/build')
 
-server.use '/user/*', (req, res, next) ->
-  sso = req.query.sso
-  sig = req.query.sig
-  if author sso, sig
-    next()
-  else
-    res.statusCode = 403
-    res.end "Not authorized"
+server.use '/analytics/*', authorizeRouter
+
+server.use '/user/*', authorizeRouter
 
 server.get '/user/:target_username', (req, res) ->
   target_username = req.params.target_username
@@ -29,8 +25,22 @@ server.post '/user/:target_username/dp/:value', (req, res) ->
     res.statusCode = 400
     res.end "no dp"
     return
-  user.setUserDp target_username, dp, (result) ->
+  user.setUserDp target_username, dp, ->
     res.end "ok"
+
+server.get '/analytics/history', (req, res) ->
+  name = req.query.name
+  type = req.query.type
+  page = req.query.page
+  page = 1 if !page
+  analytics.queryHistory name, type, page, (result) ->
+    res.json result
+
+server.get '/analytics/history/count', (req, res) ->
+  name = req.query.name
+  type = req.query.type
+  analytics.queryHistoryCount name, type, (result) ->
+    res.end result.toString()
 
 # React Router File
 server.get '*', (req, res) ->

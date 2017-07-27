@@ -7,4 +7,14 @@ authorize = (sso, sig) ->
   query = parsedUrl.query
   return query.admin == 'true'
 
+authorize_router = (req, res, next) ->
+  sso = req.query.sso
+  sig = req.query.sig
+  if authorize sso, sig
+    next()
+  else
+    res.statusCode = 403
+    res.end "Not authorized"
+
 module.exports.authorize = authorize
+module.exports.authorizeRouter = authorize_router

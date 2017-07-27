@@ -36,6 +36,8 @@ class MCProConsoleNavigationBar extends Component
                             </NavDropdown>
                             <NavDropdown title="统计" id="basic-nav-dropdown-analytics">
                                 <LinkContainer to="/analytics/general"><NavItem>概述</NavItem></LinkContainer>
+                                <LinkContainer to="/analytics/history"><NavItem>对战历史</NavItem></LinkContainer>
+                                <LinkContainer to="/analytics/custom"><NavItem>自定义统计</NavItem></LinkContainer>
                                 <LinkContainer to="/analytics/deck"><NavItem>卡组辨识</NavItem></LinkContainer>
                             </NavDropdown>
                         </Nav>

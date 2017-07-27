@@ -1,12 +1,9 @@
-{ Pool } = require 'pg'
-Config = require './config.json'
+{ mycardPool, ygoproPool } = require './database'
 
 QUERY_MYCARD_SQL = 'select * from users where name like $1::text or username like $1::text'
 QUERY_YGOPRO_SQL = 'select * from user_info where username = $1::text'
 SET_YGOPRO_DP_SQL = 'update user_info set pt = $2 where username = $1::text'
 
-mycardPool = new Pool Config.mycardDatabase
-ygoproPool = new Pool Config.ygoproDatabase
 
 queryUser = (user, callback) ->
   mycardPool.query QUERY_MYCARD_SQL, ["%#{user}%"], (err, result) ->

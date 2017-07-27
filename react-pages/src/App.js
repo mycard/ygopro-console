@@ -8,6 +8,7 @@ import MCProConsoleImageManagerSinglePage from './pages/image-single'
 import MCProConsoleImageManagerCommandPage from './pages/image-command'
 import MCProConsoleImageManagerConfigPage from './pages/image-config'
 import MCProConsoleAnalyticsGeneralPage from './pages/analytics-general'
+import MCProConsoleAnalyticsHistoryPage from './pages/analytics-history'
 import MCUserManagePage from './pages/user'
 import {messages} from './Message'
 import './App.css';
@@ -34,6 +35,7 @@ class App extends Component {
                   <Route path="/image/single" component={MCProConsoleImageManagerSinglePage}/>
                   <Route path="/image/config" component={MCProConsoleImageManagerConfigPage}/>
                   <Route path="/analytics/general" component={MCProConsoleAnalyticsGeneralPage} />
+                  <Route path="/analytics/history" component={MCProConsoleAnalyticsHistoryPage} />
               </div>
           </Router>
           {messages}
