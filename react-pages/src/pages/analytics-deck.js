@@ -3,6 +3,7 @@ import { Row, Col, Table, Pagination, FormGroup, InputGroup, Button, FormControl
 import { message_object } from "../Message"
 import config from "../Config.json"
 import moment from 'moment'
+import "./analyze-deck.css"
 
 class MCProConsoleAnalyticsDeckPage extends Component
 {
@@ -56,6 +57,16 @@ class MCProConsoleAnalyticsDeckPage extends Component
         this.searchDeckPage(eventKey);
     }
 
+    renderName(name)
+    {
+        let render = this.deckname.value;
+        let index = name.indexOf(render);
+        if (index < 0 || isNaN(index)) return name;
+        else return (
+            <div>{name.slice(0, index)}<span className="search-target">{render}</span>{name.slice(index + render.length, name.length - index - render.length + 2)}</div>
+        )
+    }
+
     render()
     {
         return (<Row>
@@ -88,10 +99,9 @@ class MCProConsoleAnalyticsDeckPage extends Component
                     }
                     {
                         this.state.deckResult.map(function(deckData) {
-                            console.log(deckData);
                             return(
                             <tr>
-                                <td>{deckData.name}</td>
+                                <td>{this.renderName(deckData.name)}</td>
                                 <td>{deckData.source}</td>
                                 <td>{deckData.count}</td>
                                 <td>{moment(deckData.time).format("YYYY-MM-DD")}</td>

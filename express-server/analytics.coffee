@@ -4,7 +4,7 @@ custom_commands = require './analytics.json'
 PAGE_LIMIT = 100
 HISTORY_QUERY_SQL = "select * from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text order by start_time desc limit #{PAGE_LIMIT} offset $3"
 HISTORY_COUNT_SQL = "select count(*) from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text"
-DECK_QUERY_SQL = "select * from deck_day where (name like $1::text) order by time desc limit #{PAGE_LIMIT} offset $2"
+DECK_QUERY_SQL = "select * from deck_day where (name like $1::text) order by time desc, source desc limit #{PAGE_LIMIT} offset $2"
 DECK_COUNT_SQL = "select count(*) from deck_day where name like $1::text"
 
 runCommands = (callback) ->
