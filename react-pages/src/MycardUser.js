@@ -93,7 +93,7 @@ class MycardUser extends Component
     {
         return (
             <NavItem onClick={this.onLogClick.bind(this)}>
-                <img className="img-circle" width={24} height={24} src={this.state.avatar} />
+                <img className="img-circle" width={24} height={24} src={this.state.avatar} alt="" />
                 &nbsp;&nbsp;{this.state.username}
             </NavItem>
         )

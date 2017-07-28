@@ -16,9 +16,9 @@ class MCUserManagePage extends Component {
         };
     }
 
-    searchUser() {
+    searchUser(event) {
         let text = ReactDOM.findDOMNode(this.refs.username).value;
-        message_object.doFetch("search user " + text, config.serverHost + "user/" + text, {}, function (result) {
+        message_object.doFetch("search user", config.serverHost + "user/" + text, {}, function (result) {
             result.json().then(function (result) {
                 if (result.username) {
                     this.user = result.username;
@@ -36,6 +36,7 @@ class MCUserManagePage extends Component {
             }.bind(this));
             return 'ok';
         }.bind(this));
+        if (event) event.preventDefault();
     }
 
     onNameClicked() {
@@ -44,30 +45,33 @@ class MCUserManagePage extends Component {
         this.source.searchUser.call(this.source);
     }
 
-    setUserDp() {
-        let dp = parseInt(ReactDOM.findDOMNode(this.refs.userDp).value);
+    setUserDp(event) {
+        let dp = parseInt(ReactDOM.findDOMNode(this.refs.userDp).value, 10);
         if (isNaN(dp) || !this.user) return;
         let data = this.state.userData;
         data.pt = dp;
         this.setState({ userData: data });
-        message_object.doFetch("set Dp " + this.user, config.serverHost + "user/" + this.user + "/dp/" + dp.toString(), { method: 'POST' }, function (result) {
+        message_object.doFetch("set Dp", config.serverHost + "user/" + this.user + "/dp/" + dp.toString(), { method: 'POST' }, function (result) {
             return 'ok';
-        })
+        });
+        if (event) event.preventDefault();
     }
 
     render() {
         return (
             <Row>
                 <Col md={6} xs={12}>
-                    <FormGroup>
-                        <InputGroup>
-                            <InputGroup.Addon>操作用户</InputGroup.Addon>
-                            <FormControl type="text" ref="username" placeholder="输入要查询的用户" />
-                            <InputGroup.Button>
-                                <Button onClick={this.searchUser.bind(this)}>确定</Button>
-                            </InputGroup.Button>
-                        </InputGroup>
-                    </FormGroup>
+                    <form>
+                        <FormGroup>
+                            <InputGroup>
+                                <InputGroup.Addon>操作用户</InputGroup.Addon>
+                                <FormControl type="text" ref="username" placeholder="输入要查询的用户" />
+                                <InputGroup.Button>
+                                    <Button type="submit" onClick={this.searchUser.bind(this)}>确定</Button>
+                                </InputGroup.Button>
+                            </InputGroup>
+                        </FormGroup>
+                    </form>
                 </Col>
                 { (this.state.selectingUsers != null) ? <Col md={12} xs={12} /> : ""}
                 { (this.state.selectingUsers != null) ?
@@ -82,15 +86,17 @@ class MCUserManagePage extends Component {
                 }
                 { (this.state.userData != null) ?
                     <Col md={6} xs={12}>
-                        <FormGroup>
-                            <InputGroup>
-                                <InputGroup.Addon>指定 DP</InputGroup.Addon>
-                                <FormControl type="text" ref="userDp" placeholder="500"/>
-                                <InputGroup.Button>
-                                    <Button onClick={this.setUserDp.bind(this)}>确定</Button>
-                                </InputGroup.Button>
-                            </InputGroup>
-                        </FormGroup>
+                        <form>
+                            <FormGroup>
+                                <InputGroup>
+                                    <InputGroup.Addon>指定 DP</InputGroup.Addon>
+                                    <FormControl type="text" ref="userDp" placeholder="500"/>
+                                    <InputGroup.Button>
+                                        <Button type="submit" onClick={this.setUserDp.bind(this)}>确定</Button>
+                                    </InputGroup.Button>
+                                </InputGroup>
+                            </FormGroup>
+                        </form>
                     </Col>
                     : ""
                 }

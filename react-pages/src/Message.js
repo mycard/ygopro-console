@@ -15,6 +15,10 @@ class MCProConsoleMessagePusher extends Component
 
     addMessage(key, message, level, timeout = -1)
     {
+        if (this.messageLinks.has(key)) {
+            this.replaceMessage(key, message, level, timeout);
+            return;
+        }
         let data = {
             'message': message,
             'level': level,
@@ -54,6 +58,7 @@ class MCProConsoleMessagePusher extends Component
 
     removeMessageDismiss()
     {
+        console.log(this);
         this.caller.removeMessage.call(this.caller, this.data.key);
     }
 
@@ -61,7 +66,6 @@ class MCProConsoleMessagePusher extends Component
     {
         let method = parameters.method;
         if (method === undefined) method = 'GET';
-        this.addMessage(key, method + ' ' + uri, 'info', 60000);
         // REMOVE QUERIES
         let originUri = uri;
         let index = originUri.indexOf('?');
@@ -76,6 +80,7 @@ class MCProConsoleMessagePusher extends Component
             params.set('sig', window.localStorage.signature);
             uri = url.toString();
         }
+        this.addMessage(key, method + ' ' + originUri, 'info', 600000);
         return fetch(uri, parameters).then(function(result)
         {
             let inner_message = '';
@@ -92,14 +97,21 @@ class MCProConsoleMessagePusher extends Component
                     </div>
                 );
                 this.replaceMessage(key, message, level, 5000);
-            }.bind(this));
+            }.bind(this))
+        }.bind(this)).catch(function (fail) {
+            let message = (
+                <div>
+                    <strong>Fail - {method} {originUri}</strong><br />
+                </div>
+            );
+            this.replaceMessage(key, message, 'danger', 5000);
         }.bind(this));
     }
 
     render()
     {
         return (
-            <div style={{width: '400px', height: '1000px', position: 'fixed', bottom: '25px', right: '25px', zIndex: 100, pointerEvents: 'none', display: 'flex', flexDirection: 'column-reverse'}}>
+            <div style={{width: '400px', height: '1000px', position: 'fixed', bottom: '25px', right: '25px', zIndex: 100, pointerEvents: 'none', display: navigator.userAgent.indexOf("Mobile") > 0 ? 'none' : 'flex', flexDirection: 'column-reverse'}}>
                 {this.state.messages.map(function(data) { return (
                     <Alert bsStyle={data.level} onDismiss={this.removeMessageDismiss.bind({caller: this, 'data': data})}>
                         {data.message}

@@ -22,16 +22,17 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
         this.queryHistory();
     }
 
-    queryHistory() {
+    queryHistory(event) {
         let name = this.queryName.value;
         let type = this.queryType.value;
-        message_object.doFetch("query history count" + name + type, config.serverHost + "analyze/history/count?name=" + name + "&type=" + type, {}, function (result) {
+        message_object.doFetch("query history count", config.serverHost + "analyze/history/count?name=" + name + "&type=" + type, {}, function (result) {
             result.text().then(function (result) {
-                this.setState({pageCount: Math.max(parseInt(result), 1)});
+                this.setState({pageCount: Math.max(parseInt(result, 10), 1)});
             }.bind(this));
             return 'ok';
         }.bind(this));
         this.queryHistoryPage();
+        if (event) event.preventDefault();
     }
 
     formatTime(data)
@@ -81,7 +82,7 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
                             <option value="athletic">竞技</option>
                         </FormControl>
                     </FormGroup>
-                    <Button style={{margin: "0px 0px 0px 20px"}} onClick={this.queryHistory.bind(this)} bsStyle="primary">查询</Button>
+                    <Button type="submit" style={{margin: "0px 0px 0px 20px"}} onClick={this.queryHistory.bind(this)} bsStyle="primary">查询</Button>
                 </Form>
             </Col>
             <Col md={12} xs={12}>
@@ -104,18 +105,20 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
                         this.state.historyData.map(data =>
                             <tr key={data.usernamea + "vs" + data.usernameb + data.start_time}>
                                 <td className={data.userscorea > data.userscoreb ? "game-winner" : data.userscorea < 0 ? "game-runner" : "game-loser"}>{data.usernamea}</td>
+
                                 <td className={data.userscoreb > data.userscorea ? "game-winner" : data.userscoreb < 0 ? "game-runner" : "game-loser"}>{data.usernameb}</td>
-                                <td style={data.type === 'athletic' ? {"font-weight": "bold"} : {}}>{data.type === 'entertain' ? '娱乐' : '竞技'}</td>
+
+                                <td style={data.type === 'athletic' ? {fontWeight: "bold"} : {}}>{data.type === 'entertain' ? '娱乐' : '竞技'}</td>
                                 <td>{data.userscorea}:{data.userscoreb}</td>
-                                {
-                                    data.type === 'entertain' ?
-                                    (<td>{data.expa.toFixed(3)} ({(data.expa - data.expa_ex).toSignedNumber()})</td>) :
-                                    (<td>{data.pta.toFixed(3)} ({(data.pta - data.pta_ex).toSignedNumber()})</td>)
-                                }
                                 {
                                     data.type === 'entertain' ?
                                         (<td>{data.expb.toFixed(3)} ({(data.expb - data.expb_ex).toSignedNumber()})</td>) :
                                         (<td>{data.ptb.toFixed(3)} ({(data.ptb - data.ptb_ex).toSignedNumber()})</td>)
+                                }
+                                {
+                                    data.type === 'entertain' ?
+                                        (<td>{data.expa.toFixed(3)} ({(data.expa - data.expa_ex).toSignedNumber()})</td>) :
+                                        (<td>{data.pta.toFixed(3)} ({(data.pta - data.pta_ex).toSignedNumber()})</td>)
                                 }
                                 <td>{this.formatTime(data)}</td>
                                 <td>{data.isfirstwin ? "是" : ""}</td>
@@ -124,8 +127,8 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
                     }
                     </tbody>
                 </Table>
-                <div style={{"text-align": "center"}}>
-                    <Pagination style={{"margin-left": "auto", "margin-right": "auto"}}
+                <div style={{textAlign: "center"}}>
+                    <Pagination style={{marginLeft: "auto", marginRight: "auto"}}
                             prev next first last ellipsis boundaryLinks
                             items={this.state.pageCount}
                             maxButtons={10}

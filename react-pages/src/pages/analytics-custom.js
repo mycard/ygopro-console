@@ -35,7 +35,7 @@ class MCProConsoleAnalyticsCustomPage extends Component
 
     renderTable(data)
     {
-        <div></div>
+        return <div></div>
     }
 
     render()

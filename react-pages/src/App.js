@@ -13,8 +13,6 @@ import MCProConsoleAnalyticsCustomPage from './pages/analytics-custom'
 import MCUserManagePage from './pages/user'
 import {messages} from './Message'
 import './App.css';
-import config from './Config.json'
-
 
 class App extends Component {
 
