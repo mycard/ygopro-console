@@ -41,6 +41,18 @@ server.get '/analyze/history/count', (req, res) ->
   analytics.queryHistoryCount name, type, (result) ->
     res.end result.toString()
 
+server.get '/analyze/deck', (req, res) ->
+  name = req.query.name
+  page = req.query.page
+  page = 1 if !page
+  analytics.queryDeck name, page, (result) ->
+    res.json result
+
+server.get '/analyze/deck/count', (req, res) ->
+  name = req.query.name
+  analytics.queryDeckCount name, (result) ->
+    res.end result.toString()
+
 server.get '/analyze/custom', (req, res) ->
   analytics.runCommands (result) ->
     res.json result

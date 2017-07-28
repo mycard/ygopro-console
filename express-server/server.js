@@ -64,6 +64,26 @@
     });
   });
 
+  server.get('/analyze/deck', function(req, res) {
+    var name, page;
+    name = req.query.name;
+    page = req.query.page;
+    if (!page) {
+      page = 1;
+    }
+    return analytics.queryDeck(name, page, function(result) {
+      return res.json(result);
+    });
+  });
+
+  server.get('/analyze/deck/count', function(req, res) {
+    var name;
+    name = req.query.name;
+    return analytics.queryDeckCount(name, function(result) {
+      return res.end(result.toString());
+    });
+  });
+
   server.get('/analyze/custom', function(req, res) {
     return analytics.runCommands(function(result) {
       return res.json(result);

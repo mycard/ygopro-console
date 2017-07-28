@@ -1,5 +1,5 @@
 {
-  "serverHost": "http://api.mycard.moe/ygopro/console/",
+  "serverHost": "https://api.mycard.moe/ygopro/console/",
   "imageServerHost": "",
   "analyticsServerHost": ""
 }

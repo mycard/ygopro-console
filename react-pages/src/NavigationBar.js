@@ -28,7 +28,7 @@ class MCProConsoleNavigationBar extends Component
                             <LinkContainer to="/user"><NavItem>用户</NavItem></LinkContainer>
                             <LinkContainer to="/update"><NavItem>更新</NavItem></LinkContainer>
                             <LinkContainer to="/database"><NavItem eventKey="database" onSelect={ this.onNavItemSelected }>数据库</NavItem></LinkContainer>
-                            <NavDropdown title="卡图生成" id="basic-nav-dropdown-image">
+                            <NavDropdown title="卡图" id="basic-nav-dropdown-image">
                                 <LinkContainer to="/image/state"><NavItem eventKey="image-state" onSelect={ this.onNavItemSelected }>状态</NavItem></LinkContainer>
                                 <LinkContainer to="/image/command"><NavItem eventKey="image-command" onSelect={ this.onNavItemSelected }>指令</NavItem></LinkContainer>
                                 <LinkContainer to="/image/single"><NavItem eventKey="image-single" onSelect={ this.onNavItemSelected }>单图</NavItem></LinkContainer>
