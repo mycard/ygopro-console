@@ -1,8 +1,9 @@
 express = require 'express'
+path = require 'path'
+bodyParser = require 'body-parser'
 user = require './user'
 analytics = require './analytics'
 authorizeRouter = require('./author').authorizeRouter
-path = require 'path'
 
 server = express()
 
@@ -57,7 +58,18 @@ server.get '/analyze/custom', (req, res) ->
   analytics.runCommands (result) ->
     res.json result
 
-server.post '/analyze/custom', (req, res) ->
+server.get '/analyze/custom/commands', (req, res) ->
+  res.sendFile path.resolve('express-server', 'analytics.json')
+
+textParser = bodyParser.text()
+server.post '/analyze/custom/commands', textParser, (req, res) ->
+  try
+    commands = JSON.parse req.body
+  catch
+    res.statusCode = 400
+    res.end "Not correct json"
+  analytics.setCommands commands
+  res.end 'ok'
 
 # React Router File
 server.get '*', (req, res) ->

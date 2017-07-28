@@ -11,7 +11,7 @@
   },
   {
     "name": "今日竞技场活跃用户",
-    "query": "SELECT count(DISTINCT A) FROM (SELECT usernamea FROM battle_history WHERE current_date = date_trunc('day', start_time) AND type = 'athletic' UNION SELECT usernameb FROM battle_history WHERE current_date = date_trunc('day', start_time) AND type = 'athletic') as A;;",
+    "query": "SELECT count(DISTINCT A) FROM (SELECT usernamea FROM battle_history WHERE current_date = date_trunc('day', start_time) AND type = 'athletic' UNION SELECT usernameb FROM battle_history WHERE current_date = date_trunc('day', start_time) AND type = 'athletic') as A;",
     "target": "ygopro"
   }
 ]

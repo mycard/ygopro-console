@@ -1,5 +1,6 @@
 { mycardPool, ygoproPool } = require './database'
 custom_commands = require './analytics.json'
+fs = require 'fs'
 
 PAGE_LIMIT = 100
 HISTORY_QUERY_SQL = "select * from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text order by start_time desc limit #{PAGE_LIMIT} offset $3"
@@ -17,6 +18,10 @@ runCommands = (callback) ->
       answer.push { name: name, result: result.rows }
   Promise.all(promises).then ->
     callback.call this, answer
+
+setCommands = (commands) ->
+  custom_commands = commands
+  fs.writeFile './express-server/analytics.json', JSON.stringify(commands, null, 2), ->
 
 queryHistory = (name, type, start, callback) ->
   type = "%" if type == 'all' or !type
@@ -55,5 +60,6 @@ queryDeckCount = (name, callback) ->
 module.exports.queryHistory = queryHistory
 module.exports.queryHistoryCount = queryHistoryCount
 module.exports.runCommands = runCommands
+module.exports.setCommands = setCommands
 module.exports.queryDeck = queryDeck
 module.exports.queryDeckCount = queryDeckCount

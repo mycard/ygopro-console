@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Row, Col, Panel } from 'react-bootstrap'
 import { message_object } from "../Message"
 import config from '../Config.json'
+import { LinkContainer } from 'react-router-bootstrap'
 
 class MCProConsoleAnalyticsCustomPage extends Component
 {
@@ -40,7 +41,8 @@ class MCProConsoleAnalyticsCustomPage extends Component
 
     render()
     {
-        return (<Row>
+        return (
+        <Row>
             <Col md={12} xs={12}>
                 {
                     this.state.customResults.map(function (data) {
@@ -50,6 +52,9 @@ class MCProConsoleAnalyticsCustomPage extends Component
                             return this.renderTable(data);
                     }.bind(this))
                 }
+            </Col>
+            <Col md={12} xs={12} style={{textAlign: "center"}}>
+                <LinkContainer to="/analytics/custom-set"><a>点此进行设置</a></LinkContainer>
             </Col>
         </Row>);
     }
