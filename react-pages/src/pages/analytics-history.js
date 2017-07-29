@@ -112,13 +112,13 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
                                 <td>{data.userscorea}:{data.userscoreb}</td>
                                 {
                                     data.type === 'entertain' ?
-                                        (<td>{data.expb.toFixed(3)} ({(data.expb - data.expb_ex).toSignedNumber()})</td>) :
-                                        (<td>{data.ptb.toFixed(3)} ({(data.ptb - data.ptb_ex).toSignedNumber()})</td>)
+                                        (<td>{data.expa.toFixed(3)} ({(data.expa - data.expa_ex).toSignedNumber()})</td>) :
+                                        (<td>{data.pta.toFixed(3)} ({(data.pta - data.pta_ex).toSignedNumber()})</td>)
                                 }
                                 {
                                     data.type === 'entertain' ?
-                                        (<td>{data.expa.toFixed(3)} ({(data.expa - data.expa_ex).toSignedNumber()})</td>) :
-                                        (<td>{data.pta.toFixed(3)} ({(data.pta - data.pta_ex).toSignedNumber()})</td>)
+                                        (<td>{data.expb.toFixed(3)} ({(data.expb - data.expb_ex).toSignedNumber()})</td>) :
+                                        (<td>{data.ptb.toFixed(3)} ({(data.ptb - data.ptb_ex).toSignedNumber()})</td>)
                                 }
                                 <td>{this.formatTime(data)}</td>
                                 <td>{data.isfirstwin ? "是" : ""}</td>
