@@ -18,6 +18,11 @@ server.get '/user/:target_username', (req, res) ->
   user.queryUser target_username, (result) ->
     res.json result
 
+server.get '/user/ip/:target_ip', (req, res) ->
+  target_ip = req.params.target_ip
+  user.queryUserViaIp target_ip, (result) ->
+    res.json result
+
 server.post '/user/:target_username/dp/:value', (req, res) ->
   target_username = req.params.target_username
   dp = parseFloat req.params.value

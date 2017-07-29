@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Table, FormGroup, InputGroup, FormControl, Button, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Row, Col, Table, FormGroup, InputGroup, FormControl, Button, DropdownButton, ListGroup, ListGroupItem, MenuItem } from 'react-bootstrap';
 import ReactDOM from 'react-dom'
 import { message_object } from '../Message'
 import config from '../Config.json'
@@ -12,13 +12,15 @@ class MCUserManagePage extends Component {
         this.user = null;
         this.state = {
             userData: null,
-            selectingUsers: null
+            selectingUsers: null,
+            searchBy: 'user'
         };
     }
 
     searchUser(event) {
         let text = ReactDOM.findDOMNode(this.refs.username).value;
-        message_object.doFetch("search user", config.serverHost + "user/" + text, {}, function (result) {
+        let target_url = {user: 'user/', ip: 'user/ip/'}[this.state.searchBy];
+        message_object.doFetch("search user", config.serverHost + target_url + text, {}, function (result) {
             result.json().then(function (result) {
                 if (result.username) {
                     this.user = result.username;
@@ -33,13 +35,15 @@ class MCUserManagePage extends Component {
                         selectingUsers: result
                     })
                 }
-            }.bind(this));
+            }.bind(this), fail => { console.log(fail); });
             return 'ok';
         }.bind(this));
         if (event) event.preventDefault();
     }
 
     onNameClicked() {
+        this.source.setState({ searchBy: 'user' });
+        this.source.state.searchBy = 'user';
         let text = ReactDOM.findDOMNode(this.source.refs.username);
         text.value = this.user;
         this.source.searchUser.call(this.source);
@@ -57,14 +61,26 @@ class MCUserManagePage extends Component {
         if (event) event.preventDefault();
     }
 
+    setSearchMode(eventKey)
+    {
+        this.setState({ searchBy: eventKey })
+    }
+
     render() {
+        if (this.state.selectingUsers != null)
+            console.log(this.state.selectingUsers);
         return (
             <Row>
                 <Col md={6} xs={12}>
                     <form>
                         <FormGroup>
                             <InputGroup>
-                                <InputGroup.Addon>操作用户</InputGroup.Addon>
+                                <InputGroup.Button>
+                                    <DropdownButton id="searchBy" title={{user: '用户', ip: 'IP 地址'}[this.state.searchBy]} onSelect={this.setSearchMode.bind(this)}>
+                                        <MenuItem eventKey="user">用户</MenuItem>
+                                        <MenuItem eventKey="ip">IP 地址</MenuItem>
+                                    </DropdownButton>
+                                </InputGroup.Button>
                                 <FormControl type="text" ref="username" placeholder="输入要查询的用户" />
                                 <InputGroup.Button>
                                     <Button type="submit" onClick={this.searchUser.bind(this)}>确定</Button>

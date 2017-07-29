@@ -30,6 +30,14 @@
     });
   });
 
+  server.get('/user/ip/:target_ip', function(req, res) {
+    var target_ip;
+    target_ip = req.params.target_ip;
+    return user.queryUserViaIp(target_ip, function(result) {
+      return res.json(result);
+    });
+  });
+
   server.post('/user/:target_username/dp/:value', function(req, res) {
     var dp, target_username;
     target_username = req.params.target_username;
