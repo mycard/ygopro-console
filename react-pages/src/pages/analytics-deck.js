@@ -63,7 +63,7 @@ class MCProConsoleAnalyticsDeckPage extends Component
         let index = name.indexOf(render);
         if (index < 0 || isNaN(index)) return name;
         else return (
-            <div>{name.slice(0, index)}<span className="search-target">{render}</span>{name.slice(index + render.length, name.length - index - render.length + 2)}</div>
+            <div>{name.slice(0, index)}<span className="search-target">{render}</span>{name.slice(index + render.length, 99999)}</div>
         )
     }
 
