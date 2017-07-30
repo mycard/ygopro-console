@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Table, Form, FormGroup, FormControl, ControlLabel, Button, Pagination } from 'react-bootstrap'
+import { Row, Col, Table, Form, MenuItem, InputGroup, FormControl, DropdownButton, Button, Pagination } from 'react-bootstrap'
 import config from '../Config.json'
 import {message_object} from "../Message"
 import moment from 'moment'
@@ -11,6 +11,7 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
         this.queryName = "";
         this.queryType = "";
         this.state = {
+            queryType: 'all',
             historyData: [],
             pageCount: 1,
             activePage: 1
@@ -22,9 +23,14 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
         this.queryHistory();
     }
 
+    selectQueryType(eventKey)
+    {
+        this.setState({queryType: eventKey});
+    }
+
     queryHistory(event) {
         let name = this.queryName.value;
-        let type = this.queryType.value;
+        let type = this.state.queryType;
         message_object.doFetch("query history count", config.serverHost + "analyze/history/count?name=" + name + "&type=" + type, {}, function (result) {
             result.text().then(function (result) {
                 this.setState({pageCount: Math.max(parseInt(result, 10), 1)});
@@ -57,7 +63,7 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
     {
         if (!page) page = 1;
         let name = this.queryName.value;
-        let type = this.queryType.value;
+        let type = this.state.queryType;
         message_object.doFetch("query history" + name + type + page, config.serverHost + "analyze/history?name=" + name + "&type=" + type + "&page=" + page, {}, function (result) {
             result.json().then(function (result) {
                 this.setState({historyData: result, activePage: page});
@@ -70,19 +76,19 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
         return (<Row>
             <Col md={12} xs={12}>
                 <Form inline>
-                    <FormGroup controlId="formInlineName">
-                        <ControlLabel>名称</ControlLabel>
-                        <FormControl style={{margin: "0px 0px 0px 5px"}} type="text" placeholder="神秘决斗者" inputRef={ ref => this.queryName = ref }/>
-                    </FormGroup>
-                    <FormGroup controlId="formInlineEmail" style={{margin: "0px 0px 0px 20px"}}>
-                        <ControlLabel>类别</ControlLabel>
-                        <FormControl  style={{margin: "0px 0px 0px 5px"}} componentClass="select" placeholder="select" inputRef={ ref => this.queryType = ref }>
-                            <option value="all">全部</option>
-                            <option value="entertain">娱乐</option>
-                            <option value="athletic">竞技</option>
-                        </FormControl>
-                    </FormGroup>
-                    <Button type="submit" style={{margin: "0px 0px 0px 20px"}} onClick={this.queryHistory.bind(this)} bsStyle="primary">查询</Button>
+                    <InputGroup>
+                        <InputGroup.Addon>名称</InputGroup.Addon>
+                        <FormControl type="text" placeholder="神秘决斗者" inputRef={ ref => this.queryName = ref }/>
+                        <InputGroup.Addon>类别</InputGroup.Addon>
+                        <InputGroup.Button>
+                            <DropdownButton id="query_type" title={{all: '全部', entertain: '娱乐', athletic: '竞技'}[this.state.queryType]} onSelect={this.selectQueryType.bind(this)}>
+                                <MenuItem eventKey="all">全部</MenuItem>
+                                <MenuItem eventKey="entertain">娱乐</MenuItem>
+                                <MenuItem eventKey="athletic">竞技</MenuItem>
+                            </DropdownButton>
+                            <Button type="submit" onClick={this.queryHistory.bind(this)} bsStyle="primary">查询</Button>
+                        </InputGroup.Button>
+                    </InputGroup>
                 </Form>
             </Col>
             <Col md={12} xs={12}>

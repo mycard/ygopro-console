@@ -13,6 +13,20 @@ server.use express.static('react-pages/build')
 server.use '/user/*', authorizeRouter
 server.use '/analyze/*', authorizeRouter
 
+
+server.get '/user/message', (req, res) ->
+  keyword = req.query.keyword || ''
+  level = req.query.level || 0
+  page = req.query.page || 0
+  user.queryMessage keyword, level, page, (result) ->
+    res.json result
+
+server.get '/user/message/count', (req, res) ->
+  keyword = req.query.keyword || ''
+  level = req.query.level || 0
+  user.queryMessageCount keyword, level, (result) ->
+    res.text result
+
 server.get '/user/:target_username', (req, res) ->
   target_username = req.params.target_username
   user.queryUser target_username, (result) ->
@@ -33,10 +47,11 @@ server.post '/user/:target_username/dp/:value', (req, res) ->
   user.setUserDp target_username, dp, ->
     res.end "ok"
 
+
 server.get '/analyze/history', (req, res) ->
-  name = req.query.name
-  type = req.query.type
-  page = req.query.page
+  name = req.query.name || ''
+  type = req.query.type || ''
+  page = req.query.page || 0
   page = 1 if !page
   analytics.queryHistory name, type, page, (result) ->
     res.json result

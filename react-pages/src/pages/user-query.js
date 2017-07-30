@@ -6,7 +6,7 @@ import config from '../Config.json'
 
 // 用户查询、DP异动
 // 删除用户
-class MCUserManagePage extends Component {
+class MCProConsoleUserManagePage extends Component {
     constructor() {
         super();
         this.user = null;
@@ -213,4 +213,4 @@ class MCUserManagePage extends Component {
     }
 }
 
-export default MCUserManagePage
+export default MCProConsoleUserManagePage

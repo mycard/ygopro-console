@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import MCProConsoleNavigationBar from './NavigationBar'
 import MCProConsoleWelcomePage from './pages/welcome'
 import MCProConsoleDatabasePage from './pages/database'
+import MCProConsoleUserQueryPage from './pages/user-query'
+import MCProConsoleUserMessagePage from './pages/user-message'
 import MCProConsoleImageManagerStatePage from './pages/image-state'
 import MCProConsoleImageManagerSinglePage from './pages/image-single'
 import MCProConsoleImageManagerCommandPage from './pages/image-command'
@@ -12,7 +14,6 @@ import MCProConsoleAnalyticsHistoryPage from './pages/analytics-history'
 import MCProConsoleAnalyticsCustomPage from './pages/analytics-custom'
 import MCProConsoleAnalyticsCustomSetPage from './pages/analytics-custom-set'
 import MCProConsoleAnalyticsDeckPage from './pages/analytics-deck'
-import MCUserManagePage from './pages/user'
 import {messages} from './Message'
 import './App.css';
 
@@ -29,7 +30,8 @@ class App extends Component {
               <div className="container">
                 <MCProConsoleNavigationBar />
                   <Route exact path="/" component={MCProConsoleWelcomePage} />
-                  <Route path="/user" component={MCUserManagePage} />
+                  <Route path="/user/query" component={MCProConsoleUserQueryPage} />
+                  <Route path="/user/message" component={MCProConsoleUserMessagePage} />
                   <Route path="/database" component={MCProConsoleDatabasePage}/>
                   <Route path="/image/state" component={MCProConsoleImageManagerStatePage}/>
                   <Route path="/image/command" component={MCProConsoleImageManagerCommandPage}/>

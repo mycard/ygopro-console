@@ -25,16 +25,19 @@ class MCProConsoleNavigationBar extends Component
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav>
-                            <LinkContainer to="/user"><NavItem>用户</NavItem></LinkContainer>
+                            <NavDropdown title="用户">
+                                <LinkContainer to="/user/query"><NavItem>查询</NavItem></LinkContainer>
+                                <LinkContainer to="/user/message"><NavItem>消息记录</NavItem></LinkContainer>
+                            </NavDropdown>
                             <LinkContainer to="/update"><NavItem>更新</NavItem></LinkContainer>
                             <LinkContainer to="/database"><NavItem eventKey="database" onSelect={ this.onNavItemSelected }>数据库</NavItem></LinkContainer>
-                            <NavDropdown title="卡图" id="basic-nav-dropdown-image">
+                            <NavDropdown title="卡图">
                                 <LinkContainer to="/image/state"><NavItem eventKey="image-state" onSelect={ this.onNavItemSelected }>状态</NavItem></LinkContainer>
                                 <LinkContainer to="/image/command"><NavItem eventKey="image-command" onSelect={ this.onNavItemSelected }>指令</NavItem></LinkContainer>
                                 <LinkContainer to="/image/single"><NavItem eventKey="image-single" onSelect={ this.onNavItemSelected }>单图</NavItem></LinkContainer>
                                 <LinkContainer to="/image/config"><NavItem eventKey="image-config" onSelect={ this.onNavItemSelected }>设置</NavItem></LinkContainer>
                             </NavDropdown>
-                            <NavDropdown title="统计" id="basic-nav-dropdown-analytics">
+                            <NavDropdown title="统计">
                                 <LinkContainer to="/analytics/general"><NavItem>概述</NavItem></LinkContainer>
                                 <LinkContainer to="/analytics/history"><NavItem>对战历史</NavItem></LinkContainer>
                                 <LinkContainer to="/analytics/custom"><NavItem>自定义统计</NavItem></LinkContainer>

@@ -95,9 +95,6 @@ class MCProConsoleAnalyticsDeckPage extends Component
                     </thead>
                     <tbody>
                     {
-                        console.log(this.state.deckResult)
-                    }
-                    {
                         this.state.deckResult.map(function(deckData) {
                             return(
                             <tr>

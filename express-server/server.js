@@ -22,6 +22,25 @@
 
   server.use('/analyze/*', authorizeRouter);
 
+  server.get('/user/message', function(req, res) {
+    var keyword, level, page;
+    keyword = req.query.keyword || '';
+    level = req.query.level || 0;
+    page = req.query.page || 0;
+    return user.queryMessage(keyword, level, page, function(result) {
+      return res.json(result);
+    });
+  });
+
+  server.get('/user/message/count', function(req, res) {
+    var keyword, level;
+    keyword = req.query.keyword || '';
+    level = req.query.level || 0;
+    return user.queryMessageCount(keyword, level, function(result) {
+      return res.text(result);
+    });
+  });
+
   server.get('/user/:target_username', function(req, res) {
     var target_username;
     target_username = req.params.target_username;
@@ -54,9 +73,9 @@
 
   server.get('/analyze/history', function(req, res) {
     var name, page, type;
-    name = req.query.name;
-    type = req.query.type;
-    page = req.query.page;
+    name = req.query.name || '';
+    type = req.query.type || '';
+    page = req.query.page || 0;
     if (!page) {
       page = 1;
     }
