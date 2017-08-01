@@ -137,6 +137,17 @@
     return res.end('ok');
   });
 
+  server.get('/analyze/daily', function(req, res) {
+    var type;
+    type = req.query.type;
+    return analytics.dailyCount(type).then(function(result) {
+      return res.json(result);
+    }).catch(function(result) {
+      res.statusCode = 500;
+      return res.end(result);
+    });
+  });
+
   server.get('*', function(req, res) {
     return res.sendFile(path.resolve('react-pages/build', 'index.html'));
   });

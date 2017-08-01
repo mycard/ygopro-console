@@ -91,6 +91,14 @@ server.post '/analyze/custom/commands', textParser, (req, res) ->
   analytics.setCommands commands
   res.end 'ok'
 
+server.get '/analyze/daily', (req, res) ->
+  type = req.query.type
+  analytics.dailyCount(type).then (result) ->
+    res.json result
+  .catch (result) ->
+    res.statusCode = 500
+    res.end result
+
 # React Router File
 server.get '*', (req, res) ->
   res.sendFile path.resolve('react-pages/build', 'index.html')

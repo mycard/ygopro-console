@@ -10,6 +10,24 @@
 
   module.exports.ygoproPool = new Pool(Config.ygoproDatabase);
 
+  module.exports.standardQueryCallback = function(err, result, callback) {
+    if (err) {
+      console.log(err);
+      return callback.call(this, null);
+    } else {
+      return callback.call(this, result.rows);
+    }
+  };
+
+  module.exports.standardPromiseCallback = function(resolve, reject, err, result) {
+    if (err) {
+      console.log(err);
+      return reject(err);
+    } else {
+      return resolve(result.rows);
+    }
+  };
+
 }).call(this);
 
 //# sourceMappingURL=database.js.map

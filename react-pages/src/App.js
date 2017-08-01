@@ -13,6 +13,7 @@ import MCProConsoleAnalyticsGeneralPage from './pages/analytics-general'
 import MCProConsoleAnalyticsHistoryPage from './pages/analytics-history'
 import MCProConsoleAnalyticsCustomPage from './pages/analytics-custom'
 import MCProConsoleAnalyticsCustomSetPage from './pages/analytics-custom-set'
+import MCProConsoleAnalyticsDailyPage from './pages/analytics-daily'
 import MCProConsoleAnalyticsDeckPage from './pages/analytics-deck'
 import {messages} from './Message'
 import './App.css';
@@ -41,6 +42,7 @@ class App extends Component {
                   <Route path="/analytics/history" component={MCProConsoleAnalyticsHistoryPage} />
                   <Route path="/analytics/custom" component={MCProConsoleAnalyticsCustomPage} />
                   <Route path="/analytics/custom-set" component={MCProConsoleAnalyticsCustomSetPage} />
+                  <Route path="/analytics/daily" component={MCProConsoleAnalyticsDailyPage} />
                   <Route path="/analytics/deck" component={MCProConsoleAnalyticsDeckPage} />
               </div>
           </Router>

@@ -75,7 +75,7 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
     render() {
         return (<Row>
             <Col md={12} xs={12}>
-                <Form inline>
+                <Form>
                     <InputGroup>
                         <InputGroup.Addon>名称</InputGroup.Addon>
                         <FormControl type="text" placeholder="神秘决斗者" inputRef={ ref => this.queryName = ref }/>

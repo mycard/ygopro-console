@@ -1,4 +1,4 @@
-{ mycardPool, ygoproPool } = require './database'
+{ mycardPool, ygoproPool, standardQueryCallback, standardPromiseCallback } = require './database'
 custom_commands = require './analytics.json'
 fs = require 'fs'
 
@@ -7,6 +7,23 @@ HISTORY_QUERY_SQL = "select * from battle_history where (usernamea like $1::text
 HISTORY_COUNT_SQL = "select count(*) from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text"
 DECK_QUERY_SQL = "select * from deck_day where (name like $1::text) order by time desc, source desc limit #{PAGE_LIMIT} offset $2"
 DECK_COUNT_SQL = "select count(*) from deck_day where name like $1::text"
+DAILY_COUNT =
+  'SELECT day, sum(' +
+  '      CASE' +
+  '            WHEN sum_time < \'1 hour\' THEN 0' +
+  '            WHEN sum_time < \'30 minute\' THEN 0.5' +
+  '            ELSE 1' +
+  '      END) AS day_active_users ' +
+  'FROM' +
+  '      (SELECT username, sum(time_length) AS sum_time, day FROM' +
+  '            (SELECT usernamea AS username, end_time - battle_history.start_time AS time_length, date_trunc(\'day\', start_time) as day' +
+  '                  FROM battle_history' +
+  '                  WHERE type like $1::text' +
+  '                  UNION SELECT usernameb AS username, end_time - battle_history.start_time AS time_length, date_trunc(\'day\', start_time) as day' +
+  '                        FROM battle_history' +
+  '                        WHERE type like $1::text) as B' +
+  '      GROUP BY username, day) as user_time ' +
+  'GROUP BY day ORDER BY day DESC LIMIT 100;'
 
 runCommands = (callback) ->
   answer = []
@@ -57,9 +74,15 @@ queryDeckCount = (name, callback) ->
     else
       callback.call this, Math.ceil(result.rows[0].count / PAGE_LIMIT)
 
+dailyCount = (type) ->
+  new Promise (resolve, reject) ->
+    type = '%' if !type or type == 'all'
+    ygoproPool.query DAILY_COUNT, [type], (err, result) -> standardPromiseCallback resolve, reject, err, result
+
 module.exports.queryHistory = queryHistory
 module.exports.queryHistoryCount = queryHistoryCount
 module.exports.runCommands = runCommands
 module.exports.setCommands = setCommands
 module.exports.queryDeck = queryDeck
 module.exports.queryDeckCount = queryDeckCount
+module.exports.dailyCount = dailyCount
