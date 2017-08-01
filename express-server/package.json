@@ -2,6 +2,9 @@
   "name": "express-server",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "node server.coffee"
+  },
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.2",

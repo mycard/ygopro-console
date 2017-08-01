@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Row, Col, Table, InputGroup, DropdownButton, MenuItem, Button } from 'react-bootstrap'
+import { Row, Col, Table, DropdownButton, MenuItem } from 'react-bootstrap'
 import { message_object } from "../Message"
 import config from "../Config.json"
 import moment from "moment"
+import { LineChart } from 'rd3'
 
 class MCProConsoleAnalyticsDailyPage extends Component
 {
@@ -43,14 +44,35 @@ class MCProConsoleAnalyticsDailyPage extends Component
     {
         return <Row>
             <Col md={4} xs={12}>
-
                 <DropdownButton id="query_type" title={{all: '全部', entertain: '娱乐', athletic: '竞技'}[this.state.queryType]} onSelect={this.selectQueryType.bind(this)}>
                     <MenuItem eventKey="all">全部</MenuItem>
                     <MenuItem eventKey="entertain">娱乐</MenuItem>
                     <MenuItem eventKey="athletic">竞技</MenuItem>
                 </DropdownButton>
             </Col>
-            <Col md={12} xs={12} />
+            <Col md={12} xs={12}>
+                {
+                    this.state.dailyCounts ? <LineChart
+                        data={[{name:"", values:this.state.dailyCounts}]}
+                        width='100%'
+                        height={400}
+                        viewBoxObject={{
+                            x: 0,
+                            y: 0,
+                            width: 700,
+                            height: 400
+                        }}
+                        xAccessor={d=>new Date(d.day)}
+                        yAccessor={d=>parseFloat(d.day_active_users)}
+                        title="日活走势"
+                        yAxisLabel="日活跃指数"
+                        xAxisLabel="日期"
+                        domain={{ y: [0, ] }}
+                        xAxisFormatter={x => moment(x).format("MM-DD")}
+                        xAxisTickInterval={{interval: 7}}
+                        gridHorizontal={true} /> : ""
+                }
+            </Col>
             <Col md={4} xs={12}>
                 <Table striped bordered hover>
                     <thead>
