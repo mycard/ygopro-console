@@ -1,8 +1,8 @@
 { mycardPool, ygoproPool } = require './database'
 
 PAGE_LIMIT = 100
-QUERY_MYCARD_SQL = 'select * from users where name like $1::text or username like $1::text'
-QUERY_MYCARD_IP_SQL = 'select * from users where registration_ip_address like $1::text or ip_address like $1::text limit 1000'
+QUERY_MYCARD_SQL = 'select * from users where name like $1::text or username like $1::text limit 200'
+QUERY_MYCARD_IP_SQL = 'select * from users where registration_ip_address like $1::text or ip_address like $1::text limit 200'
 QUERY_YGOPRO_SQL = 'select * from user_info where username = $1::text'
 SET_YGOPRO_DP_SQL = 'update user_info set pt = $2 where username = $1::text'
 GET_MESSAGE_SQL = "select * from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level > $2 limit #{PAGE_LIMIT} offset $3"

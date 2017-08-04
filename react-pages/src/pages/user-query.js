@@ -66,6 +66,23 @@ class MCProConsoleUserManagePage extends Component {
         this.setState({ searchBy: eventKey })
     }
 
+    onUserIpClicked(event)
+    {
+        if (event) event.preventDefault();
+        let ip = this.state.userData.ip_address;
+        if (ip.startsWith('127.0.0.1'))
+        {
+            alert("127.0.0.1 是用户中心上线前的用户的统一注册地址，\n搜索它没有意义！");
+            return;
+        }
+        let index = ip.indexOf('/');
+        if (index > 0) ip = ip.slice(0, index);
+        ReactDOM.findDOMNode(this.refs.username).value = ip.toString();
+        this.setState({searchBy: 'ip'});
+        this.state.searchBy = 'ip';
+        this.searchUser();
+    }
+
     render() {
         if (this.state.selectingUsers != null)
             console.log(this.state.selectingUsers);
@@ -157,7 +174,7 @@ class MCProConsoleUserManagePage extends Component {
                             </tr>
                             <tr>
                                 <td>最后登录IP</td>
-                                <td>{this.state.userData.ip_address}</td>
+                                <td><a onClick={this.onUserIpClicked.bind(this)}>{this.state.userData.ip_address}</a></td>
                             </tr>
                             <tr>
                                 <td>创建时间</td>
@@ -182,28 +199,38 @@ class MCProConsoleUserManagePage extends Component {
                                 <th>值</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td>用户名</td>
-                                <td>{this.state.userData.username}</td>
-                            </tr>
-                            <tr>
-                                <td>经验</td>
-                                <td>{this.state.userData.exp}</td>
-                            </tr>
-                            <tr>
-                                <td>DP</td>
-                                <td>{this.state.userData.pt}</td>
-                            </tr>
-                            <tr>
-                                <td>娱乐场</td>
-                                <td>{this.state.userData.entertain_win}/{this.state.userData.entertain_draw}/{this.state.userData.entertain_lose}</td>
-                            </tr>
-                            <tr>
-                                <td>竞技场</td>
-                                <td>{this.state.userData.athletic_win}/{this.state.userData.athletic_draw}/{this.state.userData.athletic_lose}</td>
-                            </tr>
-                            </tbody>
+                            {
+
+                                this.state.userData.exp ?
+                                    <tbody>
+                                    <tr>
+                                        <td>用户名</td>
+                                        <td>{this.state.userData.username}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>经验</td>
+                                        <td>{this.state.userData.exp}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>DP</td>
+                                        <td>{this.state.userData.pt}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>娱乐场</td>
+                                        <td>{this.state.userData.entertain_win}/{this.state.userData.entertain_draw}/{this.state.userData.entertain_lose}（胜率 {(this.state.userData.entertain_win / this.state.userData.entertain_all * 100).toFixed(3)}%）</td>
+                                    </tr>
+                                    <tr>
+                                        <td>竞技场</td>
+                                        <td>{this.state.userData.athletic_win}/{this.state.userData.athletic_draw}/{this.state.userData.athletic_lose}（胜率 {(this.state.userData.athletic_win / this.state.userData.athletic_all * 100).toFixed(3)}%）</td>
+                                    </tr>
+                                    </tbody>
+                                    :
+                                    <tbody>
+                                    <tr>
+                                        <td colSpan="2">{this.state.userData.username} 没有参加过任何匹配游戏</td>
+                                    </tr>
+                                    </tbody>
+                            }
                         </Table>
                     </Col>
                     : ""
