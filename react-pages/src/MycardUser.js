@@ -11,6 +11,7 @@ class MycardUser extends Component
             avatar: ''
         };
         this.data = null;
+        mycard_user_object = this;
     }
 
     componentDidMount()
@@ -18,7 +19,8 @@ class MycardUser extends Component
         this.deserializeURI();
     }
 
-    deserializeURI() {
+    isValidUser()
+    {
         let sso = getURLParameter('sso');
         let sig = getURLParameter('sig');
         if (sso) {
@@ -26,12 +28,21 @@ class MycardUser extends Component
             this.setFromToken(text);
             window.localStorage.token = sso;
             window.localStorage.signature = sig;
+            return text;
         }
         else if (window.localStorage.token) {
             sso = window.localStorage.token;
             let text = decodeURI(atob(sso));
-            this.setFromToken(text);
+            return text;
         }
+        else
+            return null;
+    }
+
+    deserializeURI() {
+        let text= this.isValidUser();
+        if (text)
+            this.setFromToken(text);
         else {
             this.data = null;
             this.setState({
@@ -52,7 +63,15 @@ class MycardUser extends Component
             username: name,
             avatar: decodeURI(avatar)
         });
+        console.log(MycardUser.callbacks);
+        this.triggerCallbacks();
         return true;
+    }
+
+    triggerCallbacks()
+    {
+        for (let i = 0; i < MycardUser.callbacks.length; i++)
+            MycardUser.callbacks[i].call(this);
     }
 
     getJumpURI() {
@@ -87,6 +106,7 @@ class MycardUser extends Component
             username: '登录',
             avatar: ''
         });
+        this.triggerCallbacks();
     }
 
     render()
@@ -106,4 +126,8 @@ function getURLParameter(name, target) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(target) || [null, ''])[1].replace(/\+/g, '%20')) || null;
 }
 
+MycardUser.callbacks = [];
+
 export default MycardUser
+export let mycard_user = <MycardUser />;
+export let mycard_user_object = null;

@@ -3,6 +3,7 @@ import { Row, Col, Table, FormGroup, InputGroup, FormControl, Button, DropdownBu
 import ReactDOM from 'react-dom'
 import { message_object } from '../Message'
 import config from '../Config.json'
+import moment from 'moment'
 
 // 用户查询、DP异动
 // 删除用户
@@ -178,11 +179,11 @@ class MCProConsoleUserManagePage extends Component {
                             </tr>
                             <tr>
                                 <td>创建时间</td>
-                                <td>{this.state.userData.created_at}</td>
+                                <td>{moment(this.state.userData.created_at).format('YYYY-MM-DD HH:mm:ss')}</td>
                             </tr>
                             <tr>
                                 <td>最后变动时间</td>
-                                <td>{this.state.userData.updated_at}</td>
+                                <td>{moment(this.state.userData.updated_at).format('YYYY-MM-DD HH:mm:ss')}</td>
                             </tr>
                             </tbody>
                         </Table>

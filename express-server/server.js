@@ -94,21 +94,23 @@
   });
 
   server.get('/analyze/deck', function(req, res) {
-    var name, page;
+    var name, page, source;
     name = req.query.name;
+    source = req.query.source;
     page = req.query.page;
     if (!page) {
       page = 1;
     }
-    return analytics.queryDeck(name, page, function(result) {
+    return analytics.queryDeck(name, source, page, function(result) {
       return res.json(result);
     });
   });
 
   server.get('/analyze/deck/count', function(req, res) {
-    var name;
+    var name, source;
     name = req.query.name;
-    return analytics.queryDeckCount(name, function(result) {
+    source = req.query.source;
+    return analytics.queryDeckCount(name, source, function(result) {
       return res.end(result.toString());
     });
   });

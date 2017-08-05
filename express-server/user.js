@@ -77,8 +77,7 @@
   };
 
   queryMessage = function(keyword, level, page, callback) {
-    console.log("call");
-    return ygoproPool.query(GET_MESSAGE_SQL, [`%${keyword}%`, level, (page - 1) * PAGE_LIMIT], function(err, result) {
+    return ygoproPool.query(GET_MESSAGE_SQL, [`%${keyword}%`, level, page * PAGE_LIMIT], function(err, result) {
       console.log(result);
       if (err) {
         console.log(err);

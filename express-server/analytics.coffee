@@ -5,8 +5,8 @@ fs = require 'fs'
 PAGE_LIMIT = 100
 HISTORY_QUERY_SQL = "select * from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text order by start_time desc limit #{PAGE_LIMIT} offset $3"
 HISTORY_COUNT_SQL = "select count(*) from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text"
-DECK_QUERY_SQL = "select * from deck_day where (name like $1::text) order by time desc, source desc limit #{PAGE_LIMIT} offset $2"
-DECK_COUNT_SQL = "select count(*) from deck_day where name like $1::text"
+DECK_QUERY_SQL = "select * from deck_day where (name like $1::text and source like $2::text) order by time desc, count desc, source desc limit #{PAGE_LIMIT} offset $3"
+DECK_COUNT_SQL = "select count(*) from deck_day where name like $1::text and source like $2::text"
 DAILY_COUNT =
   'SELECT day, sum(' +
   '      CASE' +
@@ -58,16 +58,16 @@ queryHistoryCount = (name, type, callback) ->
     else
       callback.call this, Math.ceil(result.rows[0].count / PAGE_LIMIT)
 
-queryDeck = (name, start, callback) ->
-  ygoproPool.query DECK_QUERY_SQL, ["%#{name}%", start], (err, result) ->
+queryDeck = (name, source, start, callback) ->
+  ygoproPool.query DECK_QUERY_SQL, ["%#{name}%", "%#{source}%", start], (err, result) ->
     if err
       console.log err
       callback.call this, []
     else
       callback.call this, result.rows
 
-queryDeckCount = (name, callback) ->
-  ygoproPool.query DECK_COUNT_SQL, ["%#{name}%"], (err, result) ->
+queryDeckCount = (name, source, callback) ->
+  ygoproPool.query DECK_COUNT_SQL, ["%#{name}%", "%#{source}%"], (err, result) ->
     if err
       console.log err
       callback.call this, 0

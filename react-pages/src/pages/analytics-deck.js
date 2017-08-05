@@ -3,7 +3,7 @@ import { Row, Col, Table, Pagination, FormGroup, InputGroup, Button, FormControl
 import { message_object } from "../Message"
 import config from "../Config.json"
 import moment from 'moment'
-import "./analyze-deck.css"
+import "./analytics-deck.css"
 
 class MCProConsoleAnalyticsDeckPage extends Component
 {
@@ -15,6 +15,7 @@ class MCProConsoleAnalyticsDeckPage extends Component
             deckResult: []
         };
         this.deckname = null;
+        this.decksource = null;
     }
 
     componentDidMount()
@@ -29,7 +30,7 @@ class MCProConsoleAnalyticsDeckPage extends Component
 
     searchDeck(event)
     {
-        message_object.doFetch("query deck count", config.serverHost + "analyze/deck/count?name=" + this.deckname.value, {}, function (result) {
+        message_object.doFetch("query deck count", config.serverHost + "analyze/deck/count?name=" + this.deckname.value + "&source=" + this.decksource.value, {}, function (result) {
            result.text().then(function (result) {
                let value = parseInt(result, 10);
                if (value && !isNaN(value)) this.setState({pageCount: value});
@@ -42,7 +43,7 @@ class MCProConsoleAnalyticsDeckPage extends Component
 
     searchDeckPage(page)
     {
-        message_object.doFetch("query deck", config.serverHost + "analyze/deck?name=" + this.deckname.value + "&page=" + page, {}, function (result) {
+        message_object.doFetch("query deck", config.serverHost + "analyze/deck?name=" + this.deckname.value + "&source=" + this.decksource.value + "&page=" + page, {}, function (result) {
             console.log(result);
             result.json().then(function (result) {
                 console.log(result);
@@ -76,6 +77,8 @@ class MCProConsoleAnalyticsDeckPage extends Component
                         <InputGroup>
                             <InputGroup.Addon>卡组名</InputGroup.Addon>
                             <FormControl type="text" inputRef={ref => this.deckname = ref} placeholder="输入要查询的卡组" />
+                            <InputGroup.Addon>来源名</InputGroup.Addon>
+                            <FormControl type="text" inputRef={ref => this.decksource = ref} placeholder="来源" />
                             <InputGroup.Button>
                                 <Button type="submit" onClick={this.searchDeck.bind(this)}>确定</Button>
                             </InputGroup.Button>
