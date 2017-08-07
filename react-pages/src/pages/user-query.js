@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Table, FormGroup, InputGroup, FormControl, Button, DropdownButton, ListGroup, ListGroupItem, MenuItem } from 'react-bootstrap';
 import ReactDOM from 'react-dom'
-import { message_object } from '../Message'
+import { message_object } from '../components/Message'
 import config from '../Config.json'
 import moment from 'moment'
 

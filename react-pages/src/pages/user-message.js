@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, FormGroup, InputGroup, FormControl, Button, Table, Pagination } from 'react-bootstrap'
-import {message_object} from "../Message"
+import {message_object} from "../components/Message"
 import config from '../Config.json'
 import moment from 'moment'
 

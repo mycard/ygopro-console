@@ -111,7 +111,7 @@ class MCProConsoleMessagePusher extends Component
     render()
     {
         return (
-            <div style={{width: '400px', height: '1000px', position: 'fixed', bottom: '25px', right: '25px', zIndex: 100, pointerEvents: 'none', display: navigator.userAgent.indexOf("Mobile") > 0 ? 'none' : 'flex', flexDirection: 'column-reverse'}}>
+            <div style={{width: '450px', height: '1000px', position: 'fixed', bottom: '25px', right: '25px', zIndex: 100, pointerEvents: 'none', display: navigator.userAgent.indexOf("Mobile") > 0 ? 'none' : 'flex', flexDirection: 'column-reverse'}}>
                 {this.state.messages.map(function(data) { return (
                     <Alert bsStyle={data.level} onDismiss={this.removeMessageDismiss.bind({caller: this, 'data': data})}>
                         {data.message}

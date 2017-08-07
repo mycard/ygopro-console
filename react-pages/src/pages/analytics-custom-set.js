@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, Button, FormControl, FormGroup } from 'react-bootstrap'
 import { Redirect } from 'react-router'
-import {message_object} from "../Message"
+import {message_object} from "../components/Message"
 import config from "../Config.json"
 
 class MCProConsoleAnalyticsCustomSetPage extends Component

@@ -1,17 +1,40 @@
 [
   {
-    "name": "今日竞技场对局",
-    "query": "SELECT count(*) FROM battle_history WHERE current_date = date_trunc('day', start_time);",
-    "target": "ygopro"
+    "name": "竞技场对局",
+    "query": "SELECT count(*) FROM battle_history WHERE start_time >= $1 and start_time <= $2 and type='athletic'",
+    "target": "ygopro",
+    "time": true,
+    "tag": { "type": "primary" }
   },
   {
-    "name": "今日竞技场拔线对局",
-    "query": "SELECT count(*) FROM battle_history WHERE current_date = date_trunc('day', start_time) and (userscorea < 0 or userscoreb < 0) and type = 'athletic';",
-    "target": "ygopro"
+    "name": "竞技场拔线对局",
+    "query": "SELECT count(*) FROM battle_history WHERE start_time >= $1 and start_time <= $2 and (userscorea < 0 or userscoreb < 0) and type = 'athletic'",
+    "target": "ygopro",
+    "time": true
   },
   {
-    "name": "今日竞技场活跃用户",
-    "query": "SELECT count(DISTINCT A) FROM (SELECT usernamea FROM battle_history WHERE current_date = date_trunc('day', start_time) AND type = 'athletic' UNION SELECT usernameb FROM battle_history WHERE current_date = date_trunc('day', start_time) AND type = 'athletic') as A;",
-    "target": "ygopro"
+    "name": "竞技场活跃用户",
+    "query": "SELECT count(DISTINCT A) FROM (SELECT usernamea FROM battle_history WHERE start_time >= $1 and start_time <= $2 AND type = 'athletic' UNION SELECT usernameb FROM battle_history WHERE start_time >= $1 and start_time <= $2 AND type = 'athletic') as A;",
+    "target": "ygopro",
+    "time": true
+  },
+  {
+    "name": "娱乐场对局",
+    "query": "SELECT count(*) FROM battle_history WHERE start_time >= $1 and start_time <= $2 and type='entertain'",
+    "target": "ygopro",
+    "time": true,
+    "tag": { "type": "primary" }
+  },
+  {
+    "name": "娱乐场拔线对局",
+    "query": "SELECT count(*) FROM battle_history WHERE start_time >= $1 and start_time <= $2 and (userscorea < 0 or userscoreb < 0) and type = 'entertain'",
+    "target": "ygopro",
+    "time": true
+  },
+  {
+    "name": "娱乐场活跃用户",
+    "query": "SELECT count(DISTINCT A) FROM (SELECT usernamea FROM battle_history WHERE start_time >= $1 and start_time <= $2 AND type = 'athletic' UNION SELECT usernameb FROM battle_history WHERE start_time >= $1 and start_time <= $2 AND type = 'entertain') as A;",
+    "target": "ygopro",
+    "time": true
   }
 ]

@@ -15,7 +15,7 @@ import MCProConsoleAnalyticsCustomPage from './pages/analytics-custom'
 import MCProConsoleAnalyticsCustomSetPage from './pages/analytics-custom-set'
 import MCProConsoleAnalyticsDailyPage from './pages/analytics-daily'
 import MCProConsoleAnalyticsDeckPage from './pages/analytics-deck'
-import {messages} from './Message'
+import {messages} from './components/Message'
 import './App.css';
 
 class App extends Component {

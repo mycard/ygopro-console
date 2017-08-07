@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Row, Col, FormControl, Button, ButtonGroup, Panel, InputGroup} from 'react-bootstrap'
-import MCProConsoleLocaleList from '../LocaleList'
+import MCProConsoleLocaleList from '../components/LocaleList'
 import Config from '../Config.json'
-import {message_object} from '../Message'
+import {message_object} from '../components/Message'
 
 class MCProConsoleImageManagerSinglePage extends Component {
     constructor()

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Row, Col, Panel } from 'react-bootstrap'
-import { message_object } from "../Message"
+import { Row, Col, Panel, Button } from 'react-bootstrap'
+import { message_object } from "../components/Message"
 import config from '../Config.json'
 import { LinkContainer } from 'react-router-bootstrap'
+import MCProConsoleTimeRangePicker from "../components/Timerange"
 
 class MCProConsoleAnalyticsCustomPage extends Component
 {
@@ -17,19 +18,28 @@ class MCProConsoleAnalyticsCustomPage extends Component
 
     componentDidMount()
     {
-        message_object.doFetch("analyze custom", config.serverHost + 'analyze/custom', {}, function (result) {
-            result.json().then(function (result) {
-                this.setState({customResults: result})
+        this.getData();
+    }
+
+    getData()
+    {
+        let url = new URL(config.serverHost + 'analyze/custom');
+        this.refs.time.setUrl(url);
+        message_object.doFetch("analyze custom", url.toString(), {}, function (result) {
+            return result.json().then(function (result) {
+                this.setState({customResults: result});
+                return result.length + ' objects';
             }.bind(this));
-            return 'ok'
         }.bind(this));
     }
 
     renderCount(data)
     {
+        let tag = data.tag || {};
+        let style = tag.type || 'default';
         return (
             <Col md={4} xs={12}>
-                <Panel header={data.name}>{data.result[0].count}</Panel>
+                <Panel header={data.name} bsStyle={style}>{data.result[0].count}</Panel>
             </Col>
         )
     }
@@ -43,6 +53,11 @@ class MCProConsoleAnalyticsCustomPage extends Component
     {
         return (
         <Row>
+            <Col md={3} xs={12}>
+                <div style={{margin: "10px 10px 10px 15px"}}>
+                    <MCProConsoleTimeRangePicker ref="time" onChanged={this.getData.bind(this)} />
+                </div>
+            </Col>
             <Col md={12} xs={12}>
                 {
                     this.state.customResults.map(function (data) {

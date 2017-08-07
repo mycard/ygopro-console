@@ -1,13 +1,12 @@
 import React, { Component }  from 'react';
 import { Row, Nav, Navbar, NavItem, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import MycardUser, { mycard_user, mycard_user_object } from './MycardUser.js';
+import MycardUser, { mycard_user, mycard_user_object } from './components/MycardUser.js';
 
 class MCProConsoleNavigationBar extends Component
 {
     constructor() {
         super();
-        console.log(MycardUser.callbacks);
         MycardUser.callbacks.push(function () {
             this.forceUpdate();
         }.bind(this));

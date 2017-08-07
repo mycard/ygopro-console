@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Row, Col, Panel, Button } from 'react-bootstrap'
 import Config from '../Config.json'
-import MCProConsoleLogger from '../Logger'
-import {message_object} from '../Message'
+import MCProConsoleLogger from '../components/Logger'
+import {message_object} from '../components/Message'
 
 class MCProConsoleImageManagerStatePage extends Component {
     constructor() {

@@ -13,13 +13,6 @@ class MCProConsoleArchive extends Component {
         }
     }
 
-    componentDidMount() {
-        /*
-        this.ajax('/state', function(result) {
-            this.setState({message: result[0], lastChangeTime: result[1]});
-        })*/
-    }
-
     handleProcess()
     {
         this.ajax('/process', function (result) {

@@ -63,7 +63,6 @@ class MycardUser extends Component
             username: name,
             avatar: decodeURI(avatar)
         });
-        console.log(MycardUser.callbacks);
         this.triggerCallbacks();
         return true;
     }

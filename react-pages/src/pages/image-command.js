@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Row, Col, Button, ButtonGroup } from 'react-bootstrap'
-import MCProConsoleGitStatus from '../GitStatus'
-import MCProConsoleLocaleList from '../LocaleList'
+import MCProConsoleGitStatus from '../components/GitStatus'
+import MCProConsoleLocaleList from '../components/LocaleList'
 import Config from '../Config.json'
-import MCProConsoleArchive from "../Archive";
-import {message_object} from '../Message'
+import MCProConsoleArchive from "../components/Archive";
+import {message_object} from '../components/Message'
 
 class MCProConsoleImageManagerCommandPage extends Component
 {

@@ -3,6 +3,7 @@ path = require 'path'
 bodyParser = require 'body-parser'
 user = require './user'
 analytics = require './analytics'
+timeRouter = require('./time').timeRouter
 authorizeRouter = require('./author').authorizeRouter
 
 server = express()
@@ -12,7 +13,6 @@ server.use express.static('react-pages/build')
 
 server.use '/user/*', authorizeRouter
 server.use '/analyze/*', authorizeRouter
-
 
 server.get '/user/message', (req, res) ->
   keyword = req.query.keyword || ''
@@ -47,38 +47,37 @@ server.post '/user/:target_username/dp/:value', (req, res) ->
   user.setUserDp target_username, dp, ->
     res.end "ok"
 
+server.use '/analyze/*', timeRouter
 
 server.get '/analyze/history', (req, res) ->
   name = req.query.name || ''
   type = req.query.type || ''
-  page = req.query.page || 0
-  page = 1 if !page
-  analytics.queryHistory name, type, page, (result) ->
-    res.json result
+  type = '' if type == 'all'
+  page = parseInt(req.query.page) || 1
+  analytics.queryHistory([name ,type, req.start_time, req.end_time, page]).then (result) -> res.json result
 
 server.get '/analyze/history/count', (req, res) ->
-  name = req.query.name
-  type = req.query.type
-  analytics.queryHistoryCount name, type, (result) ->
-    res.end result.toString()
+  name = req.query.name || ''
+  type = req.query.type || ''
+  type = '' if type == 'all'
+  analytics.queryHistoryCount([name, type, req.start_time, req.end_time]).then (result) -> res.end result.toString()
 
 server.get '/analyze/deck', (req, res) ->
-  name = req.query.name
-  source = req.query.source
-  page = req.query.page
-  page = 1 if !page
-  analytics.queryDeck name, source, page, (result) ->
-    res.json result
+  name = req.query.name || ''
+  source = req.query.source || ''
+  page = parseInt(req.query.page) || 1
+  analytics.queryDeck([name, source, req.start_time, req.end_time, page]).then (result) -> res.json result
 
 server.get '/analyze/deck/count', (req, res) ->
   name = req.query.name
   source = req.query.source
-  analytics.queryDeckCount name, source, (result) ->
-    res.end result.toString()
+  analytics.queryDeckCount([name, source, req.start_time, req.end_time]).then (result) -> res.end result.toString()
 
 server.get '/analyze/custom', (req, res) ->
-  analytics.runCommands (result) ->
+  analytics.runCommands(req.start_time, req.end_time).then (result) ->
     res.json result
+  .catch (err) ->
+    console.log err
 
 server.get '/analyze/custom/commands', (req, res) ->
   res.sendFile path.resolve('express-server', 'analytics.json')

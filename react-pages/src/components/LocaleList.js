@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {DropdownButton, MenuItem} from 'react-bootstrap'
-import Config from './Config.json'
+import Config from '../Config.json'
 
 class MCProConsoleLocaleList extends Component
 {
