@@ -122,7 +122,7 @@ class MycardUser extends Component
 
 function getURLParameter(name, target) {
     if (!target) target = window.location.search;
-    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(target) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=([^&;]+?)(&|#|;|$)').exec(target) || [null, ''])[1].replace(/\+/g, '%20')) || null;
 }
 
 MycardUser.callbacks = [];

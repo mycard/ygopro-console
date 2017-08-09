@@ -35,9 +35,7 @@ class MCProConsoleAnalyticsDailyPage extends Component
 
     selectQueryType(eventKey)
     {
-        this.setState({queryType: eventKey});
-        this.state.queryType = eventKey;
-        this.callData();
+        this.setState({queryType: eventKey}, this.callData.bind(this));
     }
 
     render()

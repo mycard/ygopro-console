@@ -79,9 +79,7 @@ class MCProConsoleUserManagePage extends Component {
         let index = ip.indexOf('/');
         if (index > 0) ip = ip.slice(0, index);
         ReactDOM.findDOMNode(this.refs.username).value = ip.toString();
-        this.setState({searchBy: 'ip'});
-        this.state.searchBy = 'ip';
-        this.searchUser();
+        this.setState({searchBy: 'ip'}, this.searchUser.bind(this));
     }
 
     render() {

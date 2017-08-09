@@ -43,10 +43,10 @@ class MCProConsoleLogger extends Component
             'source': logSource
         };
         logSource.addEventListener('message', function (e) {
-            console.log("message", e);
+            // console.log("message", e);
             data.message = data.message + "\n" + e.data;
         });
-
+/*
         logSource.addEventListener('error', function (e) {
             console.log("error", e);
         });
@@ -54,6 +54,7 @@ class MCProConsoleLogger extends Component
         logSource.addEventListener('open', function (e) {
             console.log("open", e);
         });
+        */
         MCProConsoleLogger.map.set(this.props.source, data);
     }
 

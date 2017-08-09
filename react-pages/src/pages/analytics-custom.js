@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Panel, Button } from 'react-bootstrap'
+import { Row, Col, Panel } from 'react-bootstrap'
 import { message_object } from "../components/Message"
 import config from '../Config.json'
 import { LinkContainer } from 'react-router-bootstrap'

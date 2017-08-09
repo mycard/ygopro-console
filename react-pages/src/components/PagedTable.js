@@ -44,7 +44,7 @@ class MCProConsolePagedTable extends Component
         uri.pathname += "/count";
         message_object.doFetch(this.props.key + ' count', uri.toString(), {}, function (result) {
             return result.text().then(function (countStr) {
-                let count = parseInt(countStr);
+                let count = parseInt(countStr, 10);
                 if (!isNaN(count))
                     this.setState({pageCount: count});
                 return count + " pages";

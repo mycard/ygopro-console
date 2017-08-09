@@ -49,7 +49,7 @@ class MCProConsoleUserMessagePage extends Component
         let level = this.level.value;
         message_object.doFetch('user message count query', config.serverHost + 'user/message?keyword=' + keyword + '&level=' + level, {}, function (result) {
             result.text().then(function (text) {
-                let page = parseInt(text);
+                let page = parseInt(text, 10);
                 if (page)
                     this.setState({pageCount: page})
             }.bind(this));

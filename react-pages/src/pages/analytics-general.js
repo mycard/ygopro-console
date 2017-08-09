@@ -17,10 +17,10 @@ class MCProConsoleAnalyticsGeneralPage extends Component
     {
         return (
             <Row>
-                <Col md="12">
+                <Col md={12} xs={12}>
                     <h2 className="page-header">数据库</h2>
                 </Col>
-                <Col md="12">
+                <Col md={12} xs={12}>
                     <h2 className="page-header">日志</h2>
                     <MCProConsoleLogger source={config.analyticsServerHost + 'log'} />
                 </Col>

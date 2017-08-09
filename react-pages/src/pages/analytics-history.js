@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, MenuItem, InputGroup, FormControl, DropdownButton, Button, Glyphicon } from 'react-bootstrap'
+import { Row, Col, Form, MenuItem, InputGroup, FormControl, DropdownButton, Button } from 'react-bootstrap'
 import MCProConsolePagedTable from '../components/PagedTable'
 import MCProConsoleTimeRangePicker from '../components/Timerange'
 import moment from 'moment'
@@ -73,13 +73,13 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
                         <td>{data.userscorea}:{data.userscoreb}</td>
                         {
                             data.type === 'entertain' ?
-                                (<td>{data.expa.toFixed(3)} ({(data.expa - data.expa_ex).toSignedNumber()})</td>) :
-                                (<td>{data.pta.toFixed(3)} ({(data.pta - data.pta_ex).toSignedNumber()})</td>)
+                                (<td>{data.expa.toFixed(3)} ({MCProConsoleAnalyticsHistoryPage.toSignedNumber(data.expa - data.expa_ex)})</td>) :
+                                (<td>{data.pta.toFixed(3)} ({MCProConsoleAnalyticsHistoryPage.toSignedNumber(data.pta - data.pta_ex)})</td>)
                         }
                         {
                             data.type === 'entertain' ?
-                                (<td>{data.expb.toFixed(3)} ({(data.expb - data.expb_ex).toSignedNumber()})</td>) :
-                                (<td>{data.ptb.toFixed(3)} ({(data.ptb - data.ptb_ex).toSignedNumber()})</td>)
+                                (<td>{data.expb.toFixed(3)} ({MCProConsoleAnalyticsHistoryPage.toSignedNumber(data.expb - data.expb_ex)})</td>) :
+                                (<td>{data.ptb.toFixed(3)} ({MCProConsoleAnalyticsHistoryPage.toSignedNumber(data.ptb - data.ptb_ex)})</td>)
                         }
                         <td>{this.formatTime(data)}</td>
                         <td>{data.isfirstwin ? "是" : ""}</td>
@@ -99,8 +99,7 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
     }
 }
 
-Number.prototype.toSignedNumber = function () {
-    let num = this;
+MCProConsoleAnalyticsHistoryPage.toSignedNumber = function (num) {
     if (num > 0)
         return <span className="positive-score-change">{"+" + num.toFixed(3)}</span>;
     else if (Math.abs(num) < 0.0004)

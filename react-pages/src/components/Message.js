@@ -58,7 +58,6 @@ class MCProConsoleMessagePusher extends Component
 
     removeMessageDismiss()
     {
-        console.log(this);
         this.caller.removeMessage.call(this.caller, this.data.key);
     }
 
