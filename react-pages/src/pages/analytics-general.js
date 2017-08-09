@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import MCProConsoleLogger from '../components/Logger'
 import { Row, Col  } from 'react-bootstrap'
+import config from '../Config.json'
 
 class MCProConsoleAnalyticsGeneralPage extends Component
 {
@@ -20,7 +22,7 @@ class MCProConsoleAnalyticsGeneralPage extends Component
                 </Col>
                 <Col md="12">
                     <h2 className="page-header">日志</h2>
-                    <pre style={{height: '600px'}}>{this.state.logMessage}</pre>
+                    <MCProConsoleLogger source={config.analyticsServerHost + 'log'} />
                 </Col>
             </Row>
         )

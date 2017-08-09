@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import moment from 'moment'
 
 class MCProConsoleLogger extends Component
 {
@@ -17,7 +18,6 @@ class MCProConsoleLogger extends Component
         if (!(MCProConsoleLogger.map.has(this.props.source)))
             this.createListener();
         let data = MCProConsoleLogger.map.get(this.props.source);
-        console.log(data);
         this.setState({ logMessage: data.message, inDOM: true });
         data.source.addEventListener('message', this.updateMessage.bind(this));
     }
@@ -30,20 +30,29 @@ class MCProConsoleLogger extends Component
 
     componentWillUnmount()
     {
-        MCProConsoleLogger.map.get(this.props.source).source.removeEventListener('message', this.updateMessage)
+        MCProConsoleLogger.map.get(this.props.source).source.removeEventListener('message', this.updateMessage);
         this.setState({inDOM: false});
     }
 
     createListener()
     {
         let logSource = new EventSource(this.props.source,{ withCredentials: true });
-        let message = 'Message listener started on [' + Date.now() + ']';
+        let message = 'Message listener started on [' + moment().format('YYYY-MM-DD HH:mm:ss') + ']';
         let data = {
             'message': message,
             'source': logSource
         };
         logSource.addEventListener('message', function (e) {
+            console.log("message", e);
             data.message = data.message + "\n" + e.data;
+        });
+
+        logSource.addEventListener('error', function (e) {
+            console.log("error", e);
+        });
+
+        logSource.addEventListener('open', function (e) {
+            console.log("open", e);
         });
         MCProConsoleLogger.map.set(this.props.source, data);
     }
@@ -57,7 +66,7 @@ class MCProConsoleLogger extends Component
 }
 
 MCProConsoleLogger.defaultProps = {
-    src: ''
+    source: ''
 };
 MCProConsoleLogger.map = new Map();
 
