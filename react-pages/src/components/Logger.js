@@ -36,7 +36,7 @@ class MCProConsoleLogger extends Component
 
     createListener()
     {
-        let logSource = new EventSource(this.props.source,{ withCredentials: true });
+        let logSource = new EventSource(this.props.source,{ withCredentials: false });
         let message = 'Message listener started on [' + moment().format('YYYY-MM-DD HH:mm:ss') + ']';
         let data = {
             'message': message,
