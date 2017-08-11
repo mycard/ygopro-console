@@ -20,6 +20,11 @@
 
   server.use(express.static('react-pages/build'));
 
+  server.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    return next();
+  });
+
   server.use('/user/*', authorizeRouter);
 
   server.use('/analyze/*', authorizeRouter);

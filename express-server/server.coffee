@@ -10,6 +10,9 @@ server = express()
 
 # React Static File
 server.use express.static('react-pages/build')
+server.use (req, res, next) ->
+  res.header "Access-Control-Allow-Origin", "*"
+  next()
 
 server.use '/user/*', authorizeRouter
 server.use '/analyze/*', authorizeRouter

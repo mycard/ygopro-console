@@ -38,7 +38,7 @@ class MCProConsoleAnalyticsCustomPage extends Component
         let tag = data.tag || {};
         let style = tag.type || 'default';
         return (
-            <Col md={4} xs={12}>
+            <Col md={4} xs={6}>
                 <Panel header={data.name} bsStyle={style}>{data.result[0].count}</Panel>
             </Col>
         )
