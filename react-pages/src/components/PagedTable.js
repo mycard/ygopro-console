@@ -63,9 +63,9 @@ class MCProConsolePagedTable extends Component
                         </tr>
                     </thead>
                     {
-                        this.state.data == null ?
+                        this.state.data == null || this.state.data.length === 0 ?
                             <tbody>
-
+                            <tr><td colSpan={this.props.thead.length}>无相关数据</td></tr>
                             </tbody>
                             :
                             <tbody>

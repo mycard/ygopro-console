@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, MenuItem, InputGroup, FormControl, DropdownButton, Button } from 'react-bootstrap'
+import { Redirect } from 'react-router'
 import MCProConsolePagedTable from '../components/PagedTable'
 import MCProConsoleTimeRangePicker from '../components/Timerange'
 import moment from 'moment'
@@ -12,7 +13,8 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
         this.queryName = "";
         this.queryType = "";
         this.state = {
-            queryType: 'all'
+            queryType: 'all',
+            jump: null
         }
     }
 
@@ -39,8 +41,14 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
         </span>
     }
 
+    handleUserClick()
+    {
+        this.caller.setState({jump: this.target});
+    }
 
     render() {
+        if (this.state.jump)
+            return <Redirect push to={"/user/query?name=" + this.state.jump}/>;
         return (<Row>
             <Col md={12} xs={12}>
                 <Form>
@@ -65,9 +73,8 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
                 <div style={{margin: '10px 10px 10px 10px'}} />
                 <MCProConsolePagedTable ref="table" key="query history" thead={["用户A", "用户B", "类别", "比分", "用户A变动", "用户B变动", "对局时间", "首胜"]} tbodyGenerator={data =>
                     <tr key={data.usernamea + "vs" + data.usernameb + " at " + data.start_time}>
-                        <td className={data.userscorea > data.userscoreb ? "game-winner" : data.userscorea < 0 ? "game-runner" : "game-loser"}>{data.usernamea}</td>
-
-                        <td className={data.userscoreb > data.userscorea ? "game-winner" : data.userscoreb < 0 ? "game-runner" : "game-loser"}>{data.usernameb}</td>
+                        <td className={data.userscorea > data.userscoreb ? "game-winner" : data.userscorea < 0 ? "game-runner" : "game-loser"} onClick={this.handleUserClick.bind({caller: this, target: data.usernamea})} style={{cursor: 'pointer'}}>{data.usernamea}</td>
+                        <td className={data.userscoreb > data.userscorea ? "game-winner" : data.userscoreb < 0 ? "game-runner" : "game-loser"} onClick={this.handleUserClick.bind({caller: this, target: data.usernameb})} style={{cursor: 'pointer'}}>{data.usernameb}</td>
 
                         <td style={data.type === 'athletic' ? {fontWeight: "bold"} : {}}>{data.type === 'entertain' ? '娱乐' : '竞技'}</td>
                         <td>{data.userscorea}:{data.userscoreb}</td>
