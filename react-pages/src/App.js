@@ -4,7 +4,7 @@ import MCProConsoleNavigationBar from './NavigationBar'
 import MCProConsoleWelcomePage from './pages/welcome'
 import MCProConsoleDatabasePage from './pages/database'
 import MCProConsoleUserQueryPage from './pages/user-query'
-import MCProConsoleUserMessagePage from './pages/user-message'
+import MCProConsoleUserMessagePage from './pages/user-messages'
 import MCProConsoleImageManagerStatePage from './pages/image-state'
 import MCProConsoleImageManagerSinglePage from './pages/image-single'
 import MCProConsoleImageManagerCommandPage from './pages/image-command'
@@ -32,7 +32,7 @@ class App extends Component {
                 <MCProConsoleNavigationBar />
                   <Route exact path="/" component={MCProConsoleWelcomePage} />
                   <Route path="/user/query" component={MCProConsoleUserQueryPage} />
-                  <Route path="/user/message" component={MCProConsoleUserMessagePage} />
+                  <Route path="/user/messages" component={MCProConsoleUserMessagePage} />
                   <Route path="/database" component={MCProConsoleDatabasePage}/>
                   <Route path="/image/state" component={MCProConsoleImageManagerStatePage}/>
                   <Route path="/image/command" component={MCProConsoleImageManagerCommandPage}/>

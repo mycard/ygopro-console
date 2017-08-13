@@ -4,7 +4,7 @@ import config from '../Config.json'
 import moment from 'moment'
 import MCProConsolePagedTable from '../components/PagedTable'
 
-class MCProConsoleUserMessagePage extends Component {
+class MCProConsoleUserMessagesPage extends Component {
     constructor() {
         super();
         this.keyword = null;
@@ -62,4 +62,4 @@ class MCProConsoleUserMessagePage extends Component {
     }
 }
 
-export default MCProConsoleUserMessagePage;
+export default MCProConsoleUserMessagesPage;
