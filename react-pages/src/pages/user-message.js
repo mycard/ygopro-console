@@ -1,13 +1,11 @@
-import React, { Component } from 'react'
-import { Row, Col, FormGroup, InputGroup, FormControl, Button, Table, Pagination } from 'react-bootstrap'
-import {message_object} from "../components/Message"
+import React, {Component} from 'react'
+import {Row, Col, FormGroup, InputGroup, FormControl, Button} from 'react-bootstrap'
 import config from '../Config.json'
 import moment from 'moment'
+import MCProConsolePagedTable from '../components/PagedTable'
 
-class MCProConsoleUserMessagePage extends Component
-{
-    constructor()
-    {
+class MCProConsoleUserMessagePage extends Component {
+    constructor() {
         super();
         this.keyword = null;
         this.level = -1;
@@ -18,101 +16,47 @@ class MCProConsoleUserMessagePage extends Component
         }
     }
 
-    componentDidMount()
-    {
-        this.onSearchMessage()
+    componentDidMount() {
+        this.refs.table.handleQuery()
     }
 
-    onSearchMessage(event)
-    {
-        this.searchMessageCount();
-        this.searchMessage(1);
-        if (event)
-            event.preventDefault();
-    }
-
-    searchMessage(page)
-    {
-        let keyword = this.keyword.value;
-        let level = this.level.value;
-        let uri = config.serverHost + 'user/message?page=' + page + '&keyword=' + keyword + '&level=' + level;
-        message_object.doFetch('user message query', uri, {}, function (result) {
-            result.json().then(function (json) {
-                this.setState({ messages: json });
-            }.bind(this));
-        }.bind(this))
-    }
-
-    searchMessageCount()
-    {
-        let keyword = this.keyword.value;
-        let level = this.level.value;
-        message_object.doFetch('user message count query', config.serverHost + 'user/message?keyword=' + keyword + '&level=' + level, {}, function (result) {
-            result.text().then(function (text) {
-                let page = parseInt(text, 10);
-                if (page)
-                    this.setState({pageCount: page})
-            }.bind(this));
-        }.bind(this));
-    }
-
-    handleSelect(eventKey)
-    {
-        this.searchMessage(eventKey)
-    }
-
-    render()
-    {
+    render() {
         return <Row>
             <Col md={6} xs={12}>
                 <form>
                     <FormGroup>
                         <InputGroup>
                             <InputGroup.Addon>关键字</InputGroup.Addon>
-                            <FormControl type="text" inputRef={ref => this.keyword = ref} placeholder="要查询的信息关键字" />
+                            <FormControl type="text" inputRef={ref => this.keyword = ref} placeholder="要查询的信息关键字"/>
                             <InputGroup.Addon>信息等级</InputGroup.Addon>
-                            <FormControl type="number" inputRef={ref => this.level = ref} placeholder="0" />
+                            <FormControl type="number" inputRef={ref => this.level = ref} placeholder="0"/>
                             <InputGroup.Button>
-                                <Button type="submit" onClick={this.onSearchMessage.bind(this)}>确定</Button>
+                                <Button type="submit" onClick={(event) => {this.refs.table.handleQuery(); event.preventDefault();}}>确定</Button>
                             </InputGroup.Button>
                         </InputGroup>
                     </FormGroup>
                 </form>
             </Col>
             <Col md={12} xs={12}>
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <td>发言用户</td>
-                        <td>对局</td>
-                        <td>发言时间</td>
-                        <td>内容</td>
-                        <td>等级</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        this.state.messages.map(function (message) {
-                            return <tr>
-                                <td>{message.sender}[{message.ip}]</td>
-                                <td>{message.match}</td>
-                                <td>{moment(message.time).format("YYYY-MM-DD HH:mm:ss")}</td>
-                                <td>{message.content}</td>
-                                <td>{message.level}</td>
-                            </tr>
-                        })
-                    }
-                    </tbody>
-                </Table>
-
-                <div style={{textAlign: "center"}}>
-                    <Pagination style={{marginLeft: "auto", marginRight: "auto"}}
-                                prev next first last ellipsis boundaryLinks
-                                items={this.state.pageCount}
-                                maxButtons={10}
-                                activePage={this.state.activePage}
-                                onSelect={this.handleSelect.bind(this)} />
-                </div>
+                <MCProConsolePagedTable key="user message" ref="table"
+                                        thead={["用户", "IP", "时间", "等级", "内容"]}
+                                        tbodyGenerator={function (data) {
+                                            return <tr>
+                                                <td>{data.sender}</td>
+                                                <td>{data.ip}</td>
+                                                <td>{moment(data.time).format('YYYY-MM-DD HH:mm:ss')}</td>
+                                                <td>{data.level}</td>
+                                                <td>{data.content}</td>
+                                            </tr>
+                                        }}
+                                        urlGenerator={function () {
+                                            let keyword = this.keyword.value;
+                                            let level = this.level.value;
+                                            let uri = new URL(config.serverHost + 'user/message');
+                                            uri.searchParams.set('keyword', keyword);
+                                            uri.searchParams.set('level', level);
+                                            return uri;
+                                        }.bind(this)}/>
             </Col>
         </Row>
     }

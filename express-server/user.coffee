@@ -1,12 +1,14 @@
-{ mycardPool, ygoproPool } = require './database'
+database = require './database'
+mycardPool = database.mycardPool
+ygoproPool = database.ygoproPool
 
 PAGE_LIMIT = 100
 QUERY_MYCARD_SQL = 'select * from users where name like $1::text or username like $1::text limit 200'
 QUERY_MYCARD_IP_SQL = 'select * from users where registration_ip_address like $1::text or ip_address like $1::text limit 200'
 QUERY_YGOPRO_SQL = 'select * from user_info where username = $1::text'
 SET_YGOPRO_DP_SQL = 'update user_info set pt = $2 where username = $1::text'
-GET_MESSAGE_SQL = "select * from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level > $2 limit #{PAGE_LIMIT} offset $3"
-GET_MESSAGE_COUNT_SQL = 'select count(*) from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level > $2'
+GET_MESSAGE_SQL = "select * from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2 limit #{PAGE_LIMIT} offset $3"
+GET_MESSAGE_COUNT_SQL = 'select count(*) from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2'
 
 
 queryUser = (user, callback) ->
@@ -50,25 +52,8 @@ setUserDp = (user, dp, callback) ->
     else
       callback.call this, result
 
-queryMessage = (keyword, level, page, callback) ->
-  ygoproPool.query GET_MESSAGE_SQL, ["%#{keyword}%", level, page * PAGE_LIMIT], (err, result) ->
-    console.log result
-    if err
-      console.log err
-      callback.call this, null
-    else
-      callback.call this, result.rows
-
-queryMessageCount = (keyword, level, callback) ->
-  ygoproPool.query GET_MESSAGE_COUNT_SQL, ["%#{keyword}%", level], (err, result) ->
-    if err
-      console.log err
-      callback.call this, null
-    else
-      callback.call this, Math.ceil(result.rows[0].count / PAGE_LIMIT)
+Object.assign module.exports, database.defineStandatdQueryFunctions 'queryMessage', database.ygoproPool, GET_MESSAGE_SQL, GET_MESSAGE_COUNT_SQL, PAGE_LIMIT
 
 module.exports.queryUser = queryUser
 module.exports.queryUserViaIp = queryUserViaIp
 module.exports.setUserDp = setUserDp
-module.exports.queryMessage = queryMessage
-module.exports.queryMessageCount = queryMessageCount

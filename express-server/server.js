@@ -32,9 +32,9 @@
   server.get('/user/message', function(req, res) {
     var keyword, level, page;
     keyword = req.query.keyword || '';
-    level = req.query.level || 0;
-    page = req.query.page || 0;
-    return user.queryMessage(keyword, level, page, function(result) {
+    level = parseInt(req.query.level) || 0;
+    page = parseInt(req.query.page) || 0;
+    return user.queryMessage([keyword, level, page]).then(function(result) {
       return res.json(result);
     });
   });
@@ -42,9 +42,9 @@
   server.get('/user/message/count', function(req, res) {
     var keyword, level;
     keyword = req.query.keyword || '';
-    level = req.query.level || 0;
-    return user.queryMessageCount(keyword, level, function(result) {
-      return res.text(result);
+    level = parseInt(req.query.level) || 0;
+    return user.queryMessageCount([keyword, level]).then(function(result) {
+      return res.end(result.toString());
     });
   });
 

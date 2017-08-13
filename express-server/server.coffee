@@ -19,16 +19,14 @@ server.use '/analyze/*', authorizeRouter
 
 server.get '/user/message', (req, res) ->
   keyword = req.query.keyword || ''
-  level = req.query.level || 0
-  page = req.query.page || 0
-  user.queryMessage keyword, level, page, (result) ->
-    res.json result
+  level = parseInt(req.query.level) || 0
+  page = parseInt(req.query.page) || 0
+  user.queryMessage([keyword, level, page]).then (result) -> res.json result
 
 server.get '/user/message/count', (req, res) ->
   keyword = req.query.keyword || ''
-  level = req.query.level || 0
-  user.queryMessageCount keyword, level, (result) ->
-    res.text result
+  level = parseInt(req.query.level) || 0
+  user.queryMessageCount([keyword, level]).then (result) -> res.end result.toString()
 
 server.get '/user/:target_username', (req, res) ->
   target_username = req.params.target_username

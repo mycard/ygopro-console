@@ -37,7 +37,7 @@ defineStandardQueryFunctions = (name, pool, standard_sql, count_sql, page_limit)
         if err
           resolve 0
         else
-          resolve Math.ceil result.rows[0].count / page_limit;
+          resolve Math.ceil result.rows[0].count / page_limit
   result
 
 module.exports.standardQueryCallback = standardQueryCallback
