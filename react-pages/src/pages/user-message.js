@@ -94,7 +94,7 @@ class MCProConsoleUserMessagePage extends Component
                     {
                         this.state.messages.map(function (message) {
                             return <tr>
-                                <td>{message.sender}</td>
+                                <td>{message.sender}[{message.ip}]</td>
                                 <td>{message.match}</td>
                                 <td>{moment(message.time).format("YYYY-MM-DD HH:mm:ss")}</td>
                                 <td>{message.content}</td>

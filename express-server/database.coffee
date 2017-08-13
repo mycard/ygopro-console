@@ -27,7 +27,6 @@ defineStandardQueryFunctions = (name, pool, standard_sql, count_sql, page_limit)
       else return "%#{arg}%"
   result[name] = (args) =>
     args = args.map formatArgs
-    console.log args
     args[args.length - 1] = (args[args.length - 1] - 1) * page_limit
     new Promise (resolve, reject) =>
       pool.query standard_sql, args, (err, result) => standardPromiseCallback(resolve, reject, err, result)

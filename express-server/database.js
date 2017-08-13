@@ -44,7 +44,6 @@
     };
     result[name] = (args) => {
       args = args.map(formatArgs);
-      console.log(args);
       args[args.length - 1] = (args[args.length - 1] - 1) * page_limit;
       return new Promise((resolve, reject) => {
         return pool.query(standard_sql, args, (err, result) => {
