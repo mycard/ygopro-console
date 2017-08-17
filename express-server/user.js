@@ -18,7 +18,7 @@
 
   SET_YGOPRO_DP_SQL = 'update user_info set pt = $2 where username = $1::text';
 
-  GET_MESSAGE_SQL = `select * from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2 limit ${PAGE_LIMIT} offset $3`;
+  GET_MESSAGE_SQL = `select * from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2 order by time desc limit ${PAGE_LIMIT} offset $3`;
 
   GET_MESSAGE_COUNT_SQL = 'select count(*) from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2';
 

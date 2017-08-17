@@ -30,8 +30,8 @@ class MCProConsoleNavigationBar extends Component
                             mycard_user_object && mycard_user_object.data ?
                             <Nav>
                                 <NavDropdown title="用户">
-                                    <LinkContainer to="/user/query"><NavItem>查询</NavItem></LinkContainer>
-                                    <LinkContainer to="/user/messages"><NavItem>消息记录</NavItem></LinkContainer>
+                                    <LinkContainer to="/users/query"><NavItem>查询</NavItem></LinkContainer>
+                                    <LinkContainer to="/users/messages"><NavItem>消息记录</NavItem></LinkContainer>
                                 </NavDropdown>
                                 <NavDropdown title="更新">
                                     <LinkContainer to="/database"><NavItem

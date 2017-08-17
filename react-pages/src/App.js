@@ -31,8 +31,8 @@ class App extends Component {
               <div className="container">
                 <MCProConsoleNavigationBar />
                   <Route exact path="/" component={MCProConsoleWelcomePage} />
-                  <Route path="/user/query" component={MCProConsoleUserQueryPage} />
-                  <Route path="/user/messages" component={MCProConsoleUserMessagePage} />
+                  <Route path="/users/query" component={MCProConsoleUserQueryPage} />
+                  <Route path="/users/messages" component={MCProConsoleUserMessagePage} />
                   <Route path="/database" component={MCProConsoleDatabasePage}/>
                   <Route path="/image/state" component={MCProConsoleImageManagerStatePage}/>
                   <Route path="/image/command" component={MCProConsoleImageManagerCommandPage}/>
