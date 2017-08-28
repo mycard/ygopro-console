@@ -48,7 +48,7 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
 
     render() {
         if (this.state.jump)
-            return <Redirect push to={"/user/query?name=" + this.state.jump}/>;
+            return <Redirect push to={"/users/query?name=" + this.state.jump}/>;
         return (<Row>
             <Col md={12} xs={12}>
                 <Form>
