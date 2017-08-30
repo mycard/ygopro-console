@@ -5,12 +5,19 @@ authorize = (sso, sig) ->
   text = new Buffer(sso, 'base64').toString()
   parsedUrl = url.parse "http://127.0.0.1?" + text, true
   query = parsedUrl.query
-  return query.admin == 'true'
+  if query.admin == 'true' then query.username else null
+
+formatQuery = (query) ->
+  queries = []
+  for key in Object.keys(query)
+    queries.push "#{key} = #{query[key]}" if key != 'sso' and key != 'sig' and query[key] != ""
+  if queries.length == 0 then "" else ", " + queries.join ", "
 
 authorize_router = (req, res, next) ->
   sso = req.query.sso
   sig = req.query.sig
-  if authorize sso, sig
+  if username = authorize sso, sig
+    console.log "#{username} - #{req.method} #{req._parsedUrl.pathname}#{formatQuery(req.query)}"
     next()
   else
     res.statusCode = 403
