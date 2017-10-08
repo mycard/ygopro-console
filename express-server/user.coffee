@@ -1,4 +1,5 @@
 database = require './database'
+moment = require 'moment'
 mycardPool = database.mycardPool
 ygoproPool = database.ygoproPool
 
@@ -9,7 +10,6 @@ QUERY_YGOPRO_SQL = 'select * from user_info where username = $1::text'
 SET_YGOPRO_DP_SQL = 'update user_info set pt = $2 where username = $1::text'
 GET_MESSAGE_SQL = "select * from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2 order by time desc limit #{PAGE_LIMIT} offset $3"
 GET_MESSAGE_COUNT_SQL = 'select count(*) from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2'
-
 
 queryUser = (user, callback) ->
   mycardPool.query QUERY_MYCARD_SQL, ["%#{user}%"], (err, result) ->
@@ -57,3 +57,42 @@ Object.assign module.exports, database.defineStandatdQueryFunctions 'queryMessag
 module.exports.queryUser = queryUser
 module.exports.queryUserViaIp = queryUserViaIp
 module.exports.setUserDp = setUserDp
+
+# Vote part
+GET_VOTES = "select * from votes"
+GET_TARGET_VOTE = "select * from votes where id = $1"
+GET_VOTE_TICKETS = "select * from vote_result where vote_id = $1::text"
+INSERT_VOTE = "insert into votes values(default, $1::text, $2::text, $3::timestamp, $4::timestamp, $5::timestamp, $6::boolean)"
+SET_VOTE = "update votes set title = $2::text, options = $3::text, start_time = $4::timestamp, end_time = $5::timestamp, status = $6::boolean where id = $1::integer"
+
+getVotes = ->
+  result = await ygoproPool.query GET_VOTES
+  votes = result.rows
+  votes.forEach (vote) -> vote.options = JSON.parse vote.options
+  votes
+
+getVoteTickets = (id) ->
+  # Search vote via id.
+  vote = (await ygoproPool.query GET_TARGET_VOTE, [id]).rows[0]
+  vote.options = JSON.parse vote.options
+  result = await ygoproPool.query GET_VOTE_TICKETS, [vote.id]
+  tickets = result.rows
+  # Add option information.
+  option_map = new Map
+  vote.options.forEach (option) -> option_map.set option.key.toString(), option
+  tickets.forEach (ticket) -> ticket.option = option_map.get ticket.option_id.toString()
+  tickets
+
+saveVote = (vote) ->
+  vote.options.forEach (option, index) -> option.key = moment().format('x') - index unless option.key
+  console.log(vote);
+  await ygoproPool.query SET_VOTE, [vote.id, vote.title, JSON.stringify(vote.options), moment(vote.start_time), moment(vote.end_time), vote.status]
+
+insertVote = (vote) ->
+  vote.options.forEach (option, index) -> option.key = moment().format('x') - index unless option.key
+  await ygoproPool.query INSERT_VOTE, [vote.title, JSON.stringify(vote.options), moment(vote.create_time), moment(vote.start_time), moment(vote.end_time), vote.status]
+
+module.exports.getVotes = getVotes
+module.exports.getVoteTickets = getVoteTickets
+module.exports.saveVote = saveVote
+module.exports.insertVote = insertVote

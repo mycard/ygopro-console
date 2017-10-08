@@ -1,5 +1,6 @@
 {
-  "serverHost": "https://api.mycard.moe/ygopro/console/",
+  "serverHost": "http://192.168.1.151:9999/",
   "imageServerHost": "",
-  "analyticsServerHost": "https://api.mycard.moe/ygopro/analytics/"
+  "analyticsServerHost": "http://localhost:8080/analyze/",
+  "packageServerHost": "http://localhost:10087/"
 }

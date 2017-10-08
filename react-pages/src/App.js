@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import MCProConsoleNavigationBar from './NavigationBar'
 import MCProConsoleWelcomePage from './pages/welcome'
-import MCProConsoleDatabasePage from './pages/database'
+import MCProConsoleDatabasePage from './pages/update-database'
+import MCProConsoleUpdatePackagePage from './pages/update-package'
 import MCProConsoleUserQueryPage from './pages/user-query'
 import MCProConsoleUserMessagePage from './pages/user-messages'
+import MCProConsoleUserVotePage from './pages/user-vote'
 import MCProConsoleImageManagerStatePage from './pages/image-state'
 import MCProConsoleImageManagerSinglePage from './pages/image-single'
 import MCProConsoleImageManagerCommandPage from './pages/image-command'
@@ -33,7 +35,9 @@ class App extends Component {
                   <Route exact path="/" component={MCProConsoleWelcomePage} />
                   <Route path="/users/query" component={MCProConsoleUserQueryPage} />
                   <Route path="/users/messages" component={MCProConsoleUserMessagePage} />
-                  <Route path="/database" component={MCProConsoleDatabasePage}/>
+                  <Route path="/users/vote" component={MCProConsoleUserVotePage} />
+                  <Route path="/update/database" component={MCProConsoleDatabasePage}/>
+                  <Route path="/update/package" component={MCProConsoleUpdatePackagePage}/>
                   <Route path="/image/state" component={MCProConsoleImageManagerStatePage}/>
                   <Route path="/image/command" component={MCProConsoleImageManagerCommandPage}/>
                   <Route path="/image/single" component={MCProConsoleImageManagerSinglePage}/>

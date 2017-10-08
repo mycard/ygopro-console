@@ -3,6 +3,7 @@ path = require 'path'
 bodyParser = require 'body-parser'
 user = require './user'
 analytics = require './analytics'
+packager = require './packager'
 timeRouter = require('./time').timeRouter
 authorizeRouter = require('./author').authorizeRouter
 
@@ -16,6 +17,7 @@ server.use (req, res, next) ->
 
 server.use '/user/*', authorizeRouter
 server.use '/analyze/*', authorizeRouter
+server.use '/updates/*', authorizeRouter
 
 server.get '/user/message', (req, res) ->
   keyword = req.query.keyword || ''
@@ -27,6 +29,17 @@ server.get '/user/message/count', (req, res) ->
   keyword = req.query.keyword || ''
   level = parseInt(req.query.level) || 0
   user.queryMessageCount([keyword, level]).then (result) -> res.end result.toString()
+
+server.get '/user/vote', (req, res) ->
+  user.getVotes().then (votes) ->
+    res.json votes
+
+server.get '/user/vote/:id', (req, res) ->
+  user.getVoteTickets(req.params.id).then (tickets) ->
+    res.json tickets
+
+server.post '/user/vote', bodyParser.text(), (req, res) ->
+  user.saveVote(JSON.parse req.body).then -> res.end 'ok'
 
 server.get '/user/:target_username', (req, res) ->
   target_username = req.params.target_username
@@ -101,7 +114,13 @@ server.get '/analyze/daily', (req, res) ->
     res.statusCode = 500
     res.end result
 
-# React Router File
+server.get '/updates/package', (req, res) ->
+  packager.pack.then -> res.end 'ok'
+
+server.get '/updates/refresh', (req, res) ->
+  packager.refresh.then -> res.end 'ok'
+
+#React Router File
 server.get '*', (req, res) ->
   res.sendFile path.resolve('react-pages/build', 'index.html')
 
