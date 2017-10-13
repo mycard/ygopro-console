@@ -1,0 +1,3 @@
+[submodule "express-server/ygopro-database"]
+	path = express-server/ygopro-database
+	url = git@github.com:moecube/ygopro-database.git
