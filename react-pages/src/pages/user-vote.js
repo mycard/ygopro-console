@@ -19,6 +19,8 @@ class MCProConsoleUserVotePage extends Component
         this.voteTitleBox = null;
         this.voteContentBox = null;
         this.voteStatus = null;
+        this.voteMultiple = null;
+        this.voteMaxCountBox = null;
     }
 
     componentDidMount()
@@ -70,8 +72,8 @@ class MCProConsoleUserVotePage extends Component
 
     renderModal(vote)
     {
-        let startDay = {hour: 0, minute: 0, second: 0};
-        let endDay = {hour: 23, minute: 59, second: 59};
+        let startDay = {hour: 0, minute: 0, second: 0, millisecond: 0};
+        let endDay = {hour: 23, minute: 59, second: 59, millisecond: 0};
         return <Modal show={this.state.editingVote} onHide={this.onCloseModal.bind(this)}>
             <Modal.Header>
                 <Modal.Title>编辑投票</Modal.Title>
@@ -83,6 +85,7 @@ class MCProConsoleUserVotePage extends Component
                         <ControlLabel>投票标题</ControlLabel>
                         <FormControl type="text" defaultValue={vote.title} inputRef = {(ref) => { this.voteTitleBox = ref }} />
                         <Checkbox defaultChecked={vote.status} inputRef = {(ref) => { this.voteStatus = ref }}>可用</Checkbox>
+                        <Checkbox defaultChecked={vote.multiple} inputRef = {(ref) => {this.voteMultiple = ref}}>多选投票</Checkbox>
                     </FormGroup>
                     <FormGroup>
                         <ControlLabel>投票时间</ControlLabel>
@@ -101,6 +104,10 @@ class MCProConsoleUserVotePage extends Component
                     <FormGroup>
                         <ControlLabel>投票选项</ControlLabel>
                         <FormControl componentClass="textarea" inputRef={(ref) => this.voteContentBox = ref} style={{height: '300px'}} defaultValue={vote.options.map((option) => option.name).join("\n")}/>
+                    </FormGroup>
+                    <FormGroup>
+                        <ControlLabel>投票数量</ControlLabel>
+                        <FormControl type="text" defaultValue={vote.max} inputRef = {(ref) => { this.voteMaxCountBox = ref }} />
                     </FormGroup>
                 </form>
             </Modal.Body>
@@ -127,8 +134,11 @@ class MCProConsoleUserVotePage extends Component
         vote.options = vote.options.map((option) => { return options_map.has(option) ? options_map.get(option) : {name: option} });
         if (!vote.create_time) vote.create_time = moment();
         vote.status = this.voteStatus.checked;
-        vote.start_time = this.refs.time.state.startDate.valueOf();
-        vote.end_time = this.refs.time.state.endDate.valueOf();
+        vote.multiple = this.voteMultiple.checked;
+        vote.start_time = this.refs.time.state.startDate.format("YYYY-MM-DD HH:mm:ss");
+        vote.end_time = this.refs.time.state.endDate.format("YYYY-MM-DD HH:mm:ss");
+        vote.max = parseInt(this.voteMaxCountBox.value);
+        console.log(vote);
         message_object.doFetch("commit modal", config.serverHost + "user/vote", { method: 'POST', body: JSON.stringify(vote) }, function (result) {
             return 'ok';
         });
@@ -148,10 +158,19 @@ class MCProConsoleUserVotePage extends Component
                                 {vote.title}
                                 <span style={{float: 'right'}}><a onClick={this.onEdit.bind([this, vote])}>编辑</a></span>
                             </div>;
-                            return <Panel header={header} eventKey={vote.id} onEnter={this.onEnter.bind([this, vote])} bsStyle={vote.status ? "info" : ""}>
+                            let state = "available";
+                            if (moment().valueOf() > moment(vote.end_time).valueOf())
+                                state = "ended";
+                            if (moment().valueOf() < moment(vote.start_time).valueOf())
+                                state = "future";
+                            if (!vote.status)
+                                state = "disable";
+                            let state_names = {available: "可用", ended: "已结束", future: "未开始", disable: "已禁用"};
+                            let state_style = {available: "info", ended: "success", future: "", disable: ""};
+                            return <Panel header={header} eventKey={vote.id} onEnter={this.onEnter.bind([this, vote])} bsStyle={state_style[state]}>
                                 <Well bsSize="small">
                                         {moment(vote.start_time).format("YYYY-MM-DD HH:mm:ss")} - {moment(vote.end_time).format("YYYY-MM-DD HH:mm:ss")}
-                                        <span style={{float: "right"}}>{vote.status ? "可用" : "不可用"}</span>
+                                        <span style={{float: "right"}}>{state_names[state]}</span>
                                 </Well>
                             {
                                 tickets

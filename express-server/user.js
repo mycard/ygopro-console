@@ -97,9 +97,9 @@
 
   GET_VOTE_TICKETS = "select * from vote_result where vote_id = $1::text";
 
-  INSERT_VOTE = "insert into votes values(default, $1::text, $2::text, $3::timestamp, $4::timestamp, $5::timestamp, $6::boolean)";
+  INSERT_VOTE = "insert into votes values(default, $1::text, $2::text, $3, $4, $5::timestamp, $6::boolean, $7::boolean, $8::integer)";
 
-  SET_VOTE = "update votes set title = $2::text, options = $3::text, start_time = $4::timestamp, end_time = $5::timestamp, status = $6::boolean where id = $1::integer";
+  SET_VOTE = "update votes set title = $2::text, options = $3::text, start_time = $4::timestamp, end_time = $5::timestamp, status = $6::boolean, multiple = $7::boolean, max = $8::integer where id = $1::integer";
 
   getVotes = async function() {
     var result, votes;
@@ -135,8 +135,7 @@
         return option.key = moment().format('x') - index;
       }
     });
-    console.log(vote);
-    return (await ygoproPool.query(SET_VOTE, [vote.id, vote.title, JSON.stringify(vote.options), moment(vote.start_time), moment(vote.end_time), vote.status]));
+    return (await ygoproPool.query(SET_VOTE, [vote.id, vote.title, JSON.stringify(vote.options), vote.start_time, vote.end_time, vote.status, vote.multiple, vote.max]));
   };
 
   insertVote = async function(vote) {
@@ -145,7 +144,7 @@
         return option.key = moment().format('x') - index;
       }
     });
-    return (await ygoproPool.query(INSERT_VOTE, [vote.title, JSON.stringify(vote.options), moment(vote.create_time), moment(vote.start_time), moment(vote.end_time), vote.status]));
+    return (await ygoproPool.query(INSERT_VOTE, [vote.title, JSON.stringify(vote.options), moment(vote.create_time), moment(vote.start_time), moment(vote.end_time), vote.status, vote.multiple, vote.max]));
   };
 
   module.exports.getVotes = getVotes;
