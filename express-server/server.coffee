@@ -41,6 +41,9 @@ server.get '/user/vote/:id', (req, res) ->
 server.post '/user/vote', bodyParser.text(), (req, res) ->
   user.saveVote(JSON.parse req.body).then -> res.end 'ok'
 
+server.post '/user/id', bodyParser.text(), (req, res) ->
+  user.queryUserViaIds(JSON.parse req.body).then (result) -> res.json result.rows
+
 server.get '/user/:target_username', (req, res) ->
   target_username = req.params.target_username
   user.queryUser target_username, (result) ->

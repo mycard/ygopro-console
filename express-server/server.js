@@ -71,6 +71,12 @@
     });
   });
 
+  server.post('/user/id', bodyParser.text(), function(req, res) {
+    return user.queryUserViaIds(JSON.parse(req.body)).then(function(result) {
+      return res.json(result.rows);
+    });
+  });
+
   server.get('/user/:target_username', function(req, res) {
     var target_username;
     target_username = req.params.target_username;

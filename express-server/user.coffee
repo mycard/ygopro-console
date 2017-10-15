@@ -6,6 +6,7 @@ ygoproPool = database.ygoproPool
 PAGE_LIMIT = 100
 QUERY_MYCARD_SQL = 'select * from users where name like $1::text or username like $1::text limit 200'
 QUERY_MYCARD_IP_SQL = 'select * from users where registration_ip_address like $1::text or ip_address like $1::text limit 200'
+QUERY_MYCARD_ID_SQL = 'select * from users where id in '
 QUERY_YGOPRO_SQL = 'select * from user_info where username = $1::text'
 SET_YGOPRO_DP_SQL = 'update user_info set pt = $2 where username = $1::text'
 GET_MESSAGE_SQL = "select * from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2 order by time desc limit #{PAGE_LIMIT} offset $3"
@@ -44,6 +45,10 @@ queryUserViaIp = (ip, callback) ->
     else
       callback.call this, result.rows.map (user) => user.username
 
+queryUserViaIds = (ids) ->
+  query = QUERY_MYCARD_ID_SQL + "(" + ids.join(",") + ")"
+  await mycardPool.query query.toString(), []
+
 setUserDp = (user, dp, callback) ->
   ygoproPool.query SET_YGOPRO_DP_SQL, [user, dp], (err, result) ->
     if err
@@ -56,6 +61,7 @@ Object.assign module.exports, database.defineStandatdQueryFunctions 'queryMessag
 
 module.exports.queryUser = queryUser
 module.exports.queryUserViaIp = queryUserViaIp
+module.exports.queryUserViaIds = queryUserViaIds
 module.exports.setUserDp = setUserDp
 
 # Vote part

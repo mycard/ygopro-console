@@ -13,7 +13,9 @@ class MCProConsoleUserVotePage extends Component
         super();
         this.state = {
             data: [],
-            editingVote: null
+            editingVote: null,
+            viewingTickets: null,
+            viewingOption: null
         };
         this.tickets = new Map();
         this.voteTitleBox = null;
@@ -70,11 +72,60 @@ class MCProConsoleUserVotePage extends Component
         event.preventDefault();
     }
 
-    renderModal(vote)
+    onView(proxy, event)
+    {
+        let self = this[0];
+        self.setState({ viewingTickets: this[1], viewingOption: this[2]}, self.queryTicketNames.bind(self))
+    }
+
+    async queryTicketNames()
+    {
+        let query_ids = this.state.viewingTickets.map(ticket => ticket.userid).filter(id => id && id !== "undefined");
+        message_object.doFetch("query ticket", config.serverHost + "user/id", { method: 'POST', body: JSON.stringify(query_ids) }, async function (result) {
+            let json = await result.json();
+            let map = new Map();
+            json.forEach(user => map.set(user.id.toString(), user.username));
+            if (this.state.viewingTickets) {
+                let tickets = this.state.viewingTickets;
+                tickets.forEach(ticket => ticket.username = map.get(ticket.userid));
+                this.forceUpdate();
+            }
+        }.bind(this));
+    }
+
+    renderTicketsModal(tickets, option)
+    {
+        return <Modal show={this.state.viewingTickets != null} onHide={this.onCloseModal.bind(this)}>
+            <Modal.Header>
+                <Modal.Title>浏览选票</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {option.name}
+                <hr />
+                <Row>
+                {tickets.map(function (ticket) {
+                    return <div>
+                        <Col md={6}>
+                            {ticket.username ? ticket.username : <div style={{color: "#"}}>{"ID = " + ticket.userid}</div>}
+                        </Col>
+                        <Col md={6}>
+                            {moment(ticket.create_time).format("YYYY-MM-DD HH:mm:ss")}
+                        </Col>
+                    </div>
+                })}
+                </Row>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button onClick={this.onCloseModal.bind(this)}>关闭</Button>
+            </Modal.Footer>
+        </Modal>
+    }
+
+    renderVoteModal(vote)
     {
         let startDay = {hour: 0, minute: 0, second: 0, millisecond: 0};
         let endDay = {hour: 23, minute: 59, second: 59, millisecond: 0};
-        return <Modal show={this.state.editingVote} onHide={this.onCloseModal.bind(this)}>
+        return <Modal show={this.state.editingVote != null} onHide={this.onCloseModal.bind(this)}>
             <Modal.Header>
                 <Modal.Title>编辑投票</Modal.Title>
             </Modal.Header>
@@ -121,7 +172,7 @@ class MCProConsoleUserVotePage extends Component
 
     onCloseModal()
     {
-        this.setState({editingVote: null});
+        this.setState({editingVote: null, viewingTickets: null});
     }
 
     onCommitModal()
@@ -138,7 +189,6 @@ class MCProConsoleUserVotePage extends Component
         vote.start_time = this.refs.time.state.startDate.format("YYYY-MM-DD HH:mm:ss");
         vote.end_time = this.refs.time.state.endDate.format("YYYY-MM-DD HH:mm:ss");
         vote.max = parseInt(this.voteMaxCountBox.value);
-        console.log(vote);
         message_object.doFetch("commit modal", config.serverHost + "user/vote", { method: 'POST', body: JSON.stringify(vote) }, function (result) {
             return 'ok';
         });
@@ -178,24 +228,26 @@ class MCProConsoleUserVotePage extends Component
                                     let option_tickets = option.key ? ticket_summary.get(option.key.toString()) : {};
                                     if (!option_tickets) option_tickets = [];
                                     return <div>
-                                        <Col md={4} xs={12}>
+                                        <Col md={4} xs={10}>
                                             {option.name}
                                         </Col>
-                                        <Col md={6} xs={6}>
+                                        <Col md={5} xs={6}>
                                             <ProgressBar striped now={option_tickets.length / tickets.length * 100}/>
                                         </Col>
-                                        <Col md={2} xs={6}>
+                                        <Col md={2} xs={4}>
                                             {`${option_tickets.length}/${tickets.length}（${(option_tickets.length / tickets.length * 100).toFixed(3)}%）`}
                                         </Col>
-                                    </div> })
+                                        <Col md={1} xs={2}>
+                                            <a onClick={this.onView.bind([this, option_tickets, option])}>查看</a>
+                                        </Col>
+                                    </div> }.bind(this))
                                 : <div><ProgressBar striped active label="Loading..." now={100}/></div>
                             }
                         </Panel> }.bind(this))}
                     </PanelGroup>
                 </Col>
-                {
-                    this.state.editingVote ? this.renderModal(this.state.editingVote) : ""
-                }
+                { this.state.editingVote ? this.renderVoteModal(this.state.editingVote) : "" }
+                { this.state.viewingTickets ? this.renderTicketsModal(this.state.viewingTickets, this.state.viewingOption) : "" }
             </Row>
         );
     }
