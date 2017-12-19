@@ -188,7 +188,7 @@ class MCProConsoleUserVotePage extends Component
         vote.multiple = this.voteMultiple.checked;
         vote.start_time = this.refs.time.state.startDate.format("YYYY-MM-DD HH:mm:ss");
         vote.end_time = this.refs.time.state.endDate.format("YYYY-MM-DD HH:mm:ss");
-        vote.max = parseInt(this.voteMaxCountBox.value);
+        vote.max = parseInt(this.voteMaxCountBox.value, 10);
         message_object.doFetch("commit modal", config.serverHost + "user/vote", { method: 'POST', body: JSON.stringify(vote) }, function (result) {
             return 'ok';
         });

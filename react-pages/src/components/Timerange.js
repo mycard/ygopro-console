@@ -95,8 +95,8 @@ MCProConsoleTimeRangePicker.defaultProps = {
         '上月': [moment().subtract(1, 'month').startOf('month').set(startDay), moment().subtract(1, 'month').endOf('month').set(endDay)],
         '全部': [moment('1970-01-01 00:00:00'), moment().set(endDay)]
     },
-    startDate: null,
-    endDate: null
+    startDate: moment().set({hour: 0, minute: 0, second: 0}),
+    endDate: moment().set({hour: 23, minute: 59, second: 59})
 };
 
 export default MCProConsoleTimeRangePicker;

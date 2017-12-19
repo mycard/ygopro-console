@@ -111,7 +111,7 @@ server.post '/analyze/custom/commands', textParser, (req, res) ->
 
 server.get '/analyze/daily', (req, res) ->
   type = req.query.type
-  analytics.dailyCount(type).then (result) ->
+  analytics.dailyCount(type, req.start_time, req.end_time).then (result) ->
     res.json result
   .catch (result) ->
     res.statusCode = 500

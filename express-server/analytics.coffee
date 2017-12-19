@@ -21,10 +21,10 @@ DAILY_COUNT =
   '      (SELECT username, sum(time_length) AS sum_time, day FROM' +
   '            (SELECT usernamea AS username, end_time - battle_history.start_time AS time_length, date_trunc(\'day\', start_time) as day' +
   '                  FROM battle_history' +
-  '                  WHERE type like $1::text' +
+  '                  WHERE type like $1::text and start_time >= $2 and start_time <= $3' +
   '                  UNION SELECT usernameb AS username, end_time - battle_history.start_time AS time_length, date_trunc(\'day\', start_time) as day' +
   '                        FROM battle_history' +
-  '                        WHERE type like $1::text) as B' +
+  '                        WHERE type like $1::text and start_time >= $2 and start_time <= $3) as B' +
   '      GROUP BY username, day) as user_time ' +
   'GROUP BY day ORDER BY day DESC LIMIT 100;'
 
@@ -52,10 +52,10 @@ setCommands = (commands) ->
 Object.assign module.exports, database.defineStandatdQueryFunctions 'queryHistory', database.ygoproPool, HISTORY_QUERY_SQL, HISTORY_COUNT_SQL, PAGE_LIMIT
 Object.assign module.exports, database.defineStandatdQueryFunctions 'queryDeck', database.ygoproPool, DECK_QUERY_SQL, DECK_COUNT_SQL, PAGE_LIMIT
 
-dailyCount = (type) ->
+dailyCount = (type, start_time, end_time) ->
   new Promise (resolve, reject) ->
     type = '%' if !type or type == 'all'
-    ygoproPool.query DAILY_COUNT, [type], (err, result) -> database.standardPromiseCallback resolve, reject, err, result
+    ygoproPool.query DAILY_COUNT, [type, start_time, end_time], (err, result) -> database.standardPromiseCallback resolve, reject, err, result
 
 module.exports.runCommands = runCommands
 module.exports.setCommands = setCommands
