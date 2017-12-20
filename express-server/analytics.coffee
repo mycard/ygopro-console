@@ -26,7 +26,7 @@ DAILY_COUNT =
   '                        FROM battle_history' +
   '                        WHERE type like $1::text and start_time >= $2 and start_time <= $3) as B' +
   '      GROUP BY username, day) as user_time ' +
-  'GROUP BY day ORDER BY day DESC LIMIT 100;'
+  'GROUP BY day ORDER BY day DESC;'
 
 runCommands = (start_time, end_time) ->
   answer = []
