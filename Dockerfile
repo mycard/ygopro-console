@@ -8,7 +8,7 @@ WORKDIR /usr/src/app/express-server
 COPY ./express-server/package.json /usr/src/app/express-server/package.json
 COPY ./express-server/package-lock.json /usr/src/app/express-server/package-lock.json
 RUN npm install
-RUN ./node_modules/coffeescript/bin/coffee ./*coffee
+RUN ./node_modules/coffeescript/bin/coffee ./*.coffee
 
 # 前端配备
 WORKDIR /usr/src/app/react-pages
