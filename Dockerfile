@@ -8,7 +8,6 @@ WORKDIR /usr/src/app/express-server
 COPY ./express-server/package.json /usr/src/app/express-server/package.json
 COPY ./express-server/package-lock.json /usr/src/app/express-server/package-lock.json
 RUN npm install
-RUN ./node_modules/coffeescript/bin/coffee ./express-server/*.coffee
 
 # 前端配备
 WORKDIR /usr/src/app/react-pages
@@ -28,4 +27,4 @@ WORKDIR /usr/src/app/express-server
 RUN git submodule init && git submodule update
 
 WORKDIR /usr/src/app
-ENTRYPOINT node express-server/server.js
+ENTRYPOINT ./express-server/node_modules/coffeescript/bin/coffee ./express-server/*.coffee && node express-server/server.js
