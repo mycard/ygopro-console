@@ -1,9 +1,15 @@
 express = require 'express'
 path = require 'path'
+_url = require 'url'
+request = require 'request'
 bodyParser = require 'body-parser'
+
 user = require './user'
 analytics = require './analytics'
+update = require './update'
 packager = require './packager'
+config = require './config.json'
+
 timeRouter = require('./time').timeRouter
 authorizeRouter = require('./author').authorizeRouter
 
@@ -17,7 +23,8 @@ server.use (req, res, next) ->
 
 server.use '/user/*', authorizeRouter
 server.use '/analyze/*', authorizeRouter
-server.use '/updates/*', authorizeRouter
+#server.use '/updates/*', authorizeRouter
+server.use '/profile/*', authorizeRouter
 
 server.get '/user/message', (req, res) ->
   keyword = req.query.keyword || ''
@@ -123,7 +130,36 @@ server.get '/updates/package', (req, res) ->
 server.get '/updates/refresh', (req, res) ->
   packager.refresh.then -> res.end 'ok'
 
-#React Router File
+server.get '/updates/card/:environment/:name', (req, res) ->
+  environment = req.params.environment
+  name = req.params.name
+  res.json update.getCardData environment, name
+
+server.get '/updates/pull/last', (req, res) ->
+  res.end update.lastPull.time.toString()
+
+server.post '/updates/pull', bodyParser.json(), (req, res) ->
+  update.pullDatabase().then (result) ->
+    res.end result.toString()
+  .catch (result) ->
+    res.statusCode = 500
+    res.end result.toString()
+
+server.post '/updates/push', (req, res) ->
+  update.pushDatabase()
+  res.end 'ok'
+
+server.use '/profile/identifier', (req, res) ->
+  url = new _url.URL(config.deckIdentifier.host + req.url)
+  url.searchParams.set 'accessKey', config.deckIdentifier.accessKey
+  url.searchParams.delete 'sso'
+  url.searchParams.delete 'sig'
+  try
+    req.pipe(request(url.toString(), { form: req.body })).pipe(res)
+  catch
+    res.end 500
+
+#React Router File12
 server.get '*', (req, res) ->
   res.sendFile path.resolve('react-pages/build', 'index.html')
 

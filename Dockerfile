@@ -8,6 +8,7 @@ WORKDIR /usr/src/app/express-server
 COPY ./express-server/package.json /usr/src/app/express-server/package.json
 COPY ./express-server/package-lock.json /usr/src/app/express-server/package-lock.json
 RUN npm install
+RUN coffee -c -b *.coffee
 
 # 前端配备
 WORKDIR /usr/src/app/react-pages
@@ -18,6 +19,9 @@ RUN npm install
 # 文件
 COPY ./express-server /usr/src/app/express-server
 COPY ./react-pages /usr/src/app/react-pages
+
+# Git
+RUN git submodule init && git submodule update
 
 # 构建
 RUN npm run build

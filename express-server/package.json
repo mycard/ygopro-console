@@ -6,10 +6,11 @@
     "start": "node server.coffee"
   },
   "dependencies": {
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.18.2",
     "express": "^4.15.2",
-    "moment": "^2.18.1",
+    "moment": "^2.20.1",
     "pg": "^6.4.1",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "ygojs-data": "git+https://github.com/moecube/ygojs-data.git"
   }
 }
