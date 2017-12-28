@@ -22,9 +22,6 @@ COPY ./react-pages /usr/src/app/react-pages
 # 构建
 RUN npm run build
 
-# 子 Git
-WORKDIR /usr/src/app/express-server
-RUN git submodule init && git submodule update
-
 WORKDIR /usr/src/app
+RUN git submodule init && git submodule update
 ENTRYPOINT ./express-server/node_modules/coffeescript/bin/coffee ./express-server/*.coffee && node express-server/server.js
