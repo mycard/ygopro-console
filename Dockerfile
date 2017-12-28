@@ -17,6 +17,7 @@ RUN npm install
 
 # 文件
 COPY ./.git /usr/src/app/.git
+COPY ./.gitmodules /usr/src/app/.gitmodules
 COPY ./express-server /usr/src/app/express-server
 COPY ./react-pages /usr/src/app/react-pages
 
