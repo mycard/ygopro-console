@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "start": "coffee -c -b express-server/*.coffee && node express-server/server.js"
+  }
+}
