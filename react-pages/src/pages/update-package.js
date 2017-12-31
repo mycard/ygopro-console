@@ -30,7 +30,6 @@ class MCProConsoleUpdatePackagePage extends Component
     fetchData()
     {
         message_object.doFetch("packager progress", Config.packageServerHost + "progress", {}, function (result) {
-            console.log(result);
             return result.json().then(function(result){
                 console.log(result);
                 this.setState({
@@ -53,7 +52,7 @@ class MCProConsoleUpdatePackagePage extends Component
 
     startPackage()
     {
-        message_object.doFetch("package", Config.serverHost + "package", { method: "POST" }, function (result) {
+        message_object.doFetch("package", Config.packageServerHost + "pack", { method: "POST" }, function (result) {
             return result.text().then(function (result) {
                 this.fetchData();
                 return result;
