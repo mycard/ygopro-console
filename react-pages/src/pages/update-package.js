@@ -99,6 +99,7 @@ class MCProConsoleUpdatePackagePage extends Component
                             }
                             {
                                 this.state.data.data.progress_list.map(function(b_name, index) {
+                                    index += 1;
                                     return <ListGroupItem header={b_name} bsStyle={index < this.state.data.data.main_progress ? "success" : index > this.state.data.data.main_progress ? "warning" : "info"}>
                                         {index < this.state.data.data.main_progress ? "已完成" : index > this.state.data.data.main_progress ? "正在等待" : text[this.state.data.data.child_progress]
                                     }</ListGroupItem>
