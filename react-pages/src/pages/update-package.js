@@ -19,7 +19,7 @@ class MCProConsoleUpdatePackagePage extends Component
     componentDidMount()
     {
         this.fetchData();
-        this.time_id = setInterval(this.silentFetchData, 1000);
+        this.time_id = setInterval(this.silentFetchData.bind(this), 1000);
     }
 
     componentWillUnmount()
@@ -76,10 +76,16 @@ class MCProConsoleUpdatePackagePage extends Component
         let running_part = null;
         if (this.state.running)
         {
-            if (this.state.data.main_progress < 0)
+            console.log(this.state.data)
+            if (this.state.data.data.main_progress <= 0)
             {
+                let child_running_part = "正在下载：第 " + this.state.data.data.child_progress.toString() + " 部分";
+                if (this.state.data.data.child_progress >= 100)
+                    child_running_part = "正在解包：第 " + (this.state.data.data.child_progress - 99).toString() + " 部分";
+                else if (this.state.data.data.child_progress == 0)
+                    child_running_part = "正在进行 py 交易...";
                 running_part = (<ListGroup>
-                        <ListGroupItem header="准备步骤" bsStyle="info">{this.state.data.child_progress}</ListGroupItem>
+                        <ListGroupItem header="准备步骤" bsStyle="info">{child_running_part}</ListGroupItem>
                     </ListGroup>);
             }
             else
@@ -88,11 +94,13 @@ class MCProConsoleUpdatePackagePage extends Component
                     <div>
                         <p>上一个打包任务开始于 <kbd>{moment(this.state.data.start_time).format("YYYY-MM-DD HH:mm:ss")}</kbd></p>
                         <ListGroup>
-                            <ListGroupItem header="准备步骤" bsStyle="success">已完成</ListGroupItem>
                             {
-                                this.state.data.progress_list.map(function(b_name, index) {
-                                    return <ListGroupItem header={b_name} bsStyle={index < this.state.data.main_progress ? "success" : index > this.state.data.main_progress ? "warning" : "info"}>
-                                        {index < this.state.data.main_progress ? "已完成" : index > this.state.data.main_progress ? "正在等待" : text[this.state.data.child_progress]
+                                <ListGroupItem header="准备步骤" bsStyle="success">已完成</ListGroupItem>
+                            }
+                            {
+                                this.state.data.data.progress_list.map(function(b_name, index) {
+                                    return <ListGroupItem header={b_name} bsStyle={index < this.state.data.data.main_progress ? "success" : index > this.state.data.data.main_progress ? "warning" : "info"}>
+                                        {index < this.state.data.data.main_progress ? "已完成" : index > this.state.data.data.main_progress ? "正在等待" : text[this.state.data.data.child_progress]
                                     }</ListGroupItem>
                                 }.bind(this))
                             }
@@ -103,7 +111,7 @@ class MCProConsoleUpdatePackagePage extends Component
         else
             running_part = (<div>
                     <p>打包器在空闲状态，没有任务正在执行。</p>
-                    <Button bsSize="large" bsStyle="primary" onClick={this.startPackage}>开始执行打包</Button>
+                    <Button bsSize="large" bsStyle="primary" onClick={this.startPackage.bind(this)}>开始执行打包</Button>
                 </div>);
 
         return (
