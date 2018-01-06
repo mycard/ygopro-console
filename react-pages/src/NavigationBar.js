@@ -57,6 +57,9 @@ class MCProConsoleNavigationBar extends Component
                                     <LinkContainer to="/analytics/custom"><NavItem>自定义统计</NavItem></LinkContainer>
                                     <LinkContainer to="/analytics/deck"><NavItem>卡组辨识</NavItem></LinkContainer>
                                 </NavDropdown>
+                                <NavDropdown title="配置">
+                                    <LinkContainer to="/profile/deck"><NavItem>卡组辨识</NavItem></LinkContainer>
+                                </NavDropdown>
                             </Nav>
                                 :
                                 <Nav pullRight>
