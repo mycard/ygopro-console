@@ -49,7 +49,7 @@ class App extends Component {
                   <Route path="/analytics/custom-set" component={MCProConsoleAnalyticsCustomSetPage} />
                   <Route path="/analytics/daily" component={MCProConsoleAnalyticsDailyPage} />
                   <Route path="/analytics/deck" component={MCProConsoleAnalyticsDeckPage} />
-                  <Route path="/profile/deck" component={MCProConsoleProfileDeckIdentifierPage} />
+                  <Route path="/profiles/deck" component={MCProConsoleProfileDeckIdentifierPage} />
               </div>
           </Router>
           {messages}
