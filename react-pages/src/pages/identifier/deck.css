@@ -1,0 +1,121 @@
+.deck#deck {
+    background: #000
+}
+
+.deck #card {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.deck #card, .deck #card pre {
+    font-family: 'Helvetica Neue', Helvetica, 'Microsoft Yahei', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif;
+}
+
+.deck #card #cardpic {
+    margin: 0 auto 5px auto;
+    width: 177px;
+    height: 254px;
+    display: block;
+}
+
+.deck #card #cardtext {
+    height: 260px;
+}
+
+.deck #card .cardname {
+    text-align: center;
+    margin: 5px 0 4px;
+    padding: 3px 0;
+    border: 1px solid #EEEEEE;
+    background-color: #F9F9F9;
+    height: 28px;
+}
+
+.deck #card p {
+    margin: 3px;
+    padding: 0 3px;
+    line-height: 22px;
+}
+
+.deck #card pre {
+    display: block;
+    margin: 3px 3px 0;
+    padding: 0 3px;
+    font-size: 14px;
+    line-height: 22px;
+    color: #333;
+    white-space: pre-wrap;
+    background-color: unset;
+    border: none;
+    height: 193px;
+}
+
+.deck #card .monster pre {
+    height: 171px;
+}
+.deck#deck {
+    width: 500px;
+    padding: 5px 0px;
+    background: #CCCCCC center center;
+    margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+    .deck #card {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    .deck#deck {
+        margin: 0 -15px;
+    }
+}
+
+.deck#deck label {
+    text-shadow: -1px -1px #000;
+    color: #FFF;
+    font-weight: normal;
+    border: 1px solid #FFF;
+    padding: 0px 5px;
+    margin: 1px 7px;
+}
+.deck#deck label b {
+    margin: 0px 8px;
+    font-size: 16px;
+    line-height: 100%;
+}
+
+.deck#deck div {
+    border: 1px solid #FFF;
+    padding: 2px;
+    margin: 0px 7px;
+    min-height: 74px;
+}
+
+.deck#deck img {
+    width: 46px;
+    height: 66px;
+    margin: 1px;
+    border: 1px solid transparent;
+}
+
+.deck#deck .line11 img {
+    margin-right: -3.8px;
+}
+.deck#deck .line12 img {
+    margin-right: -7.7px;
+}
+.deck#deck .line13 img {
+    margin-right: -11px;
+}
+.deck#deck .line14 img {
+    margin-right: -13.7px;
+}
+.deck#deck .line15 img {
+    margin-right: -16.1px;
+}
+
+.deck#deck img:hover {
+    border: 1px solid #FFF;
+}
+
+
