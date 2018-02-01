@@ -277,7 +277,7 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
                                                                                                            onTagClick={this.onClassificationKbdClicked.bind(this)}
                                                                                                            onSetClick={this.onClassificationSetClicked.bind(this)}/> : null }
                                 { this.state.runtimeSet ? <MCProConsoleIdentifierSet set={this.state.runtimeSet}/> : null }
-                                <div style={{ wordWrap: "break-word", wordBreak: "keep-all"}}>
+                                <div style={{overflowWrap: "break-word"}}>
                                 {
                                     !this.state.runtimeClassification && !this.state.runtimeSet && !this.state.runtimeDeck && this.state.runtimeList ?
                                         this.state.runtimeList[this.state.runtimeType + "s"].map((name) => <a onClick={this.onKbdClicked.bind(this)} ><kbd style={{margin: "2px"}} >{name}</kbd></a>)

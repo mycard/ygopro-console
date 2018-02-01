@@ -6,3 +6,8 @@
     position: absolute;
     z-index: -1;
 }
+
+a kbd {
+    display: inline-block;
+    white-space: nowrap;
+}
