@@ -86,6 +86,21 @@ server.get '/analyze/history/count', (req, res) ->
   type = '' if type == 'all'
   analytics.queryHistoryCount([name, type, req.start_time, req.end_time]).then (result) -> res.end result.toString()
 
+server.get '/analyze/single', (req, res) ->
+  name = req.query.name
+  type = req.query.type || ''
+  type = '' if type == 'all'
+  page = parseInt(req.query.page) || 1
+  result = await analytics.querySingle(name ,type, req.start_time, req.end_time, page)
+  res.json result
+
+server.get '/analyze/single/count', (req, res) ->
+  name = req.query.name
+  type = req.query.type || ''
+  type = '' if type == 'all'
+  result = await analytics.querySingleCount(name, type, req.start_time, req.end_time)
+  res.end result.toString()
+
 server.get '/analyze/deck', (req, res) ->
   name = req.query.name || ''
   source = req.query.source || ''

@@ -4,12 +4,15 @@ ygoproPool = database.ygoproPool
 
 custom_commands = require './analytics.json'
 fs = require 'fs'
+data = require 'ygojs-data'
 
 PAGE_LIMIT = 100
 HISTORY_QUERY_SQL = "select * from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text and start_time >= $3 and start_time <= $4 order by start_time desc limit #{PAGE_LIMIT} offset $5"
 HISTORY_COUNT_SQL = "select count(*) from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text and start_time >= $3 and start_time <= $4 "
 DECK_QUERY_SQL = "select name, source, sum(count) sc from deck_day where (name like $1::text and source like $2::text) and time >= $3 and time <= $4 group by name, source order by sc desc, source desc limit #{PAGE_LIMIT} offset $5"
-DECK_COUNT_SQL = "select count(*) from (select sum(count) sc from deck_day where (name like $1::text and source like $2::text) and time >= $3 and time <= $4 group by name, source) as counts"
+DECK_COUNT_SQL = "select count(*) from (select sum(count) sc from deck_day where (id like $1::integer and source like $2::text) and time >= $3 and time <= $4 group by name, source) as counts"
+SINGLE_QUERY_SQL = "select id, source, sum(frequency) sc, sum(numbers) numbers, sum(putone) putone, sum(puttwo) puttwo, sum(putthree) putthree, sum(putoverthree) putoverthree from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source order by sc desc, source desc limit #{PAGE_LIMIT} offset $4"
+SINGLE_COUNT_SQL = "select count(*) from (select sum(frequency) sc from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source) as counts"
 DAILY_COUNT =
   'SELECT day, sum(' +
   '      CASE' +
@@ -52,6 +55,51 @@ setCommands = (commands) ->
 Object.assign module.exports, database.defineStandatdQueryFunctions 'queryHistory', database.ygoproPool, HISTORY_QUERY_SQL, HISTORY_COUNT_SQL, PAGE_LIMIT
 Object.assign module.exports, database.defineStandatdQueryFunctions 'queryDeck', database.ygoproPool, DECK_QUERY_SQL, DECK_COUNT_SQL, PAGE_LIMIT
 
+queryId = (name) ->
+  return null unless name
+  id = parseInt name
+  unless isNaN id
+    ids = [id]
+  else
+    environment = new data.Environment 'zh-CN'
+    return null unless environment
+    ids = environment.searchCardByName name
+    return null if ids.length == 0
+    ids = ids[0..29] if ids.length > 30
+  return "(#{ids.join(', ')})"
+
+querySingle = (name, type, start_time, end_time, page) ->
+  name = queryId name
+  return [] unless name
+  page = (page - 1) * PAGE_LIMIT
+  type = "%#{type}%"
+  start_time = start_time.format('YYYY-MM-DD HH:mm:ss')
+  end_time = end_time.format('YYYY-MM-DD HH:mm:ss')
+  query = SINGLE_QUERY_SQL.replace '$0', name
+  environment = new data.Environment 'zh-CN'
+  new Promise (resolve, reject) =>
+    ygoproPool.query query, [type, start_time, end_time, page], (err, result) ->
+      database.standardPromiseCallback(resolve, reject, err, result)
+  .then (datas) ->
+    datas.map (item) ->
+      item.name = environment.getCardById(item.id).name
+      item
+
+querySingleCount = (name, type, start_time, end_time, page) ->
+  name = queryId name
+  return [] unless name
+  page = (page - 1) * PAGE_LIMIT
+  type = "%#{type}%"
+  start_time = start_time.format('YYYY-MM-DD HH:mm:ss')
+  end_time = end_time.format('YYYY-MM-DD HH:mm:ss')
+  query = SINGLE_COUNT_SQL.replace '$0', name
+  new Promise (resolve, reject) =>
+    ygoproPool.query query, [type, start_time, end_time], (err, result) =>
+      if err
+        resolve 0
+      else
+        resolve Math.ceil result.rows[0].count / PAGE_LIMIT
+
 dailyCount = (type, start_time, end_time) ->
   new Promise (resolve, reject) ->
     type = '%' if !type or type == 'all'
@@ -60,3 +108,5 @@ dailyCount = (type, start_time, end_time) ->
 module.exports.runCommands = runCommands
 module.exports.setCommands = setCommands
 module.exports.dailyCount = dailyCount
+module.exports.querySingle = querySingle
+module.exports.querySingleCount = querySingleCount

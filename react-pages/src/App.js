@@ -17,6 +17,7 @@ import MCProConsoleAnalyticsCustomPage from './pages/analytics-custom'
 import MCProConsoleAnalyticsCustomSetPage from './pages/analytics-custom-set'
 import MCProConsoleAnalyticsDailyPage from './pages/analytics-daily'
 import MCProConsoleAnalyticsDeckPage from './pages/analytics-deck'
+import MCProConsoleAnalyticsSinglePage from './pages/analytics-single'
 import MCProConsoleProfileDeckIdentifierPage from './pages/profile-deck-identifier'
 import {messages} from './components/Message'
 import './App.css';
@@ -49,6 +50,7 @@ class App extends Component {
                   <Route path="/analytics/custom-set" component={MCProConsoleAnalyticsCustomSetPage} />
                   <Route path="/analytics/daily" component={MCProConsoleAnalyticsDailyPage} />
                   <Route path="/analytics/deck" component={MCProConsoleAnalyticsDeckPage} />
+                  <Route path="/analytics/single" component={MCProConsoleAnalyticsSinglePage} />
                   <Route path="/profiles/deck" component={MCProConsoleProfileDeckIdentifierPage} />
               </div>
           </Router>
