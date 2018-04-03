@@ -88,7 +88,7 @@ server.get '/analyze/history/count', (req, res) ->
 
 server.get '/analyze/single', (req, res) ->
   name = req.query.name
-  type = req.query.type || ''
+  type = req.query.source || ''
   type = '' if type == 'all'
   page = parseInt(req.query.page) || 1
   result = await analytics.querySingle(name ,type, req.start_time, req.end_time, page)
@@ -96,7 +96,7 @@ server.get '/analyze/single', (req, res) ->
 
 server.get '/analyze/single/count', (req, res) ->
   name = req.query.name
-  type = req.query.type || ''
+  type = req.query.source || ''
   type = '' if type == 'all'
   result = await analytics.querySingleCount(name, type, req.start_time, req.end_time)
   res.end result.toString()

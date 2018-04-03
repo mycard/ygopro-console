@@ -38,8 +38,8 @@ class MCProConsoleAnalyticsSinglePage extends Component {
                         <InputGroup>
                             <InputGroup.Addon>时间</InputGroup.Addon>
                             <MCProConsoleTimeRangePicker ref="time"/>
-                            <InputGroup.Addon>卡片ID</InputGroup.Addon>
-                            <FormControl type="text" inputRef={ref => this.deckname = ref} placeholder="输入要查询的卡片ID"/>
+                            <InputGroup.Addon>卡片</InputGroup.Addon>
+                            <FormControl type="text" inputRef={ref => this.deckname = ref} placeholder="输入要查询的卡片ID或名称（多种卡片只支持前50种）"/>
                             <InputGroup.Addon>来源名</InputGroup.Addon>
                             <FormControl type="text" inputRef={ref => this.decksource = ref} placeholder="来源"/>
                             <InputGroup.Button>
@@ -53,12 +53,12 @@ class MCProConsoleAnalyticsSinglePage extends Component {
                 </form>
             </Col>
             <Col md={12} xs={12}>
-                <MCProConsolePagedTable ref="table" key="query deck" thead={["卡片", "名称", "来源", "投入数", "投入频", "投入1枚", "投入2枚", "投入3枚", "+"]}
+                <MCProConsolePagedTable ref="table" key="query single" thead={["卡片", "名称", "来源", "投入数", "投入频", "投入1枚", "投入2枚", "投入3枚", "+"]}
                                         tbodyGenerator={function (data) {
                                             console.log(data);
                                             return (
                                                 <tr>
-                                                    <td><img src={"https://ygo233.my-card.in/ygopro/pics/" + data.id.toString() + ".jpg!thumb"}></img></td>
+                                                    <td><a href={"https://www.ourocg.cn/search/" + data.id.toString()} target={"_blank"}><img src={"https://ygo233.my-card.in/ygopro/pics/" + data.id.toString() + ".jpg!thumb"}></img></a></td>
                                                     <td>{this.renderName(data.name)}</td>
                                                     <td>{data.source}</td>
                                                     <td>{data.sc}</td>

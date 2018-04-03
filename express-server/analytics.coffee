@@ -56,6 +56,7 @@ Object.assign module.exports, database.defineStandatdQueryFunctions 'queryHistor
 Object.assign module.exports, database.defineStandatdQueryFunctions 'queryDeck', database.ygoproPool, DECK_QUERY_SQL, DECK_COUNT_SQL, PAGE_LIMIT
 
 queryId = (name) ->
+  return "(ANY)" if name == ""
   return null unless name
   id = parseInt name
   unless isNaN id
@@ -65,7 +66,7 @@ queryId = (name) ->
     return null unless environment
     ids = environment.searchCardByName name
     return null if ids.length == 0
-    ids = ids[0..29] if ids.length > 30
+    ids = ids[0..49] if ids.length > 50
   return "(#{ids.join(', ')})"
 
 querySingle = (name, type, start_time, end_time, page) ->
@@ -75,14 +76,15 @@ querySingle = (name, type, start_time, end_time, page) ->
   type = "%#{type}%"
   start_time = start_time.format('YYYY-MM-DD HH:mm:ss')
   end_time = end_time.format('YYYY-MM-DD HH:mm:ss')
-  query = SINGLE_QUERY_SQL.replace '$0', name
+  query = if name == "(ANY)" then SINGLE_QUERY_SQL.replace("id in $0 and", "") else SINGLE_QUERY_SQL.replace('$0', name)
   environment = new data.Environment 'zh-CN'
   new Promise (resolve, reject) =>
     ygoproPool.query query, [type, start_time, end_time, page], (err, result) ->
       database.standardPromiseCallback(resolve, reject, err, result)
   .then (datas) ->
     datas.map (item) ->
-      item.name = environment.getCardById(item.id).name
+      card = environment.getCardById item.id
+      item.name = card.name if card
       item
 
 querySingleCount = (name, type, start_time, end_time, page) ->
@@ -92,7 +94,7 @@ querySingleCount = (name, type, start_time, end_time, page) ->
   type = "%#{type}%"
   start_time = start_time.format('YYYY-MM-DD HH:mm:ss')
   end_time = end_time.format('YYYY-MM-DD HH:mm:ss')
-  query = SINGLE_COUNT_SQL.replace '$0', name
+  query = if name == "(ANY)" then SINGLE_COUNT_SQL.replace("id in $0 and", "") else SINGLE_QUERY_SQL.replace('$0', name)
   new Promise (resolve, reject) =>
     ygoproPool.query query, [type, start_time, end_time], (err, result) =>
       if err
