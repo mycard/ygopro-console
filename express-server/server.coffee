@@ -112,6 +112,11 @@ server.get '/analyze/deck/count', (req, res) ->
   source = req.query.source
   analytics.queryDeckCount([name, source, req.start_time, req.end_time]).then (result) -> res.end result.toString()
 
+server.get '/analyze/count', (req, res) ->
+  source = req.query.source
+  result = await analytics.queryPureCount(source, req.start_time, req.end_time)
+  res.end result.toString()
+
 server.get '/analyze/custom', (req, res) ->
   analytics.runCommands(req.start_time, req.end_time).then (result) ->
     res.json result

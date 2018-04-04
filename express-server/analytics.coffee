@@ -13,6 +13,7 @@ DECK_QUERY_SQL = "select name, source, sum(count) sc from deck_day where (name l
 DECK_COUNT_SQL = "select count(*) from (select sum(count) sc from deck_day where (id like $1::integer and source like $2::text) and time >= $3 and time <= $4 group by name, source) as counts"
 SINGLE_QUERY_SQL = "select id, source, sum(frequency) sc, sum(numbers) numbers, sum(putone) putone, sum(puttwo) puttwo, sum(putthree) putthree, sum(putoverthree) putoverthree from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source order by sc desc, source desc limit #{PAGE_LIMIT} offset $4"
 SINGLE_COUNT_SQL = "select count(*) from (select sum(frequency) sc from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source) as counts"
+PURE_COUNT_SQL = "select sum(count) count from counter where timeperiod = 1 and source like $1::text and time >= $2 and time <= $3"
 DAILY_COUNT =
   'SELECT day, sum(' +
   '      CASE' +
@@ -102,6 +103,18 @@ querySingleCount = (name, type, start_time, end_time, page) ->
       else
         resolve Math.ceil result.rows[0].count / PAGE_LIMIT
 
+queryPureCount = (source, start_time, end_time) ->
+  source = "%#{source}%"
+  start_time = start_time.format('YYYY-MM-DD HH:mm:ss')
+  end_time = end_time.format('YYYY-MM-DD HH:mm:ss')
+  new Promise (resolve, reject) ->
+    ygoproPool.query PURE_COUNT_SQL, [source, start_time, end_time], (err, result) ->
+      if err
+        console.log err
+        resolve 0
+      else
+        resolve result.rows[0].count || 0
+
 dailyCount = (type, start_time, end_time) ->
   new Promise (resolve, reject) ->
     type = '%' if !type or type == 'all'
@@ -112,3 +125,4 @@ module.exports.setCommands = setCommands
 module.exports.dailyCount = dailyCount
 module.exports.querySingle = querySingle
 module.exports.querySingleCount = querySingleCount
+module.exports.queryPureCount = queryPureCount

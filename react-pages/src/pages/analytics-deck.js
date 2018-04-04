@@ -5,6 +5,7 @@ import MCProConsoleTimeRangePicker from "../components/Timerange"
 import config from "../Config.json"
 import moment from 'moment'
 import "./analytics-deck.css"
+import {message_object} from "../components/Message";
 
 class MCProConsoleAnalyticsDeckPage extends Component {
     constructor() {
@@ -12,7 +13,8 @@ class MCProConsoleAnalyticsDeckPage extends Component {
         this.state = {
             activePage: 1,
             pageCount: 1,
-            deckResult: []
+            deckResult: [],
+            count: null
         };
         this.deckname = null;
         this.decksource = null;
@@ -20,9 +22,22 @@ class MCProConsoleAnalyticsDeckPage extends Component {
 
     componentDidMount() {
         this.refs.table.handleQuery();
+        this.queryCount();
+    }
+
+    queryCount() {
+        let url = new URL(config.serverHost + "analyze/count");
+        url.searchParams.set('source', this.decksource.value);
+        this.refs.time.setUrl(url);
+        message_object.doFetch("single count", url.toString(), {}, async function (result) {
+            let count = await result.text();
+            this.setState({count: count});
+        }.bind(this))
     }
 
     renderName(name) {
+        if (!this.deckname)
+            return name;
         let render = this.deckname.value;
         let index = name.indexOf(render);
         if (index < 0 || isNaN(index)) return name;
@@ -44,9 +59,11 @@ class MCProConsoleAnalyticsDeckPage extends Component {
                             <FormControl type="text" inputRef={ref => this.deckname = ref} placeholder="输入要查询的卡组"/>
                             <InputGroup.Addon>来源名</InputGroup.Addon>
                             <FormControl type="text" inputRef={ref => this.decksource = ref} placeholder="来源"/>
+                            { this.state.count != null ? <InputGroup.Addon>{this.state.count}</InputGroup.Addon> : <div></div>}
                             <InputGroup.Button>
                                 <Button type="submit" onClick={(event) => {
                                     this.refs.table.handleQuery();
+                                    this.queryCount();
                                     event.preventDefault();
                                 }} bsStyle="primary">查询</Button>
                             </InputGroup.Button>
@@ -68,8 +85,8 @@ class MCProConsoleAnalyticsDeckPage extends Component {
                                         }.bind(this)}
                                         urlGenerator={function () {
                                             let url = new URL(config.serverHost + "analyze/deck");
-                                            url.searchParams.set('name', this.deckname.value);
-                                            url.searchParams.set('source', this.decksource.value);
+                                            url.searchParams.set('name', this.deckname ? this.deckname.value : "");
+                                            url.searchParams.set('source', this.decksource ? this.decksource.value : "");
                                             this.refs.time.setUrl(url);
                                             return url;
                                         }.bind(this)}
