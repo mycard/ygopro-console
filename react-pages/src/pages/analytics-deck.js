@@ -139,7 +139,7 @@ class MCProConsoleAnalyticsDeckPage extends Component {
                                                 }.bind(this)}
                                                 urlGenerator={function () {
                                                     let url = new URL(config.serverHost + "analyze/tag");
-                                                    url.searchParams.set('name', this.state.focusDeckName);
+                                                    url.searchParams.set('name', "%" + this.state.focusDeckName);
                                                     url.searchParams.set('source', this.decksource ? this.decksource.value : "");
                                                     this.refs.time.setUrl(url);
                                                     return url;
