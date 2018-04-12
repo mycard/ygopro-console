@@ -82,7 +82,7 @@ class MCProConsoleUpdatePackagePage extends Component
                 let child_running_part = "正在下载：第 " + this.state.data.data.child_progress.toString() + " 部分";
                 if (this.state.data.data.child_progress >= 100)
                     child_running_part = "正在解包：第 " + (this.state.data.data.child_progress - 99).toString() + " 部分";
-                else if (this.state.data.data.child_progress == 0)
+                else if (this.state.data.data.child_progress === 0)
                     child_running_part = "正在进行 py 交易...";
                 running_part = (<ListGroup>
                         <ListGroupItem header="准备步骤" bsStyle="info">{child_running_part}</ListGroupItem>

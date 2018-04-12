@@ -74,7 +74,7 @@ class MCProConsoleAnalyticsSinglePage extends Component {
                                         tbodyGenerator={function (data) {
                                             return (
                                                 <tr>
-                                                    <td><a href={"https://www.ourocg.cn/search/" + data.id.toString()} target={"_blank"}><img src={"https://ygo233.my-card.in/ygopro/pics/" + data.id.toString() + ".jpg!thumb"}></img></a></td>
+                                                    <td><a href={"https://www.ourocg.cn/search/" + data.id.toString()} target={"_blank"}><img src={"https://ygo233.my-card.in/ygopro/pics/" + data.id.toString() + ".jpg!thumb"} alt={""}></img></a></td>
                                                     <td>{this.renderName(data.name)}</td>
                                                     <td>{data.source}</td>
                                                     <td>{data.sc}</td>

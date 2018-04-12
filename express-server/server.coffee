@@ -112,6 +112,17 @@ server.get '/analyze/deck/count', (req, res) ->
   source = req.query.source
   analytics.queryDeckCount([name, source, req.start_time, req.end_time]).then (result) -> res.end result.toString()
 
+server.get '/analyze/tag', (req, res) ->
+  name = (req.query.name || '') + "-"
+  source = req.query.source || ""
+  page = parseInt(req.query.page) || 1
+  analytics.queryTag([name, source, req.start_time, req.end_time, page]).then (result) -> res.json result
+
+server.get '/analyze/tag/count', (req, res) ->
+  name = (req.query.name || '') + "-"
+  source = req.query.source || ""
+  analytics.queryTagCount([name, source, req.start_time, req.end_time]).then (result) -> res.json result
+
 server.get '/analyze/count', (req, res) ->
   source = req.query.source
   result = await analytics.queryPureCount(source, req.start_time, req.end_time)

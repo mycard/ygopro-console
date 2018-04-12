@@ -10,10 +10,14 @@ PAGE_LIMIT = 100
 HISTORY_QUERY_SQL = "select * from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text and start_time >= $3 and start_time <= $4 order by start_time desc limit #{PAGE_LIMIT} offset $5"
 HISTORY_COUNT_SQL = "select count(*) from battle_history where (usernamea like $1::text or usernameb like $1::text) and type like $2::text and start_time >= $3 and start_time <= $4 "
 DECK_QUERY_SQL = "select name, source, sum(count) sc from deck_day where (name like $1::text and source like $2::text) and time >= $3 and time <= $4 group by name, source order by sc desc, source desc limit #{PAGE_LIMIT} offset $5"
-DECK_COUNT_SQL = "select count(*) from (select sum(count) sc from deck_day where (id like $1::integer and source like $2::text) and time >= $3 and time <= $4 group by name, source) as counts"
+DECK_COUNT_SQL = "select count(*) from (select sum(count) sc from deck_day where (name like $1::text and source like $2::text) and time >= $3 and time <= $4 group by name, source) as counts"
+TAG_QUERY_SQL = "select name, source, sum(count) sc from tag_day where (name like $1::text and source like $2::text) and time >= $3 and time <= $4 group by name, source order by sc desc, source desc limit #{PAGE_LIMIT} offset $5"
+TAG_COUNT_SQL = "select count(*) from (select sum(count) sc from tag_dat where (name like $1::text and source like $2::text) and time >= $3 and time <= $4 group by name, source) as counts"
 SINGLE_QUERY_SQL = "select id, source, sum(frequency) sc, sum(numbers) numbers, sum(putone) putone, sum(puttwo) puttwo, sum(putthree) putthree, sum(putoverthree) putoverthree from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source order by sc desc, source desc limit #{PAGE_LIMIT} offset $4"
 SINGLE_COUNT_SQL = "select count(*) from (select sum(frequency) sc from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source) as counts"
 PURE_COUNT_SQL = "select sum(count) count from counter where timeperiod = 1 and source like $1::text and time >= $2 and time <= $3"
+
+
 DAILY_COUNT =
   'SELECT day, sum(' +
   '      CASE' +
@@ -53,8 +57,9 @@ setCommands = (commands) ->
   custom_commands = commands
   fs.writeFile './express-server/analytics.json', JSON.stringify(commands, null, 2), ->
 
-Object.assign module.exports, database.defineStandatdQueryFunctions 'queryHistory', database.ygoproPool, HISTORY_QUERY_SQL, HISTORY_COUNT_SQL, PAGE_LIMIT
-Object.assign module.exports, database.defineStandatdQueryFunctions 'queryDeck', database.ygoproPool, DECK_QUERY_SQL, DECK_COUNT_SQL, PAGE_LIMIT
+Object.assign module.exports, database.defineStandardQueryFunctions 'queryHistory', database.ygoproPool, HISTORY_QUERY_SQL, HISTORY_COUNT_SQL, PAGE_LIMIT
+Object.assign module.exports, database.defineStandardQueryFunctions 'queryDeck', database.ygoproPool, DECK_QUERY_SQL, DECK_COUNT_SQL, PAGE_LIMIT
+Object.assign module.exports, database.defineStandardQueryFunctions 'queryTag', database.ygoproPool, TAG_QUERY_SQL, TAG_COUNT_SQL, PAGE_LIMIT
 
 queryId = (name) ->
   return "(ANY)" if name == ""

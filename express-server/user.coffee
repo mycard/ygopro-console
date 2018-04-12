@@ -57,7 +57,7 @@ setUserDp = (user, dp, callback) ->
     else
       callback.call this, result
 
-Object.assign module.exports, database.defineStandatdQueryFunctions 'queryMessage', database.ygoproPool, GET_MESSAGE_SQL, GET_MESSAGE_COUNT_SQL, PAGE_LIMIT
+Object.assign module.exports, database.defineStandardQueryFunctions 'queryMessage', database.ygoproPool, GET_MESSAGE_SQL, GET_MESSAGE_COUNT_SQL, PAGE_LIMIT
 
 module.exports.queryUser = queryUser
 module.exports.queryUserViaIp = queryUserViaIp
