@@ -11,7 +11,8 @@ class MCProConsoleUpdatePackagePage extends Component
         super();
         this.state = {
             running: false,
-            data: null
+            data: null,
+            last: null
         };
         this.time_id = null;
     }
@@ -31,11 +32,15 @@ class MCProConsoleUpdatePackagePage extends Component
     {
         message_object.doFetch("packager progress", Config.packageServerHost + "progress", {}, function (result) {
             return result.json().then(function(result){
-                console.log(result);
                 this.setState({
                     running: !(result === null),
                     data: result
                 });
+            }.bind(this));
+        }.bind(this));
+        message_object.doFetch("packager progress", Config.packageServerHost + "last", {}, function (result) {
+            return result.json().then(function(result){
+                this.setState({last: result});
             }.bind(this));
         }.bind(this));
     }
@@ -60,6 +65,16 @@ class MCProConsoleUpdatePackagePage extends Component
         }.bind(this))
     }
 
+    updateUpdater()
+    {
+        message_object.doFetch("package", Config.updateServerHost + "clear", { method: "post" }, function () {
+            
+        });
+    }
+
+    formatTime(obj) {
+        return moment(obj).format("YYYY-MM-DD HH:mm:ss");
+    }
 
     render()
     {
@@ -71,7 +86,8 @@ class MCProConsoleUpdatePackagePage extends Component
             13: "正在生成策略包",
             14: "正在计算文件大小",
             20: "正在上传存档",
-            30: "正在发布文件"
+            30: "正在发布文件",
+            999: "已跳过"
         };
         let running_part = null;
         if (this.state.running)
@@ -115,12 +131,38 @@ class MCProConsoleUpdatePackagePage extends Component
                     <Button bsSize="large" bsStyle="primary" onClick={this.startPackage.bind(this)}>开始执行打包</Button>
                 </div>);
 
+        let last_part_report = <div>正在获取状态...</div>;
+        if (this.state.last != null)
+        switch (this.state.last.status)
+        {
+            case 'null':
+                last_part_report = <div>打包器启动于 <kbd>{this.formatTime(this.state.last.time)}</kbd> </div>;
+                break;
+            case 'success':
+                last_part_report = <div>上一个于 <kbd>{this.formatTime(this.state.last.start)}</kbd> 开始的任务已于 <kbd>{this.formatTime(this.state.last.time)}</kbd> 成功结束。</div>;
+                break;
+            case 'unusual':
+                last_part_report = <div>上一个于 <kbd>{this.formatTime(this.state.last.start)}</kbd> 开始的任务已于 <kbd>{this.formatTime(this.state.last.time)}</kbd> 成功结束。但有些任务可能被跳过了。</div>;
+                break;
+            case 'fail':
+                last_part_report = <div>上一个于 <kbd>{this.formatTime(this.state.last.start)}</kbd> 开始的任务已失败。</div>;
+        }
+
+        let updatePart = <Col md={6} xs={12}>
+            <h2 className="page-header">更新器</h2>
+            <Button bsSize="large" onClick={this.updateUpdater.bind(this)}>刷新缓存</Button>
+        </Col>;
+
         return (
             <Row>
                 <Col md={6} xs={12}>
                     <h2 className="page-header">打包器</h2>
+                    {this.state.running ? "" : last_part_report}
+                    {this.state.running ? "" : <br />}
                     {running_part}
                 </Col>
+
+                {updatePart}
             </Row>
         )
     }
