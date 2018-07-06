@@ -7,7 +7,16 @@
     z-index: -1;
 }
 
-a kbd {
+kbd {
+    margin: 2px;
+    cursor: pointer;
+}
+
+#board kbd {
     display: inline-block;
     white-space: nowrap;
+}
+
+kbd .selected {
+    background: #3c763d;
 }

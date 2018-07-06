@@ -43,12 +43,16 @@ export var MCProConsoleIdentifierClassification = class MCProConsoleIdentifierCl
     if (!classification) {
       return null;
     }
+    console.log(this.props.verbose);
     return <Panel header={classification.name}>
       优先级：{classification.priority}
+      <div>
+        {(this.props.verbose ? this.props.verbose.is ? "通过" : "否决" : null)}
+      </div>
       <ListGroup fill>
         <ListGroupItem disabled>约束</ListGroupItem>
-        {(self = this, classification.restrains.map(function(restrain) {
-      return <MCProConsoleIdentifierRestrain restrain={restrain} onSetClick={self.props.onSetClick ? self.props.onSetClick.bind(self) : null} />;
+        {(self = this, classification.restrains.map(function(restrain, i) {
+      return <MCProConsoleIdentifierRestrain restrain={restrain} onSetClick={self.props.onSetClick ? self.props.onSetClick.bind(self) : null} verbose={self.props.verbose ? self.props.verbose.children[i] : null} />;
     }))}
         {this.renderTags(classification.checkTags, "检查标签")}
         {this.renderTags(classification.forceTags, "强制标签")}
@@ -62,7 +66,10 @@ export var MCProConsoleIdentifierClassification = class MCProConsoleIdentifierCl
 MCProConsoleIdentifierClassification.defaultProps = {
   classification: null,
   onTagClick: null,
-  onSetClick: null
+  onSetClick: null,
+  verbose: null
 };
 
 export default MCProConsoleIdentifierClassification;
+
+//# sourceMappingURL=classification.js.map

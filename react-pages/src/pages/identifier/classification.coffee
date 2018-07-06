@@ -21,14 +21,25 @@ export class MCProConsoleIdentifierClassification extends Component
   render: ->
     classification = this.props.classification
     return null unless classification
-    <Panel header={ classification.name } >
+    console.log this.props.verbose
+    <Panel header={ classification.name }>
       优先级：{ classification.priority }
+      <div>
+        {
+          if this.props.verbose
+            if this.props.verbose.is then "通过" else "否决"
+          else null
+        }
+      </div>
       <ListGroup fill>
         <ListGroupItem disabled>约束</ListGroupItem>
         { 
           self = this
-          classification.restrains.map (restrain) -> 
-            <MCProConsoleIdentifierRestrain restrain = {restrain} onSetClick = { if self.props.onSetClick then self.props.onSetClick.bind(self) else null } /> 
+          classification.restrains.map (restrain, i) -> 
+            <MCProConsoleIdentifierRestrain restrain = {restrain} 
+                                            onSetClick = { if self.props.onSetClick then self.props.onSetClick.bind(self) else null } 
+                                            verbose = { if self.props.verbose then self.props.verbose.children[i] else null }
+                                            /> 
         }
         { this.renderTags(classification.checkTags, "检查标签") }
         { this.renderTags(classification.forceTags, "强制标签") }
@@ -40,5 +51,6 @@ MCProConsoleIdentifierClassification.defaultProps =
   classification: null
   onTagClick: null
   onSetClick: null
+  verbose: null
 
 export default MCProConsoleIdentifierClassification

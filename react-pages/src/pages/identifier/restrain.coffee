@@ -20,7 +20,6 @@ export class MCProConsoleIdentifierRestrain extends Component
             expandImage: !this.state.expandImage
 
     onSetClicked: (event) ->
-        console.log "set!"
         this.props.onSetClick.call this, event if this.props.onSetClick
 
     renderCardRestrain: (restrain) ->
@@ -40,29 +39,38 @@ export class MCProConsoleIdentifierRestrain extends Component
         times = Math.floor(num / len)
         mods = num % len
         <div style={this.style}>
-        {
-            if this.props.renderImage
-                restrain.set.ids.map (id, index) ->
-                    repeat = if index < mods then times + 1 else times
-                    return null if repeat == 0
-                    [1..repeat].map -> <MCProConsoleIdentifierCard id = {id} />
-            else null
-        }
-        { this.renderRestrainText(restrain) }
+            {
+                if this.props.renderImage
+                    restrain.set.ids.map (id, index) ->
+                        repeat = if index < mods then times + 1 else times
+                        return null if repeat == 0
+                        return [1..repeat].map () => <MCProConsoleIdentifierCard id = {id} />
+                else null
+            }
+            { this.renderRestrainText(restrain) }
         </div>
 
     renderRestrainText: (restrain) ->
         <p className="description">
             {if restrain.name then <kbd className="card">{restrain.name}</kbd> else <kbd className="set" onClick={this.onSetClicked.bind(this)}>{restrain.set.name}</kbd>}&nbsp;
             {if restrain.range then <kbd className="range">{restrain.range}</kbd> else null}&nbsp;
+            {if this.props.verbose then <span className="value">{ this.props.verbose.value }&nbsp;</span> else null}
             {restrain.condition.operator}&nbsp;
-            {restrain.condition.number}
+            {restrain.condition.number}&nbsp;
+            {
+                if this.props.verbose 
+                    if this.props.verbose.is
+                        <kbd className="ok">√</kbd>
+                    else
+                        <kbd className="unfit">×</kbd>
+                else null
+            }
         </p>
 
     renderGroupRestrain: (restrain) ->
         text = ""
         if restrain.condition.operator == 'and' then text = '全部满足'
-        else if restrain.condition.operator == 'or' then text = '部分满足'
+        else if restrain.condition.operator == 'or' then text = '任一满足'
         else text = "部分满足 [#{restrain.condition.operator} #{restrain.condition.number}]"
         if this.state.expandGroup
             indent = this.props.indent + 1     
@@ -76,6 +84,7 @@ export class MCProConsoleIdentifierRestrain extends Component
 
     renderRestrain: (restrain) ->
         this.style = {padding: "0px 0px 0px #{this.props.indent * 20}px"}
+        console.log this.props.verbose
         switch restrain.type
             when 'Card'  then this.renderCardRestrain restrain
             when 'Set'   then this.renderSetRestrain restrain
@@ -86,16 +95,18 @@ export class MCProConsoleIdentifierRestrain extends Component
         restrain = this.props.restrain
         return null unless restrain
         this.followRenders = null
-        <div>
-            <li className="list-group-item">
+        <div className="">
+            <li className={"list-group-item" + if this.props.verbose then (if this.props.verbose.is then " ok" else " unfit") else ""}>
                 { this.renderRestrain(this.props.restrain) }
             </li>
             { this.followRenders }
         </div>
+
 MCProConsoleIdentifierRestrain.defaultProps = 
     restrain: null
     indent: 0
     renderImage: true
     onSetClick: null
+    verbose: null
 
 export default MCProConsoleIdentifierRestrain

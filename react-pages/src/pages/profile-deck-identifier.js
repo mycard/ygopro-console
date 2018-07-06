@@ -138,11 +138,15 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
     }
 
     sendDeckCheck() {
-        let url = config.serverHost + "profile/identifier/" + this.state.target;
+        let url = config.serverHost + "profile/identifier/" + this.state.target + "/verbose";
         let form = new FormData();
         form.append("deck", this.state.runtimeDeck);
         message_object.doFetch("identifier check", url, { method: 'POST', body: form }, function (back) {
             back.json().then(function (json) {
+                json.deck_map = new Map();
+                json.tag_map = new Map();
+                json.verboseDecks.forEach((child) => json.deck_map.set(child.deck, child));
+                json.verboseGlobalTags.forEach((child) => json.tag_map.set(child.deck, child));
                 console.log(json);
                 this.setState({runtimeResult: json})
             }.bind(this))
@@ -178,6 +182,11 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
         }.bind(this));
     }
 
+    onInputChanged(event) {
+        if (!this.state.runtimeList) return;
+        this.forceUpdate();
+    }
+
     switchRuntimeStructure(eventKey) {
         this.setState({runtimeType: eventKey})
     }
@@ -187,7 +196,7 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
     }
 
     clearRuntime() {
-        this.setState({runtimeDeck: null, runtimeSet: null, runtimeClassification: null, runtimeResult: null})
+        this.setState({runtimeSet: null, runtimeClassification: null})
     }
 
     render() {
@@ -249,40 +258,60 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
                             <Tab.Pane eventKey="runtime">
                                 <InputGroup style={{margin: "0px 0px 10px 0px"}}>
                                     <InputGroup.Addon>查询</InputGroup.Addon>
-                                    <FormControl type="text" placeholder="查询名" inputRef={ ref => this.queryName = ref }/>
+                                    <FormControl type="text" placeholder="查询名" inputRef={ ref => this.queryName = ref } onChange={this.onInputChanged.bind(this)}/>
                                     <InputGroup.Button>
                                         <DropdownButton id="runtime_type" title={{deck: "卡组", tag: "标签", set: "集合"}[this.state.runtimeType]} onSelect={this.switchRuntimeStructure.bind(this)}>
                                             <MenuItem eventKey="deck">卡组</MenuItem>
                                             <MenuItem eventKey="tag">标签</MenuItem>
                                             <MenuItem eventKey="set">集合</MenuItem>
                                         </DropdownButton>
-                                        <Button type="submit" bsStyle="primary" onClick={this.loadRuntimeStructure.bind(this)}>查询</Button>
+                                        <Button type="submit" bsStyle="primary" onClick={this.loadRuntimeStructure.bind(this)} style={{display: "none"}}>查询</Button>
                                         <Button onClick={ () => this.refs.input_file.click() }>检查卡组</Button>
+                                        { this.state.runtimeDeck ? <Button onClick={() => {this.setState({runtimeDeck: null, runtimeResult: null})}}>移除卡组</Button> : null}
+                                        { this.state.runtimeClassification || this.state.runtimeSet ?
+                                            <Button onClick={() => {this.queryName.value = ""; this.clearRuntime();}}>返回列表</Button>
+                                            : null
+                                        }
                                         <input type="file" ref="input_file" name="input_file" accept=".ydk" style={{display: "none"}} onChange={this.onFileChanged.bind(this)} />
                                     </InputGroup.Button>
                                 </InputGroup>
-                                { this.state.runtimeDeck ? <Col md={8} xs={12}><MCProConsoleIdentifierDeck deck={this.state.runtimeDeck}/></Col> : null }
-                                { this.state.runtimeResult ?
-                                    <Col md={4} xs={12}>
-                                        <Panel header="检验结果">
-                                            { this.state.runtimeResult.deck }
-                                            <ListGroup fill>
-                                                { this.state.runtimeResult.tag.map((tag) => <ListGroupItem>{tag}</ListGroupItem>) }
-                                            </ListGroup>
-                                        </Panel>
-                                    </Col>
-                                    : null
-                                }
-                                { this.state.runtimeClassification ? <MCProConsoleIdentifierClassification classification={this.state.runtimeClassification}
-                                                                                                           onTagClick={this.onClassificationKbdClicked.bind(this)}
-                                                                                                           onSetClick={this.onClassificationSetClicked.bind(this)}/> : null }
-                                { this.state.runtimeSet ? <MCProConsoleIdentifierSet set={this.state.runtimeSet}/> : null }
-                                <div style={{overflowWrap: "break-word"}}>
-                                {
-                                    !this.state.runtimeClassification && !this.state.runtimeSet && !this.state.runtimeDeck && this.state.runtimeList ?
-                                        this.state.runtimeList[this.state.runtimeType + "s"].map((name) => <a onClick={this.onKbdClicked.bind(this)} ><kbd style={{margin: "2px"}} >{name}</kbd></a>)
+                                <Row style={{"margin": "6px"}}>
+                                    { this.state.runtimeDeck ? <Col md={9} xs={12}><MCProConsoleIdentifierDeck deck={this.state.runtimeDeck}/></Col> : null }
+                                    { this.state.runtimeResult ?
+                                        <Col md={3} xs={12}>
+                                            <Panel header="检验结果">
+                                                { this.state.runtimeResult.deck }
+                                                <ListGroup fill>
+                                                    { this.state.runtimeResult.tag.map((tag) => <ListGroupItem>{tag}</ListGroupItem>) }
+                                                </ListGroup>
+                                            </Panel>
+                                        </Col>
                                         : null
-                                }
+                                    }
+                                </Row>
+                                <Row>
+                                    {
+                                        this.state.runtimeClassification
+                                            ? <MCProConsoleIdentifierClassification classification={this.state.runtimeClassification}
+                                                                                  onTagClick={this.onClassificationKbdClicked.bind(this)}
+                                                                                  onSetClick={this.onClassificationSetClicked.bind(this)}
+                                                                                  verbose={this.state.runtimeResult
+                                                                                      ? (this.state.runtimeType === "deck" ? this.state.runtimeResult.deck_map : this.state.runtimeResult.tag_map).get(this.state.runtimeClassification.name)
+                                                                                      : null}/>
+                                            : null
+                                    }
+                                    { this.state.runtimeSet ? <MCProConsoleIdentifierSet set={this.state.runtimeSet}/> : null }
+                                </Row>
+                                <div style={{overflowWrap: "break-word"}} id="board">
+                                    {
+                                        !this.state.runtimeClassification && !this.state.runtimeSet && this.state.runtimeList ?
+                                            <Panel>
+                                                { this.state.runtimeList[this.state.runtimeType + "s"].filter((name) => name.indexOf(this.queryName.value) >= 0).map(function (name) {
+                                                    return (<kbd onClick={this.onKbdClicked.bind(this)}>{name}</kbd>);
+                                                }.bind(this))}
+                                            </Panel>
+                                            : null
+                                    }
                                 </div>
                             </Tab.Pane>
                             <Tab.Pane eventKey="record">

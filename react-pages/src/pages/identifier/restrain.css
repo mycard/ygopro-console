@@ -7,3 +7,25 @@ kbd.set {
 p.description {
     margin: 5px 2px 0px 0px
 }
+span.value {
+    font-weight: bold;
+    color: rebeccapurple;
+}
+
+kbd.ok {
+    background: green
+}
+
+kbd.unfit {
+    background: darkred
+}
+
+li.ok {
+    background: rgb(230, 255, 230);
+    background-color: rgb(230, 255, 230);
+}
+
+li.unfit {
+    background: rgb(255, 230, 230);
+    background-color:rgb(255, 230, 230);
+}

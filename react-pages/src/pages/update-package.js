@@ -86,6 +86,8 @@ class MCProConsoleUpdatePackagePage extends Component
             13: "正在生成策略包",
             14: "正在计算文件大小",
             20: "正在上传存档",
+            21: "正在写入发行版",
+            22: "正在写入发行版",
             30: "正在发布文件",
             999: "已跳过"
         };
@@ -146,6 +148,10 @@ class MCProConsoleUpdatePackagePage extends Component
                 break;
             case 'fail':
                 last_part_report = <div>上一个于 <kbd>{this.formatTime(this.state.last.start)}</kbd> 开始的任务已失败。</div>;
+                break;
+            default:
+                last_part_report = <div>打包器正在外太空漂浮，我们不知道它的当前状态</div>;
+                break;
         }
 
         let updatePart = <Col md={6} xs={12}>

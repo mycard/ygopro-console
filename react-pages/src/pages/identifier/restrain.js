@@ -31,7 +31,6 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
   }
 
   onSetClicked(event) {
-    console.log("set!");
     if (this.props.onSetClick) {
       return this.props.onSetClick.call(this, event);
     }
@@ -59,7 +58,7 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
     times = Math.floor(num / len);
     mods = num % len;
     return <div style={this.style}>
-        {(this.props.renderImage ? restrain.set.ids.map(function(id, index) {
+            {(this.props.renderImage ? restrain.set.ids.map(function(id, index) {
       var i, repeat, results;
       repeat = index < mods ? times + 1 : times;
       if (repeat === 0) {
@@ -69,11 +68,11 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
         results = [];
         for (var i = 1; 1 <= repeat ? i <= repeat : i >= repeat; 1 <= repeat ? i++ : i--){ results.push(i); }
         return results;
-      }).apply(this).map(function() {
+      }).apply(this).map(() => {
         return <MCProConsoleIdentifierCard id={id} />;
       });
     }) : null)}
-        {this.renderRestrainText(restrain)}
+            {this.renderRestrainText(restrain)}
         </div>;
   }
 
@@ -81,8 +80,10 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
     return <p className="description">
             {(restrain.name ? <kbd className="card">{restrain.name}</kbd> : <kbd className="set" onClick={this.onSetClicked.bind(this)}>{restrain.set.name}</kbd>)}&nbsp;
             {(restrain.range ? <kbd className="range">{restrain.range}</kbd> : null)}&nbsp;
+            {(this.props.verbose ? <span className="value">{this.props.verbose.value}&nbsp;</span> : null)}
             {restrain.condition.operator}&nbsp;
-            {restrain.condition.number}
+            {restrain.condition.number}&nbsp;
+            {(this.props.verbose ? this.props.verbose.is ? <kbd className="ok">√</kbd> : <kbd className="unfit">×</kbd> : null)}
         </p>;
   }
 
@@ -92,7 +93,7 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
     if (restrain.condition.operator === 'and') {
       text = '全部满足';
     } else if (restrain.condition.operator === 'or') {
-      text = '部分满足';
+      text = '任一满足';
     } else {
       text = `部分满足 [${restrain.condition.operator} ${restrain.condition.number}]`;
     }
@@ -114,6 +115,7 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
     this.style = {
       padding: `0px 0px 0px ${this.props.indent * 20}px`
     };
+    console.log(this.props.verbose);
     switch (restrain.type) {
       case 'Card':
         return this.renderCardRestrain(restrain);
@@ -133,8 +135,8 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
       return null;
     }
     this.followRenders = null;
-    return <div>
-            <li className="list-group-item">
+    return <div className="">
+            <li className={"list-group-item" + (this.props.verbose ? (this.props.verbose.is ? " ok" : " unfit") : "")}>
                 {this.renderRestrain(this.props.restrain)}
             </li>
             {this.followRenders}
@@ -147,7 +149,8 @@ MCProConsoleIdentifierRestrain.defaultProps = {
   restrain: null,
   indent: 0,
   renderImage: true,
-  onSetClick: null
+  onSetClick: null,
+  verbose: null
 };
 
 export default MCProConsoleIdentifierRestrain;
