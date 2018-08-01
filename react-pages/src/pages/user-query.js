@@ -246,6 +246,10 @@ class MCProConsoleUserManagePage extends Component {
                                         <td>竞技场</td>
                                         <td>{this.state.userData.athletic_win}/{this.state.userData.athletic_draw}/{this.state.userData.athletic_lose}（胜率 {(this.state.userData.athletic_win / this.state.userData.athletic_all * 100).toFixed(3)}%）</td>
                                     </tr>
+                                    <tr>
+                                        <td>掉线</td>
+                                        <td>{this.state.userData.recent_drop}/{this.state.userData.recent_match}（掉线率 {(this.state.userData.recent_drop / this.state.userData.recent_match * 100).toFixed(3)}%）</td>
+                                    </tr>
                                     </tbody>
                                     :
                                     <tbody>

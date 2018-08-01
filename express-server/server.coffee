@@ -53,8 +53,7 @@ server.post '/user/id', bodyParser.text(), (req, res) ->
 
 server.get '/user/:target_username', (req, res) ->
   target_username = req.params.target_username
-  user.queryUser target_username, (result) ->
-    res.json result
+  res.json(await user.queryUser target_username)
 
 server.get '/user/ip/:target_ip', (req, res) ->
   target_ip = req.params.target_ip
