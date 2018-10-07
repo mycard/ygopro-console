@@ -69,7 +69,7 @@ class MCProConsolePagedTable extends Component
                             </tbody>
                             :
                             <tbody>
-                                {this.state.data.map(this.props.tbodyGenerator)}
+                                { this.state.data ? this.state.data.map(this.props.tbodyGenerator) : null }
                             </tbody>
                     }
                 </Table>

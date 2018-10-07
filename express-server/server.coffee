@@ -51,6 +51,27 @@ server.post '/user/vote', bodyParser.text(), (req, res) ->
 server.post '/user/id', bodyParser.text(), (req, res) ->
   user.queryUserViaIds(JSON.parse req.body).then (result) -> res.json result.rows
 
+server.get '/user/ban', (req, res) ->
+  page = parseInt(req.query.page) || 0
+  user.queryBan([page]).then (result) -> res.json result
+
+server.get '/user/ban/count', (req, res) ->
+  user.queryBanCount([]).then (result) -> res.json result
+
+server.get '/user/ban/:username', (req, res) ->
+  name = req.params.username || ''
+  result = await user.queryUserBanHistory(name)
+  res.json result
+
+server.get '/user/ban/:username/count', (req, res) -> res.end '1'
+
+server.post '/user/ban/:username', (req, res) ->
+  count = req.query.count || '1'
+  count = parseInt(count) || 1
+  name = req.params.username || ''
+  await user.banUser(name, count)
+  res.end 'ok'
+
 server.get '/user/:target_username', (req, res) ->
   target_username = req.params.target_username
   res.json(await user.queryUser target_username)

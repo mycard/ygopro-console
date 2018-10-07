@@ -101,3 +101,23 @@ module.exports.getVotes = getVotes
 module.exports.getVoteTickets = getVoteTickets
 module.exports.saveVote = saveVote
 module.exports.insertVote = insertVote
+
+# Ban History
+GET_BANNED_ALL = "select * from user_ban_history order by \"from\" desc limit #{PAGE_LIMIT} offset $1"
+GET_BANNED_PAGES = "select count(*) from user_ban_history"
+GET_BANNED_HISTORY = "select * from user_ban_history where username = $1::text"
+BAN_USER_SQL = "insert into user_ban_history values($1::text, $2::text, now() + '__$3__ day', now())"
+
+Object.assign module.exports, database.defineStandardQueryFunctions 'queryBan', database.ygoproPool, GET_BANNED_ALL, GET_BANNED_PAGES, PAGE_LIMIT
+
+queryUserBanHistory = (name) ->
+  result = await ygoproPool.query GET_BANNED_HISTORY, [name]
+  result.rows
+
+banUser = (name, to, level) ->
+  level = level || "silence"
+  sql = BAN_USER_SQL.replace "__$3__", parseFloat to
+  await ygoproPool.query sql, [name, level]
+
+module.exports.queryUserBanHistory = queryUserBanHistory
+module.exports.banUser = banUser

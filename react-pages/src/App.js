@@ -21,6 +21,7 @@ import MCProConsoleAnalyticsSinglePage from './pages/analytics-single'
 import MCProConsoleProfileDeckIdentifierPage from './pages/profile-deck-identifier'
 import {messages} from './components/Message'
 import './App.css';
+import MCProConsoleUserBanPage from "./pages/user-ban";
 
 class App extends Component {
 
@@ -38,6 +39,7 @@ class App extends Component {
                   <Route path="/users/query" component={MCProConsoleUserQueryPage} />
                   <Route path="/users/messages" component={MCProConsoleUserMessagePage} />
                   <Route path="/users/vote" component={MCProConsoleUserVotePage} />
+                  <Route path="/users/ban" component={MCProConsoleUserBanPage} />
                   <Route path="/update/database" component={MCProConsoleDatabasePage}/>
                   <Route path="/update/package" component={MCProConsoleUpdatePackagePage}/>
                   <Route path="/image/state" component={MCProConsoleImageManagerStatePage}/>

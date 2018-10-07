@@ -33,6 +33,7 @@ class MCProConsoleNavigationBar extends Component
                                     <LinkContainer to="/users/query"><NavItem>查询</NavItem></LinkContainer>
                                     <LinkContainer to="/users/messages"><NavItem>消息记录</NavItem></LinkContainer>
                                     <LinkContainer to="/users/vote"><NavItem>投票</NavItem></LinkContainer>
+                                    <LinkContainer to="/users/ban"><NavItem>封禁</NavItem></LinkContainer>
                                 </NavDropdown>
                                 <NavDropdown title="更新">
                                     <LinkContainer to="/update/database"><NavItem
