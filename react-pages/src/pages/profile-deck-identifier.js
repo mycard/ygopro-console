@@ -281,9 +281,13 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
                                         <Col md={3} xs={12}>
                                             <Panel header="检验结果">
                                                 { this.state.runtimeResult.deck }
-                                                <ListGroup fill>
-                                                    { this.state.runtimeResult.tag.map((tag) => <ListGroupItem>{tag}</ListGroupItem>) }
-                                                </ListGroup>
+                                                { this.state.runtimeResult.tag ?
+                                                    <ListGroup fill>
+                                                        {this.state.runtimeResult.tag.map((tag) =>
+                                                            <ListGroupItem>{tag}</ListGroupItem>)}
+                                                    </ListGroup>
+                                                    : null
+                                                }
                                             </Panel>
                                         </Col>
                                         : null
