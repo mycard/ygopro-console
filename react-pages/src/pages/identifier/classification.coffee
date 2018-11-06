@@ -15,13 +15,20 @@ export class MCProConsoleIdentifierClassification extends Component
       </div>
     else null
 
+  renderConfigs: (configs) ->
+    names = 
+      "global": "全域"
+      "upgrade": "可升级"
+    <div>
+      { configs.map (config) -> <kbd>{ if names[config] then names[config] else config }</kbd> }
+    </div>
+
   onTagClick: (event) ->
     this.props.onTagClick.call this, event if this.props.onTagClick
 
   render: ->
     classification = this.props.classification
     return null unless classification
-    console.log this.props.verbose
     <Panel header={ classification.name }>
       优先级：{ classification.priority }
       <div>
@@ -31,6 +38,7 @@ export class MCProConsoleIdentifierClassification extends Component
           else null
         }
       </div>
+      { if classification.configs then this.renderConfigs(classification.configs) else null }
       <ListGroup fill>
         <ListGroupItem disabled>约束</ListGroupItem>
         { 

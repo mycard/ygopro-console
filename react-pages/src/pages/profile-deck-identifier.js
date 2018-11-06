@@ -146,8 +146,7 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
                 json.deck_map = new Map();
                 json.tag_map = new Map();
                 json.verboseDecks.forEach((child) => json.deck_map.set(child.deck, child));
-                json.verboseGlobalTags.forEach((child) => json.tag_map.set(child.deck, child));
-                console.log(json);
+                json.verboseGlobalTags.forEach((child) => json.tag_map.set(child.tag, child));
                 this.setState({runtimeResult: json})
             }.bind(this))
         }.bind(this))
@@ -177,9 +176,7 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
     onClassificationSetClicked(event) {
         let name = event.currentTarget.textContent;
         this.queryName.value = name;
-        this.setState({ runtimeType: "set" }, function () {
-            this.loadRuntimeStructure.call(this, event);
-        }.bind(this));
+        this.setState({ runtimeType: "set" }, () => this.loadRuntimeStructure.call(this, event));
     }
 
     onInputChanged(event) {
@@ -330,14 +327,3 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
 }
 
 export default MCProConsoleProfileDeckIdentifierPage
-//if (this.state.temp == null)
-//    return null
-/*
-return <Col md={6}>
-    <div>
-        Hey
-        <input ref="file" type="file" className="file" onChange={this.onFileChanged.bind(this)} />
-        <MCProConsoleIdentifierDeck name="temp" deck={this.state.temp} />
-    </div>
-</Col>
-*/

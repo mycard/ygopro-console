@@ -83,7 +83,7 @@ class MCProConsoleMessagePusher extends Component
         return fetch(uri, parameters).then(function(result)
         {
             let inner_message = '';
-            if (result.ok)
+            if (result.ok && callback)
                 inner_message = callback.call(this, result);
             else
                 inner_message = result.statusText;

@@ -31,6 +31,19 @@ export var MCProConsoleIdentifierClassification = class MCProConsoleIdentifierCl
     }
   }
 
+  renderConfigs(configs) {
+    var names;
+    names = {
+      "global": "全域",
+      "upgrade": "可升级"
+    };
+    return <div>
+      {configs.map(function(config) {
+      return <kbd>{(names[config] ? names[config] : config)}</kbd>;
+    })}
+    </div>;
+  }
+
   onTagClick(event) {
     if (this.props.onTagClick) {
       return this.props.onTagClick.call(this, event);
@@ -43,12 +56,12 @@ export var MCProConsoleIdentifierClassification = class MCProConsoleIdentifierCl
     if (!classification) {
       return null;
     }
-    console.log(this.props.verbose);
     return <Panel header={classification.name}>
       优先级：{classification.priority}
       <div>
         {(this.props.verbose ? this.props.verbose.is ? "通过" : "否决" : null)}
       </div>
+      {(classification.configs ? this.renderConfigs(classification.configs) : null)}
       <ListGroup fill>
         <ListGroupItem disabled>约束</ListGroupItem>
         {(self = this, classification.restrains.map(function(restrain, i) {
