@@ -66,7 +66,7 @@ server.get '/user/ban/:username', (req, res) ->
 server.get '/user/ban/:username/count', (req, res) -> res.end '1'
 
 server.post '/user/ban/:username', (req, res) ->
-  count = req.query.count || '1'
+  count = req.query.length || '1'
   count = parseInt(count) || 1
   name = req.params.username || ''
   await user.banUser(name, count)
