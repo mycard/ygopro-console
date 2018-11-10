@@ -75,7 +75,11 @@ export class MCProConsoleIdentifierRestrain extends Component
         if this.state.expandGroup
             indent = this.props.indent + 1     
             image = true#this.state.expandImage
-            this.followRenders = restrain.restrains.map (child) -> <MCProConsoleIdentifierRestrain restrain={child} indent={indent} renderImage={image} />
+            if this.props.verbose
+                this.followRenders = restrain.restrains.map (child, index) => 
+                    <MCProConsoleIdentifierRestrain restrain={child} indent={indent} renderImage={image} verbose={this.props.verbose.children[index]} />
+            else
+                this.followRenders = restrain.restrains.map (child) -> <MCProConsoleIdentifierRestrain restrain={child} indent={indent} renderImage={image} />
         <div style={this.style}>
             约束组：{text} 
             &nbsp;<a onClick={this.onExpandClicked.bind(this)}>{if this.state.expandGroup then '收起' else '展开'}</a>
@@ -84,7 +88,6 @@ export class MCProConsoleIdentifierRestrain extends Component
 
     renderRestrain: (restrain) ->
         this.style = {padding: "0px 0px 0px #{this.props.indent * 20}px"}
-        console.log this.props.verbose
         switch restrain.type
             when 'Card'  then this.renderCardRestrain restrain
             when 'Set'   then this.renderSetRestrain restrain

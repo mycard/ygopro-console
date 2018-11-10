@@ -3,6 +3,7 @@ import { Tab, Row, Col, DropdownButton, MenuItem, InputGroup, Button, FormContro
 import MCProConsoleIdentifierSet from './identifier/set'
 import MCProConsoleIdentifierDeck from './identifier/deck'
 import MCProConsoleIdentifierClassification from './identifier/classification'
+import MCProConsoleIdentifierResult from './identifier/result'
 import config from '../Config.json'
 import { message_object } from "../components/Message";
 import "./profile-deck-identifier.css"
@@ -276,16 +277,7 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
                                     { this.state.runtimeDeck ? <Col md={9} xs={12}><MCProConsoleIdentifierDeck deck={this.state.runtimeDeck}/></Col> : null }
                                     { this.state.runtimeResult ?
                                         <Col md={3} xs={12}>
-                                            <Panel header="检验结果">
-                                                { this.state.runtimeResult.deck }
-                                                { this.state.runtimeResult.tag ?
-                                                    <ListGroup fill>
-                                                        {this.state.runtimeResult.tag.map((tag) =>
-                                                            <ListGroupItem>{tag}</ListGroupItem>)}
-                                                    </ListGroup>
-                                                    : null
-                                                }
-                                            </Panel>
+                                            <MCProConsoleIdentifierResult result={this.state.runtimeResult} />
                                         </Col>
                                         : null
                                     }

@@ -100,9 +100,15 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
     if (this.state.expandGroup) {
       indent = this.props.indent + 1;
       image = true; //this.state.expandImage
-      this.followRenders = restrain.restrains.map(function(child) {
-        return <MCProConsoleIdentifierRestrain restrain={child} indent={indent} renderImage={image} />;
-      });
+      if (this.props.verbose) {
+        this.followRenders = restrain.restrains.map((child, index) => {
+          return <MCProConsoleIdentifierRestrain restrain={child} indent={indent} renderImage={image} verbose={this.props.verbose.children[index]} />;
+        });
+      } else {
+        this.followRenders = restrain.restrains.map(function(child) {
+          return <MCProConsoleIdentifierRestrain restrain={child} indent={indent} renderImage={image} />;
+        });
+      }
     }
     return <div style={this.style}>
             约束组：{text} 
@@ -115,7 +121,6 @@ export var MCProConsoleIdentifierRestrain = class MCProConsoleIdentifierRestrain
     this.style = {
       padding: `0px 0px 0px ${this.props.indent * 20}px`
     };
-    console.log(this.props.verbose);
     switch (restrain.type) {
       case 'Card':
         return this.renderCardRestrain(restrain);
@@ -154,3 +159,5 @@ MCProConsoleIdentifierRestrain.defaultProps = {
 };
 
 export default MCProConsoleIdentifierRestrain;
+
+//# sourceMappingURL=restrain.js.map
