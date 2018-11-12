@@ -24,7 +24,7 @@ defineStandardQueryFunctions = (name, pool, standard_sql, count_sql, page_limit)
   formatArgs = (arg) =>
       if Number.isInteger(arg) then arg
       else if moment.isMoment(arg) then arg.format('YYYY-MM-DD HH:mm:ss')
-      else return if arg == "" then "%" else "%#{arg}%".replace(/%%/g, "")
+      else return formatText(arg)
   result[name] = (args) =>
     args = args.map formatArgs
     args[args.length - 1] = (args[args.length - 1] - 1) * page_limit
@@ -40,6 +40,14 @@ defineStandardQueryFunctions = (name, pool, standard_sql, count_sql, page_limit)
           resolve Math.ceil result.rows[0].count / page_limit
   result
 
+formatText = (str) ->
+  return "%" if str == ""
+  ans = "%#{str}%".replace(/%%/g, "")
+  ans = ans.substring 2 if ans.startsWith "%^"
+  ans = ans.substring 0, ans.length - 2 if ans.endsWith "$%"
+  ans
+
 module.exports.standardQueryCallback = standardQueryCallback
 module.exports.standardPromiseCallback = standardPromiseCallback
-module.exports.defineStandardQueryFunctions = defineStandardQueryFunctions;
+module.exports.defineStandardQueryFunctions = defineStandardQueryFunctions
+module.exports.formatText = formatText

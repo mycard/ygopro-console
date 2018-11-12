@@ -75,7 +75,7 @@ class MCProConsoleUserManagePage extends Component {
         this.source.setState({searchBy: 'user'});
         this.source.state.searchBy = 'user';
         let text = ReactDOM.findDOMNode(this.source.refs.username);
-        text.value = this.user;
+        text.value = '"' + this.user + '"';
         this.source.searchUser.call(this.source);
     }
 

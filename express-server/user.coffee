@@ -5,6 +5,7 @@ ygoproPool = database.ygoproPool
 
 PAGE_LIMIT = 100
 QUERY_MYCARD_SQL = 'select * from users where name like $1::text or username like $1::text limit 200'
+QUERY_MYCARD_LIMITED_SQL = 'select * from users where username = $1::text'
 QUERY_MYCARD_IP_SQL = 'select * from users where registration_ip_address like $1::text or ip_address like $1::text limit 200'
 QUERY_MYCARD_ID_SQL = 'select * from users where id in '
 QUERY_YGOPRO_SQL = 'select * from user_info where username = $1::text'
@@ -15,7 +16,10 @@ GET_RECENT_MATCH_COUNT = 'select count(*) from battle_history where end_time > (
 GET_RECENT_DROP_MATCH_COUNT = 'select count(*) from battle_history where end_time > (now() - interval \'30 day\') and ((usernamea = $1::text and userscorea <= -7) or (usernameb = $1::text and userscoreb <= -7))'
 
 queryUser = (user) ->
-  mycard_result = await mycardPool.query QUERY_MYCARD_SQL, ["%#{user}%"]
+  if user.startsWith('"') and user.endsWith('"')
+    mycard_result = await mycardPool.query QUERY_MYCARD_LIMITED_SQL, [user.substring 1, user.length - 1]
+  else
+    mycard_result = await mycardPool.query QUERY_MYCARD_SQL, [database.formatText(user)]
   return [] if mycard_result.rows.length == 0
   if mycard_result.rows.length > 1
     names = mycard_result.rows.map (data) -> data.username
