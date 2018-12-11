@@ -30,7 +30,10 @@ class MCProConsoleProfileDeckIdentifierRecordPanel extends Component {
             alert('搜索条件下无卡组。');
             return;
         }
-        url.pathname = 'profile/record/id';
+        url = new URL('profile/record/id', config.serverHost);
+        this.refs.time.setUrl(url);
+        url.searchParams.append("user", this.userInputer.value);
+        url.searchParams.append("source", this.sourceInputer.value);
         let id_response = await message_object.doFetch('identifier query id', url.toString(), {});
         let id = await id_response.json();
         this.setState({
