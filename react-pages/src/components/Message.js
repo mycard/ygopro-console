@@ -96,7 +96,8 @@ class MCProConsoleMessagePusher extends Component
                     </div>
                 );
                 this.replaceMessage(key, message, level, 5000);
-            }.bind(this))
+            }.bind(this));
+            return result;
         }.bind(this)).catch(function (fail) {
             let message = (
                 <div>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col, FormControl, Button } from 'react-bootstrap'
 import { message_object } from '../components/Message'
+import config from '../Config'
 
 class MCProConsoleImageConfigPage extends Component {
     constructor() {

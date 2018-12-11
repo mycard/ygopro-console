@@ -9,6 +9,7 @@ analytics = require './analytics'
 update = require './update'
 packager = require './packager'
 config = require './config.json'
+deckRouter = require './deckRecord'
 
 timeRouter = require('./time').timeRouter
 authorizeRouter = require('./author').authorizeRouter
@@ -209,6 +210,8 @@ server.use '/profile/identifier', (req, res) ->
     req.pipe(request(url.toString(), { form: req.body })).pipe(res)
   catch
     res.end 500
+
+deckRouter.router server
 
 #React Router File12
 server.get '*', (req, res) ->

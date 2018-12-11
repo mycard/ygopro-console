@@ -51,6 +51,12 @@ class MCProConsoleTimeRangePicker extends Component {
         url.searchParams.set('end_time', this.state.endDate.valueOf());
     }
 
+    setUrlPgDate(url)
+    {
+        url.searchParams.set('start_time', this.state.startDate.format('YYYY-MM-DD'));
+        url.searchParams.set('end_time', this.state.endDate.format('YYYY-MM-DD'));
+    }
+
     render() {
         let display = null;
         let startDate = this.state.startDate;

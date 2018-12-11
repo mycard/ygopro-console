@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Tab, Row, Col, DropdownButton, MenuItem, InputGroup, Button, FormControl, Nav, NavItem, Modal, Panel, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Tab, Row, Col, DropdownButton, MenuItem, InputGroup, Button, FormControl, Nav, NavItem, Modal, Panel, ButtonGroup, ListGroupItem } from 'react-bootstrap'
 import MCProConsoleIdentifierSet from './identifier/set'
 import MCProConsoleIdentifierDeck from './identifier/deck'
 import MCProConsoleIdentifierClassification from './identifier/classification'
 import MCProConsoleIdentifierResult from './identifier/result'
+import MCProConsoleProfileDeckIdentifierRecordPanel from './profile-deck-identifier-record'
 import config from '../Config.json'
 import { message_object } from "../components/Message";
 import "./profile-deck-identifier.css"
@@ -197,6 +198,13 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
         this.setState({runtimeSet: null, runtimeClassification: null})
     }
 
+    onSwitchDeck(deck) {
+        this.setState({
+            runtimeDeck: deck,
+            tab: "runtime"
+        }, this.sendDeckCheck.bind(this));
+    }
+
     render() {
         return <Col md={12} xs={12}>
             <Tab.Container id="tab" activeKey={this.state.tab} onSelect={this.switchTab.bind(this)}>
@@ -308,7 +316,7 @@ class MCProConsoleProfileDeckIdentifierPage extends Component {
                                 </div>
                             </Tab.Pane>
                             <Tab.Pane eventKey="record">
-                                没做
+                                <MCProConsoleProfileDeckIdentifierRecordPanel recognizeCallback={this.onSwitchDeck.bind(this)}/>
                             </Tab.Pane>
                         </Tab.Content>
                     </Col>
