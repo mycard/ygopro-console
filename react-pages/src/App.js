@@ -22,6 +22,7 @@ import MCProConsoleProfileDeckIdentifierPage from './pages/profile-deck-identifi
 import {messages} from './components/Message'
 import './App.css';
 import MCProConsoleUserBanPage from "./pages/user-ban";
+import MCProConsoleAnalyticsMatchupPage from "./pages/analytics-matchup";
 
 class App extends Component {
 
@@ -53,6 +54,7 @@ class App extends Component {
                   <Route path="/analytics/daily" component={MCProConsoleAnalyticsDailyPage} />
                   <Route path="/analytics/deck" component={MCProConsoleAnalyticsDeckPage} />
                   <Route path="/analytics/single" component={MCProConsoleAnalyticsSinglePage} />
+                  <Route path="/analytics/matchup" component={MCProConsoleAnalyticsMatchupPage} />
                   <Route path="/profiles/deck" component={MCProConsoleProfileDeckIdentifierPage} />
               </div>
           </Router>

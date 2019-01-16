@@ -3,6 +3,7 @@ path = require 'path'
 _url = require 'url'
 request = require 'request'
 bodyParser = require 'body-parser'
+moment = require 'moment'
 
 user = require './user'
 analytics = require './analytics'
@@ -175,6 +176,14 @@ server.get '/analyze/daily', (req, res) ->
   .catch (result) ->
     res.statusCode = 500
     res.end result
+
+server.get '/analyze/matchup', (req, res) ->
+  source = req.query.source || "athletic"
+  deckA = req.query.deckA || "迷之卡组"
+  deckB = req.query.deckB || "迷之卡组"
+  period = req.query.period || moment().format("YYYY-MM")
+  ans = await analytics.queryMatchup source, deckA, deckB, period
+  res.json ans
 
 server.get '/updates/package', (req, res) ->
   packager.pack.then -> res.end 'ok'

@@ -16,6 +16,7 @@ TAG_COUNT_SQL = "select count(*) from (select sum(count) sc from tag_day where (
 SINGLE_QUERY_SQL = "select id, source, sum(frequency) sc, sum(numbers) numbers, sum(putone) putone, sum(puttwo) puttwo, sum(putthree) putthree, sum(putoverthree) putoverthree from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source order by sc desc, source desc limit #{PAGE_LIMIT} offset $4"
 SINGLE_COUNT_SQL = "select count(*) from (select sum(frequency) sc from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source) as counts"
 PURE_COUNT_SQL = "select sum(count) count from counter where timeperiod = 1 and source like $1::text and time >= $2 and time <= $3"
+MATCHUP_QUERY_SQL = "select * from matchup where source = $1::text and decka = $2::text and deckb = $3::text and period = $4::text"
 
 
 DAILY_COUNT =
@@ -125,9 +126,15 @@ dailyCount = (type, start_time, end_time) ->
     type = '%' if !type or type == 'all'
     ygoproPool.query DAILY_COUNT, [type, start_time, end_time], (err, result) -> database.standardPromiseCallback resolve, reject, err, result
 
+queryMatchup = (source, decka, deckb, period) ->
+  [decka, deckb] = [deckb, decka] if decka > deckb
+  ans = await ygoproPool.query MATCHUP_QUERY_SQL, [source, decka, deckb, period]
+  ans.rows
+
 module.exports.runCommands = runCommands
 module.exports.setCommands = setCommands
 module.exports.dailyCount = dailyCount
 module.exports.querySingle = querySingle
 module.exports.querySingleCount = querySingleCount
 module.exports.queryPureCount = queryPureCount
+module.exports.queryMatchup = queryMatchup
