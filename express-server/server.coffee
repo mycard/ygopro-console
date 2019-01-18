@@ -180,10 +180,25 @@ server.get '/analyze/daily', (req, res) ->
 server.get '/analyze/matchup', (req, res) ->
   source = req.query.source || "athletic"
   deckA = req.query.deckA || "迷之卡组"
-  deckB = req.query.deckB || "迷之卡组"
+  deckB = req.query.deckB
   period = req.query.period || moment().format("YYYY-MM")
-  ans = await analytics.queryMatchup source, deckA, deckB, period
+  page = parseInt(req.query.page) || 1
+  if deckB
+    ans = await analytics.queryMatchup source, deckA, deckB, period
+  else
+    ans = await analytics.queryMatchupSingle source, deckA, period, page - 1
   res.json ans
+
+server.get '/analyze/matchup/count', (req, res) ->
+  source = req.query.source || "athletic"
+  deckA  = req.query.deckA || "迷之卡组"
+  deckB  = req.query.deckB
+  period = req.query.period || moment().format("YYYY-MM")
+  if deckB
+    count = 1
+  else
+    count = await analytics.queryMatchupSingleCount source, deckA, period
+  res.json count
 
 server.get '/updates/package', (req, res) ->
   packager.pack.then -> res.end 'ok'

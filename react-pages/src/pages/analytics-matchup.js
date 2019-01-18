@@ -49,22 +49,23 @@ class MCProConsoleAnalyticsMatchupPage extends Component {
             </Col>
             <Col md={12} xs={12}>
                 <div style={{margin: '10px 10px 10px 10px'}} />
-                <MCProConsolePagedTable ref="table" key="query matchup" thead={["卡组A", "卡组B", "时间", "来源", "胜", "平", "负"]} tbodyGenerator={data =>
+                <MCProConsolePagedTable ref="table" key="query matchup" thead={["卡组A", "卡组B", "时间", "来源", "胜", "负", "平"]} tbodyGenerator={data =>
                     <tr>
                         <td>{data.decka}</td>
                         <td>{data.deckb}</td>
                         <td>{data.period}</td>
                         <td>{data.source}</td>
                         <td>{data.win}（{(data.win * 100 / (data.win + data.draw + data.lose)).toFixed(2)}%）</td>
-                        <td>{data.draw}（{(data.draw * 100 / (data.win + data.draw + data.lose)).toFixed(2)}%）</td>
                         <td>{data.lose}（{(data.lose * 100 / (data.win + data.draw + data.lose)).toFixed(2)}%）</td>
+                        <td>{data.draw}（{(data.draw * 100 / (data.win + data.draw + data.lose)).toFixed(2)}%）</td>
                     </tr>}
                     urlGenerator={function () {
                         let url = new URL(config.serverHost + "analyze/matchup");
                         if (this.queryPeriod.value.length > 0)
                             url.searchParams.set("period", this.queryPeriod.value);
                         url.searchParams.set("deckA", this.queryDeckA.value);
-                        url.searchParams.set("deckB", this.queryDeckB.value);
+                        if (this.queryDeckB.value.length > 0)
+                            url.searchParams.set("deckB", this.queryDeckB.value);
                         url.searchParams.set("source", this.state.queryType);
                         return url;
                     }.bind(this)}

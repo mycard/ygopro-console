@@ -17,7 +17,8 @@ SINGLE_QUERY_SQL = "select id, source, sum(frequency) sc, sum(numbers) numbers, 
 SINGLE_COUNT_SQL = "select count(*) from (select sum(frequency) sc from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source) as counts"
 PURE_COUNT_SQL = "select sum(count) count from counter where timeperiod = 1 and source like $1::text and time >= $2 and time <= $3"
 MATCHUP_QUERY_SQL = "select * from matchup where source = $1::text and decka = $2::text and deckb = $3::text and period = $4::text"
-
+MATCHUP_QUERY_SINGLE_LEFT = "select count(*) from matchup where source = $1::text and decka = $2::text and period = $3::text"
+MATCHUP_QUERY_SINGLE_RIGHT = "select count(*) from matchup where source = $1::text and deckb = $2::text and period = $3::text"
 
 DAILY_COUNT =
   'SELECT day, sum(' +
@@ -36,6 +37,14 @@ DAILY_COUNT =
   '                        WHERE type like $1::text and start_time >= $2 and start_time <= $3) as B' +
   '      GROUP BY username, day) as user_time ' +
   'GROUP BY day ORDER BY day DESC;'
+
+
+MATCHUP_QUERY_SINGLE =
+"select *, (cast (win as Float) / (T.win + T.draw + T.lose)) win_rate from (
+  select source, decka, deckb, period, draw, lose, win from matchup where decka = $2::text and source = $1::text and period = $3::text
+  union select source, deckb, decka, period, draw, win, lose from matchup where deckb = $2::text and source = $1::text and period = $3::text
+                ) as T where T.win + T.lose > 50
+order by win_rate desc limit #{PAGE_LIMIT} offset $4"
 
 runCommands = (start_time, end_time) ->
   answer = []
@@ -131,6 +140,15 @@ queryMatchup = (source, decka, deckb, period) ->
   ans = await ygoproPool.query MATCHUP_QUERY_SQL, [source, decka, deckb, period]
   ans.rows
 
+queryMatchupSingle = (source, decka, period, page) ->
+  ans = await ygoproPool.query MATCHUP_QUERY_SINGLE, [source, decka, period, page]
+  ans.rows
+
+queryMatchupSingleCount = (source, decka, period) ->
+  left  = await ygoproPool.query MATCHUP_QUERY_SINGLE_LEFT,  [source, decka, period]
+  right = await ygoproPool.query MATCHUP_QUERY_SINGLE_RIGHT, [source, decka, period]
+  Math.ceil (parseInt(left.rows[0].count) + parseInt(right.rows[0].count)) / PAGE_LIMIT
+
 module.exports.runCommands = runCommands
 module.exports.setCommands = setCommands
 module.exports.dailyCount = dailyCount
@@ -138,3 +156,5 @@ module.exports.querySingle = querySingle
 module.exports.querySingleCount = querySingleCount
 module.exports.queryPureCount = queryPureCount
 module.exports.queryMatchup = queryMatchup
+module.exports.queryMatchupSingle = queryMatchupSingle
+module.exports.queryMatchupSingleCount = queryMatchupSingleCount
