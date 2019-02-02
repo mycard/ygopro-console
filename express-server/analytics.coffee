@@ -17,8 +17,8 @@ SINGLE_QUERY_SQL = "select id, source, sum(frequency) sc, sum(numbers) numbers, 
 SINGLE_COUNT_SQL = "select count(*) from (select sum(frequency) sc from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source) as counts"
 PURE_COUNT_SQL = "select sum(count) count from counter where timeperiod = 1 and source like $1::text and time >= $2 and time <= $3"
 MATCHUP_QUERY_SQL = "select * from matchup where source = $1::text and decka = $2::text and deckb = $3::text and period = $4::text"
-MATCHUP_QUERY_SINGLE_LEFT = "select count(*) from matchup where source = $1::text and decka = $2::text and period = $3::text"
-MATCHUP_QUERY_SINGLE_RIGHT = "select count(*) from matchup where source = $1::text and deckb = $2::text and period = $3::text"
+MATCHUP_QUERY_SINGLE_LEFT = "select count(*) from matchup where source = $1::text and decka = $2::text and period = $3::text and win + lose > 50"
+MATCHUP_QUERY_SINGLE_RIGHT = "select count(*) from matchup where source = $1::text and deckb = $2::text and period = $3::text and win + lose > 50"
 
 DAILY_COUNT =
   'SELECT day, sum(' +
