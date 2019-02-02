@@ -141,7 +141,7 @@ queryMatchup = (source, decka, deckb, period) ->
   ans.rows
 
 queryMatchupSingle = (source, decka, period, page) ->
-  ans = await ygoproPool.query MATCHUP_QUERY_SINGLE, [source, decka, period, page]
+  ans = await ygoproPool.query MATCHUP_QUERY_SINGLE, [source, decka, period, page * PAGE_LIMIT]
   ans.rows
 
 queryMatchupSingleCount = (source, decka, period) ->
