@@ -52,36 +52,44 @@ class MCProConsolePagedTable extends Component
         }.bind(this));
     }
 
-    render()
-    {
+    render() {
         return <Row>
-            <Col xs={12} md={12}>
-                <Table striped bordered hover>
+            <Col xs={12}
+                 md={12}>
+                <Table striped
+                       bordered
+                       hover>
                     <thead>
-                        <tr>
-                            {this.props.thead.map((name) => <td>{name}</td>)}
-                        </tr>
+                    <tr>
+                        {this.props.thead.map((name) => <td>{name}</td>)}
+                    </tr>
                     </thead>
                     {
-                        this.state.data == null || this.state.data.length === 0 ?
-                            <tbody>
-                            <tr><td colSpan={this.props.thead.length}>无相关数据</td></tr>
-                            </tbody>
-                            :
-                            <tbody>
-                                { this.state.data ? this.state.data.map(this.props.tbodyGenerator) : null }
-                            </tbody>
+                        <tbody>
+                        {
+                            this.state.data == null ? <tr><td colSpan={this.props.thead.length}>无相关数据</td></tr>
+                                : this.state.data.length === 0 ? <tr><td colSpan={this.props.thead.length}>{this.props.noDataDescription}</td></tr>
+                                : this.state.data ? this.state.data.map(this.props.tbodyGenerator) : null
+                        }
+                        { this.props.children }
+                        </tbody>
                     }
                 </Table>
-
-                <div style={{textAlign: "center"}}>
-                    <Pagination style={{marginLeft: "auto", marginRight: "auto"}}
-                                prev next first last ellipsis boundaryLinks
-                                items={this.state.pageCount}
-                                maxButtons={10}
-                                activePage={this.state.activePage}
-                                onSelect={this.handleSelect.bind(this)} />
-                </div>
+                {this.state.pageCount >= 2 ?
+                    <div style={{textAlign: "center"}}>
+                        <Pagination style={{marginLeft: "auto", marginRight: "auto"}}
+                                    prev
+                                    next
+                                    first
+                                    last
+                                    ellipsis
+                                    boundaryLinks
+                                    items={this.state.pageCount}
+                                    maxButtons={10}
+                                    activePage={this.state.activePage}
+                                    onSelect={this.handleSelect.bind(this)}/>
+                    </div>
+                    : null}
             </Col>
         </Row>
     }
@@ -91,6 +99,7 @@ MCProConsolePagedTable.defaultProps = {
     thead: [],
     tbodyGenerator: null,
     urlGenerator: null,
+    noDataDescription: "数据为空",
     key: ''
 };
 

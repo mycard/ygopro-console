@@ -14,6 +14,7 @@ GET_MESSAGE_SQL = "select * from message_history where (sender like $1::text or 
 GET_MESSAGE_COUNT_SQL = 'select count(*) from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2'
 GET_RECENT_MATCH_COUNT = 'select count(*) from battle_history where end_time > (now() - interval \'30 day\') and (usernamea = $1::text or usernameb = $1::text);'
 GET_RECENT_DROP_MATCH_COUNT = 'select count(*) from battle_history where end_time > (now() - interval \'30 day\') and ((usernamea = $1::text and userscorea <= -7) or (usernameb = $1::text and userscoreb <= -7))'
+QUERY_RECENT_USERNAME = 'select * from username_change_history where change_time < $1 and new_username = $2 limit 1'
 
 queryUser = (user) ->
   if user.startsWith('"') and user.endsWith('"')
@@ -63,10 +64,26 @@ setUserDp = (user, dp, callback) ->
 
 Object.assign module.exports, database.defineStandardQueryFunctions 'queryMessage', database.ygoproPool, GET_MESSAGE_SQL, GET_MESSAGE_COUNT_SQL, PAGE_LIMIT
 
+searchUserUsedName = (username) ->
+  names = []
+  name = username
+  time = moment().format('YYYY-MM-DD HH:mm:ss')
+  for i in [1..10]
+    query = await mycardPool.query QUERY_RECENT_USERNAME, [time, name]
+    if query.rows.length == 0
+      return names
+    else
+      row = query.rows[0]
+      names.push row
+      name = row.old_username
+      time = row.change_time
+  return names
+
 module.exports.queryUser = queryUser
 module.exports.queryUserViaIp = queryUserViaIp
 module.exports.queryUserViaIds = queryUserViaIds
 module.exports.setUserDp = setUserDp
+module.exports.searchUserUsedName = searchUserUsedName
 
 # Vote part
 GET_VOTES = "select * from votes"

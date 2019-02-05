@@ -28,6 +28,11 @@ server.use '/analyze/*', authorizeRouter
 server.use '/updates/*', authorizeRouter
 server.use '/profile/*', authorizeRouter
 
+##############################
+user2 = require './userN'
+server.use '/user2', user2
+##############################
+
 server.get '/user/message', (req, res) ->
   keyword = req.query.keyword || ''
   level = parseInt(req.query.level) || 0
