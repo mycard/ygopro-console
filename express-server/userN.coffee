@@ -77,6 +77,13 @@ user_set_ban = (username, hours) ->
     await database.standardCountedPGQuery ygoproPool, SQL_USER_BAN, [username, _from, to]
 
 route_message = (route) ->
+    route.count_get '/message', message_query, { keyword: "s", level: "i" }
+
+SQL_MESSAGE_QUERY = "select * from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2::integer order by time desc limit #{config.limitCount} offset $3"
+SQL_MESSAGE_QUERY_COUNT = 'select count(*) from message_history where (sender like $1::text or content like $1::text or match like $1::text) and level >= $2::integer'
+message_query = (content, level, page = 0) ->
+    await database.standardCountedPGQuery ygoproPool, SQL_MESSAGE_QUERY, SQL_MESSAGE_QUERY_COUNT, [content, level, page]
+
 route_vote = (route) ->
 
 route = express.Router()
@@ -86,6 +93,7 @@ route.quick_get = (path, func, param_patterns) ->
     types = Object.values param_patterns
     route.get path, (req, res) ->
         function_params = database.formatRequestParams types, names, Object.assign req.query, req.params
+        #console.log names, types, '->', function_params
         res.json await func.call route, ...function_params
         
 route.quick_post = (path, func, param_patterns) ->
@@ -100,6 +108,7 @@ route.count_get = (path, func, param_patterns) ->
     types = Object.values param_patterns
     route.get path + "/count", (req, res) ->
         function_params = database.formatRequestParams types, names, Object.assign req.query, req.params
+        #console.log names, types, '->', function_params
         res.json await func.call route, ...function_params, -1
     param_patterns["page"] = "i"
     this.quick_get path, func, param_patterns

@@ -1,14 +1,13 @@
 import React, {Component} from 'react'
+import ReactDOM from 'react-dom'
 import {Row, Col, FormGroup, InputGroup, FormControl, Button} from 'react-bootstrap'
 import config from '../Config.json'
 import moment from 'moment'
 import MCProConsolePagedTable from '../components/PagedTable'
 
 class MCProConsoleUserMessagesPage extends Component {
-    constructor() {
-        super();
-        this.keyword = null;
-        this.level = -1;
+    constructor(props) {
+        super(props);
         this.state = {
             pageCount: 1,
             activePage: 1,
@@ -17,19 +16,19 @@ class MCProConsoleUserMessagesPage extends Component {
     }
 
     componentDidMount() {
-        this.refs.table.handleQuery()
+        this.refs.table.handleQuery();
     }
 
     render() {
         return <Row>
-            <Col md={6} xs={12}>
+            <Col md={12} xs={12}>
                 <form>
                     <FormGroup>
                         <InputGroup>
                             <InputGroup.Addon>关键字</InputGroup.Addon>
-                            <FormControl type="text" inputRef={ref => this.keyword = ref} placeholder="要查询的信息关键字"/>
+                            <FormControl type="text" ref="content_input" placeholder="要查询的信息关键字"/>
                             <InputGroup.Addon>信息等级</InputGroup.Addon>
-                            <FormControl type="number" inputRef={ref => this.level = ref} placeholder="0"/>
+                            <FormControl type="number" ref="level_input" placeholder="0"/>
                             <InputGroup.Button>
                                 <Button type="submit" onClick={(event) => {this.refs.table.handleQuery(); event.preventDefault();}}>确定</Button>
                             </InputGroup.Button>
@@ -50,11 +49,12 @@ class MCProConsoleUserMessagesPage extends Component {
                                             </tr>
                                         }}
                                         urlGenerator={function () {
-                                            let keyword = this.keyword.value;
-                                            let level = this.level.value;
-                                            let uri = new URL(config.serverHost + 'user/message');
+                                            let keyword = ReactDOM.findDOMNode(this.refs.content_input).value;
+                                            let level = ReactDOM.findDOMNode(this.refs.level_input).value;
+                                            let uri = new URL(config.serverHost + 'user2/message');
                                             uri.searchParams.set('keyword', keyword);
                                             uri.searchParams.set('level', level);
+                                            console.log(uri.toString());
                                             return uri;
                                         }.bind(this)}/>
             </Col>

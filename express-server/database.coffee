@@ -41,7 +41,7 @@ defineStandardQueryFunctions = (name, pool, standard_sql, count_sql, page_limit)
   result
 
 formatText = (str) ->
-  return "" unless str
+  return "" if str == null || str == undefined
   return "%" if str == ""
   return str.substring(1, str.length - 1) if str.startsWith '"' and str.endsWith '"'
   ans = "%#{str}%".replace(/%%/g, "")
