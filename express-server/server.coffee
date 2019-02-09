@@ -223,6 +223,7 @@ server.get '/updates/pull/last', (req, res) ->
 server.post '/updates/pull', bodyParser.json(), (req, res) ->
   update.pullDatabase().then (result) ->
     res.end result.toString()
+    update.broadcast()
   .catch (result) ->
     res.statusCode = 500
     res.end result.toString()
