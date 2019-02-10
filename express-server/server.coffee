@@ -26,7 +26,7 @@ server.use (req, res, next) ->
 server.use '/user/*', authorizeRouter
 server.use '/user2/*', authorizeRouter
 server.use '/analyze/*', authorizeRouter
-server.use '/updates/*', authorizeRouter
+#server.use '/updates/*', authorizeRouter
 server.use '/profile/*', authorizeRouter
 
 ##############################
