@@ -28,7 +28,7 @@ broadcast = ->
   return unless config.databaseBroadcastList
   console.log "Sending database update broadcast...."
   for url in config.databaseBroadcastList
-    request.post url, (err, res, body) ->
+    request.patch url, (err, res, body) ->
       if err
         console.log "#{res.statusCode} - Failed to broadcast database to #{url}"
       else

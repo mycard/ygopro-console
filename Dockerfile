@@ -24,6 +24,6 @@ RUN npm run build
 
 # 启动
 WORKDIR /usr/src/app
-RUN git submodule init
-RUN git submodule update
+#RUN git submodule init
+#RUN git submodule update
 ENTRYPOINT npm start
