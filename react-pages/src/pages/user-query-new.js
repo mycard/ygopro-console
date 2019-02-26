@@ -14,8 +14,9 @@ import {
 import {message_object} from '../components/Message'
 import MCProConsolePagedTable from '../components/PagedTable'
 import MCProConsoleSelectableButton from '../components/SelectableButton'
+import MCProConsoleMycardUser from '../components/MCUser'
 import MCProConsoleAnalyticsHistoryPage from './analytics-history'
-import { changeQuery } from '../components/Utils'
+import { changeQuery, urlDecorator } from '../components/Utils'
 import config from '../Config.json'
 import moment from 'moment'
 import './user-query-new.css'
@@ -34,12 +35,23 @@ class MCProConsoleUserManagePage extends Component {
         this.onCommitModal = null;
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.location.state === 'fromLink') {
+            this.loadURLParameter();
+            document.body.scrollTop = 0;
+        }
+    }
+
     componentDidMount() {
+        this.loadURLParameter();
+    }
+
+    loadURLParameter() {
         let params = new URL(window.location).searchParams;
         let search = params.get("search");
         if (search != null) {
             ReactDOM.findDOMNode(this.refs.searching_username).value = search;
-            this.refs.searchingUserTable.handleQuery();
+            this.setState({ showingDetail: false }, () => this.refs.searchingUserTable.handleQuery());
             return;
         }
         let user = params.get("user");
@@ -47,6 +59,10 @@ class MCProConsoleUserManagePage extends Component {
             ReactDOM.findDOMNode(this.refs.searching_username).value = user;
             this.clickUser({ username: user }, false);
             return;
+        }
+        {
+            ReactDOM.findDOMNode(this.refs.searching_username).value = "";
+            this.setState({ showingDetail: false, username: null }, () => this.refs.searchingUserTable.removeData());
         }
     }
 
@@ -110,6 +126,7 @@ class MCProConsoleUserManagePage extends Component {
 
     searchUser(e) {
         e.preventDefault();
+        //history.replace(this.props.location.pathname, { search: ReactDOM.findDOMNode(this.refs.searching_username).value, user: null });
         changeQuery({ search: ReactDOM.findDOMNode(this.refs.searching_username).value, user: null });
         this.setState({ username: null, showingDetail: false }, function () {
             this.refs.searchingUserTable.handleQuery();
@@ -344,7 +361,7 @@ class MCProConsoleUserManagePage extends Component {
                                         let start_time = moment(data.start_time);
                                         let timespan = moment(data.end_time).diff(start_time, 'seconds');
                                         return <tr>
-                                            <td>{name === data.usernamea ? data.usernameb : data.usernamea}</td>
+                                            <td><MCProConsoleMycardUser username={name === data.usernamea ? data.usernameb : data.usernamea} /></td>
                                             <td>{name === data.usernamea
                                                 ? data.userscorea + ':' + data.userscoreb
                                                 : data.userscoreb + ':' + data.userscorea}（{name === data.usernamea
@@ -409,4 +426,5 @@ class MCProConsoleUserManagePage extends Component {
     }
 }
 
+urlDecorator(MCProConsoleUserManagePage)(MCProConsoleUserManagePage.prototype.loadURLParameter)
 export default MCProConsoleUserManagePage

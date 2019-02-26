@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import {Row, Col, FormGroup, InputGroup, FormControl, Button} from 'react-bootstrap'
 import config from '../Config.json'
 import moment from 'moment'
+import MCProConsoleMycardUser from '../components/MCUser'
 import MCProConsolePagedTable from '../components/PagedTable'
 
 class MCProConsoleUserMessagesPage extends Component {
@@ -41,7 +42,7 @@ class MCProConsoleUserMessagesPage extends Component {
                                         thead={["用户", "IP", "时间", "等级", "内容"]}
                                         tbodyGenerator={function (data) {
                                             return <tr>
-                                                <td>{data.sender}</td>
+                                                <td><MCProConsoleMycardUser username={data.sender} /></td>
                                                 <td>{data.ip}</td>
                                                 <td>{moment(data.time).format('YYYY-MM-DD HH:mm:ss')}</td>
                                                 <td>{data.level}</td>

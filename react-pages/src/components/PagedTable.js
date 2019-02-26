@@ -52,6 +52,10 @@ class MCProConsolePagedTable extends Component
         }.bind(this));
     }
 
+    removeData() {
+        this.setState({ data: null, pageCount: 0 });
+    }
+
     render() {
         return <Row>
             <Col xs={12}

@@ -15,18 +15,18 @@ span.negative-score-change
     font-weight: bold;
 }
 
-td.game-winner
+td.game-winner .user-link
 {
     color:darkred;
     font-weight: bold;
 }
 
-td.game-runner
+td.game-runner .user-link
 {
     color: mediumblue;
 }
 
-td.game-loser
+td.game-loser .user-link
 {
 
 }

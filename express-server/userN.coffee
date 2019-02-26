@@ -1,6 +1,6 @@
 database = require './database'
+router = require './router'
 moment = require 'moment'
-express = require 'express'
 config = require './config.json'
 mycardPool = database.mycardPool
 ygoproPool = database.ygoproPool
@@ -85,34 +85,22 @@ message_query = (content, level, page = 0) ->
     await database.standardCountedPGQuery ygoproPool, SQL_MESSAGE_QUERY, SQL_MESSAGE_QUERY_COUNT, [content, level, page]
 
 route_vote = (route) ->
+    route.quick_get  '/vote',     vote,         { }
+    route.quick_get  '/vote/:id', vote_tickets, { id: 'i' }
+    route.quick_post '/vote/:id', vote_set,     { id: 'i', body: 'j' }
 
-route = express.Router()
+SQL_VOTE = 'select * from votes'
+vote = () ->
+    await database.standardPGQuery ygoproPool, SQL_VOTE, []
 
-route.quick_get = (path, func, param_patterns) ->
-    names = Object.keys param_patterns
-    types = Object.values param_patterns
-    route.get path, (req, res) ->
-        function_params = database.formatRequestParams types, names, Object.assign req.query, req.params
-        #console.log names, types, '->', function_params
-        res.json await func.call route, ...function_params
-        
-route.quick_post = (path, func, param_patterns) ->
-    names = Object.keys param_patterns
-    types = Object.values param_patterns
-    route.post path, (req, res) ->
-        function_params = database.formatRequestParams types, names, Object.assign req.query, req.params
-        res.json await func.call route, ...function_params
+SQL_VOTE_TICKETS = 'select * from vote_result where vote_id = $1::text'
+vote_tickets = (id) ->
+    await database.standardPGQuery ygoproPool, SQL_VOTE_TICKETS, [id]
 
-route.count_get = (path, func, param_patterns) ->
-    names = Object.keys param_patterns
-    types = Object.values param_patterns
-    route.get path + "/count", (req, res) ->
-        function_params = database.formatRequestParams types, names, Object.assign req.query, req.params
-        #console.log names, types, '->', function_params
-        res.json await func.call route, ...function_params, -1
-    param_patterns["page"] = "i"
-    this.quick_get path, func, param_patterns
+vote_set = (id) ->
 
+
+route = router()
 route_user route
 route_message route
 route_vote route
