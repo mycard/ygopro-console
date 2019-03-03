@@ -28,11 +28,12 @@ broadcast = ->
   return unless config.databaseBroadcastList
   console.log "Sending database update broadcast...."
   for url in config.databaseBroadcastList
+    `let _url = url;`
     request.patch url, (err, res, body) ->
       if err
-        console.log "#{res.statusCode} - Failed to broadcast database to #{url}"
+        console.log "#{err} - Failed to broadcast database to #{_url}"
       else
-        console.log "#{res.statusCode} - Success to broadcast database to #{url}"
+        console.log "#{res.statusCode} - Success to broadcast database to #{_url}"
 
 
 pushDatabase = (commit_message) ->
