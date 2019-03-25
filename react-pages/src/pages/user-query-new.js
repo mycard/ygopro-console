@@ -342,11 +342,11 @@ class MCProConsoleUserManagePage extends Component {
     }
 
     renderDetailBattleHistory() {
-        return <Col md={6}
+        return <Col md={12}
                     xs={12}>
             <h2 className="page-header">PT 变动履历</h2>
             <MCProConsolePagedTable ref="dpChangeHistoryTable"
-                                    thead={['对手', '变动', '时间']}
+                                    thead={['对手', '变动', '时间', '持有卡组']}
                                     key="user match"
                                     urlGenerator={function () {
                                         let url = new URL(config.serverHost + "analyze/history");
@@ -370,6 +370,7 @@ class MCProConsoleUserManagePage extends Component {
                                             <td><kbd>{start_time.format('MM-DD')}</kbd>&nbsp;{start_time.format('HH:mm')}
                                                 <span className={timespan < 180 ? "not-enough-time" : ""}>{' (' + Math.floor(timespan / 60) + 'min ' + timespan % 60 + 's)'}</span>
                                             </td>
+                                            <td>{ name === data.usernamea ? data.decka : data.deckb }</td>
                                         </tr>
                                     }.bind(this)}
             />

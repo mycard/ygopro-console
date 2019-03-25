@@ -74,9 +74,14 @@ class MCProConsoleAnalyticsHistoryPage extends Component {
                 <div style={{margin: '10px 10px 10px 10px'}} />
                 <MCProConsolePagedTable ref="table" key="query history" thead={["用户A", "用户B", "类别", "比分", "用户A变动", "用户B变动", "对局时间", "首胜"]} tbodyGenerator={data =>
                     <tr key={data.usernamea + "vs" + data.usernameb + " at " + data.start_time}>
-                        <td className={data.userscorea > data.userscoreb ? "game-winner" : data.userscorea < 0 ? "game-runner" : "game-loser"}><MCProConsoleMycardUser username={data.usernamea} /></td>
-                        <td className={data.userscoreb > data.userscorea ? "game-winner" : data.userscoreb < 0 ? "game-runner" : "game-loser"}><MCProConsoleMycardUser username={data.usernameb} /></td>
-
+                        <td>
+                            <span className={data.userscorea > data.userscoreb ? "game-winner" : data.userscorea < 0 ? "game-runner" : "game-loser"}><MCProConsoleMycardUser username={data.usernamea} /></span>
+                            { data.decka && data.decka.length > 0 && data.decka != "no deck" ? <span className="deck">{data.decka}</span> : null }
+                        </td>
+                        <td>
+                             <span className={data.userscoreb > data.userscorea ? "game-winner" : data.userscoreb < 0 ? "game-runner" : "game-loser"}><MCProConsoleMycardUser username={data.usernameb} /></span>
+                            { data.deckb && data.deckb.length > 0 && data.deckb != "no deck" ? <span className="deck">{data.deckb}</span> : null }
+                        </td>
                         <td style={data.type === 'athletic' ? {fontWeight: "bold"} : {}}>{data.type === 'entertain' ? '娱乐' : '竞技'}</td>
                         <td>{data.userscorea}:{data.userscoreb}</td>
                         {

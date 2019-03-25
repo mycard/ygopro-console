@@ -15,13 +15,13 @@ span.negative-score-change
     font-weight: bold;
 }
 
-td.game-winner .user-link
+.game-winner .user-link
 {
     color:darkred;
     font-weight: bold;
 }
 
-td.game-runner .user-link
+.game-runner .user-link
 {
     color: mediumblue;
 }
@@ -34,4 +34,8 @@ td.game-loser .user-link
 span.not-enough-time
 {
     color: mediumvioletred;
+}
+
+span.deck {
+    color: gray
 }
