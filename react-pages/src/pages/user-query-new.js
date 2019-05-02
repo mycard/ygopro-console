@@ -359,6 +359,7 @@ class MCProConsoleUserManagePage extends Component {
                                         let name = this.state.username;
 
                                         let start_time = moment(data.start_time);
+                                        let end_time = moment(data.end_time)
                                         let timespan = moment(data.end_time).diff(start_time, 'seconds');
                                         return <tr>
                                             <td><MCProConsoleMycardUser username={name === data.usernamea ? data.usernameb : data.usernamea} /></td>
@@ -367,7 +368,7 @@ class MCProConsoleUserManagePage extends Component {
                                                 : data.userscoreb + ':' + data.userscorea}（{name === data.usernamea
                                                 ? MCProConsoleAnalyticsHistoryPage.toSignedNumber(data.pta - data.pta_ex)
                                                 : MCProConsoleAnalyticsHistoryPage.toSignedNumber(data.ptb - data.ptb_ex)}）</td>
-                                            <td><kbd>{start_time.format('MM-DD')}</kbd>&nbsp;{start_time.format('HH:mm')}
+                                            <td><kbd>{start_time.format('MM-DD')}</kbd>&nbsp;{start_time.format('HH:mm')}&nbsp;-&nbsp;{end_time.format('HH:mm')}
                                                 <span className={timespan < 180 ? "not-enough-time" : ""}>{' (' + Math.floor(timespan / 60) + 'min ' + timespan % 60 + 's)'}</span>
                                             </td>
                                             <td>{ name === data.usernamea ? data.decka : data.deckb }</td>

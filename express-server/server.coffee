@@ -6,7 +6,7 @@ bodyParser = require 'body-parser'
 moment = require 'moment'
 
 user = require './user'
-analytics = require './analytics'
+analytics = require './analytics.coffee'
 update = require './update'
 packager = require './packager'
 config = require './config.json'
@@ -205,6 +205,11 @@ server.get '/analyze/matchup/count', (req, res) ->
   else
     count = await analytics.queryMatchupSingleCount source, deckA, period
   res.json count
+
+server.get '/analyze/rank', (req, res) ->
+  res.json await analytics.queryRank req.query.__start_time, req.query.__end_time
+server.get '/analyze/rank/count', (req, res) ->
+  res.end '1'
 
 server.get '/updates/package', (req, res) ->
   packager.pack.then -> res.end 'ok'

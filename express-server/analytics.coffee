@@ -46,6 +46,16 @@ MATCHUP_QUERY_SINGLE =
                 ) as T where T.win + T.lose > 50
 order by win_rate desc limit #{PAGE_LIMIT} offset $4"
 
+RANK_QUERY_SQL = 
+"with limited_battle_history as (select * from battle_history where end_time > $1 and end_time < $2) 
+select * from (
+    select distinct on (username) username, pt, end_time from (
+        (select distinct on (usernamea) end_time, usernamea as username, pta as pt from limited_battle_history order by usernamea, end_time desc)
+    union
+        (select distinct on (usernameb) end_time, usernameb as username, ptb as pt from limited_battle_history order by usernameb, end_time desc)
+    ) as limted_user_info_two order by username, end_time desc
+) as limited_user_info order by pt desc limit #{PAGE_LIMIT}"
+
 runCommands = (start_time, end_time) ->
   answer = []
   promises = []
@@ -158,3 +168,6 @@ module.exports.queryPureCount = queryPureCount
 module.exports.queryMatchup = queryMatchup
 module.exports.queryMatchupSingle = queryMatchupSingle
 module.exports.queryMatchupSingleCount = queryMatchupSingleCount
+module.exports.queryRank = (start_time, end_time) -> 
+  console.log [start_time, end_time]
+  database.standardPGQuery(ygoproPool, RANK_QUERY_SQL, [start_time, end_time])

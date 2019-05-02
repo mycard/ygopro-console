@@ -59,6 +59,7 @@ class MCProConsoleNavigationBar extends Component
                                     <LinkContainer to="/analytics/deck"><NavItem>卡组辨识</NavItem></LinkContainer>
                                     <LinkContainer to="/analytics/single"><NavItem>单卡统计</NavItem></LinkContainer>
                                     <LinkContainer to="/analytics/matchup"><NavItem>对阵统计</NavItem></LinkContainer>
+                                    <LinkContainer to="/analytics/rank"><NavItem>排位统计</NavItem></LinkContainer>
                                 </NavDropdown>
                                 <NavDropdown title="配置">
                                     <LinkContainer to="/profiles/deck"><NavItem>卡组辨识</NavItem></LinkContainer>
