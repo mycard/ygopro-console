@@ -6,7 +6,7 @@ bodyParser = require 'body-parser'
 moment = require 'moment'
 
 user = require './user'
-analytics = require './analytics.coffee'
+analytics = require './analytics'
 update = require './update'
 packager = require './packager'
 config = require './config.json'
