@@ -50,7 +50,7 @@ class MCProConsoleAnalyticsRankPage extends Component {
                 <div style={{margin: '10px 10px 10px 10px'}} />
                 <MCProConsolePagedTable ref="table" key="query history" thead={["排名", "用户名", "PT", "最后决斗时间"]} tbodyGenerator={ data => 
                     <tr key={data.username}>
-                        <td>{(count++) - 100}</td>
+                        <td>{(count++)}</td>
                         <td>{data.username}</td>
                         <td>{data.pt.toFixed(3)}</td>
                         <td>{moment(data.end_time).format('YYYY-MM-DD HH:mm:ss')}</td>
