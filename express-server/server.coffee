@@ -249,6 +249,16 @@ server.use '/profile/identifier', (req, res) ->
 
 deckRouter.router server
 
+server.use '/images', (req, res) ->
+  url = new _url.URL(config.imageServer.host + req.url)
+  url.searchParams.set 'accessKey', config.imageServer.accessKey
+  url.searchParams.delete 'sso'
+  url.searchParams.delete 'sig'
+  try
+    req.pipe(request(url.toString(), { form: req.body })).pipe(res)
+  catch
+    res.end 500
+
 #React Router File12
 server.get '*', (req, res) ->
   res.sendFile path.resolve('react-pages/build', 'index.html')

@@ -1,6 +1,6 @@
 {
   "serverHost": "https://api.mycard.moe/ygopro/console/",
-  "imageServerHost": "",
+  "imageServerHost": "https://api.mycard.moe/ygopro/console/images/",
   "analyticsServerHost": "https://api.mycard.moe/ygopro/analytics/",
   "packageServerHost": "https://api.mycard.moe/ygopro/packager/",
   "updateServerHost": "https://api.mycard.moe/ygopro-update/"
