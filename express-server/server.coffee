@@ -73,11 +73,13 @@ server.get '/user/ban/:username', (req, res) ->
 
 server.get '/user/ban/:username/count', (req, res) -> res.end '1'
 
-server.post '/user/ban/:username', (req, res) ->
+server.post '/user/ban/:username', bodyParser.text(), (req, res) ->
   count = req.query.length || '1'
   count = parseInt(count) || 1
   name = req.params.username || ''
-  await user.banUser(name, count)
+  level = req.query.level || 'silence'
+  reason = req.body
+  await user.banUser(name, count, level, reason, req.username)
   res.end 'ok'
 
 server.get '/user/:target_username', (req, res) ->

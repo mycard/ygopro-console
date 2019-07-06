@@ -21,6 +21,7 @@ authorize_router = (req, res, next) ->
   sig = req.query.sig
   if username = authorize sso, sig
     console.log "#{username} - #{req.method} #{decodeURIComponent(req._parsedUrl.pathname)}#{formatQuery(req.query)}"
+    req.username = username
     next()
   else
     res.statusCode = 403
