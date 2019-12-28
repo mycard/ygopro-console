@@ -32,9 +32,9 @@ class MCProConsoleAnalyticsMatchupPage extends Component {
                     <InputGroup>
                         <InputGroup.Addon>时间</InputGroup.Addon>
                         <FormControl type="text" placeholder={moment().format("YYYY-MM")} inputRef={ ref => this.queryPeriod = ref }/>
-                        <InputGroup.Addon>卡组A</InputGroup.Addon>
+                        <InputGroup.Addon>先手卡组</InputGroup.Addon>
                         <FormControl type="text" placeholder="迷之卡组" inputRef={ ref => this.queryDeckA = ref }/>
-                        <InputGroup.Addon>卡组B</InputGroup.Addon>
+                        <InputGroup.Addon>后手卡组</InputGroup.Addon>
                         <FormControl type="text" placeholder="迷之卡组" inputRef={ ref => this.queryDeckB = ref }/>
                         <InputGroup.Addon>类别</InputGroup.Addon>
                         <InputGroup.Button>
@@ -49,7 +49,7 @@ class MCProConsoleAnalyticsMatchupPage extends Component {
             </Col>
             <Col md={12} xs={12}>
                 <div style={{margin: '10px 10px 10px 10px'}} />
-                <MCProConsolePagedTable ref="table" key="query matchup" thead={["卡组A", "卡组B", "时间", "来源", "胜", "负", "平"]} tbodyGenerator={data =>
+                <MCProConsolePagedTable ref="table" key="query matchup" thead={["先攻卡组", "后攻卡组", "时间", "来源", "胜", "负", "平"]} tbodyGenerator={data =>
                     <tr>
                         <td>{data.decka}</td>
                         <td>{data.deckb}</td>
@@ -63,7 +63,8 @@ class MCProConsoleAnalyticsMatchupPage extends Component {
                         let url = new URL(config.serverHost + "analyze/matchup");
                         if (this.queryPeriod.value.length > 0)
                             url.searchParams.set("period", this.queryPeriod.value);
-                        url.searchParams.set("deckA", this.queryDeckA.value);
+                        if (this.queryDeckA.value.length > 0)
+                            url.searchParams.set("deckA", this.queryDeckA.value);
                         if (this.queryDeckB.value.length > 0)
                             url.searchParams.set("deckB", this.queryDeckB.value);
                         url.searchParams.set("source", this.state.queryType);

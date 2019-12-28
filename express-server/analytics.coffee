@@ -16,9 +16,10 @@ TAG_COUNT_SQL = "select count(*) from (select sum(count) sc from tag_day where (
 SINGLE_QUERY_SQL = "select id, source, sum(frequency) sc, sum(numbers) numbers, sum(putone) putone, sum(puttwo) puttwo, sum(putthree) putthree, sum(putoverthree) putoverthree from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source order by sc desc, source desc limit #{PAGE_LIMIT} offset $4"
 SINGLE_COUNT_SQL = "select count(*) from (select sum(frequency) sc from single_day where (id in $0 and source like $1::text) and time >= $2 and time <= $3 group by id, source) as counts"
 PURE_COUNT_SQL = "select sum(count) count from counter where timeperiod = 1 and source like $1::text and time >= $2 and time <= $3"
-MATCHUP_QUERY_SQL = "select * from matchup where source = $1::text and decka = $2::text and deckb = $3::text and period = $4::text"
-MATCHUP_QUERY_SINGLE_LEFT = "select count(*) from matchup where source = $1::text and decka = $2::text and period = $3::text and win + lose > 50"
-MATCHUP_QUERY_SINGLE_RIGHT = "select count(*) from matchup where source = $1::text and deckb = $2::text and period = $3::text and win + lose > 50"
+MATCHUP_QUERY_SQL = "select *, (cast (win as Float) / (win + draw + lose)) win_rate from matchup where source = $1::text and decka like $2::text and deckb like $3::text and period = $4::text and (win + lose >= $5) order by win_rate desc limit #{PAGE_LIMIT} offset $6"
+MATCHUP_COUNT_SQL = "select count(*) win_rate from matchup where source = $1::text and decka like $2::text and deckb like $3::text and period = $4::text and (win + lose >= $5)"
+#MATCHUP_QUERY_SINGLE_LEFT = "select count(*) from matchup where source = $1::text and decka = $2::text and period = $3::text and win + lose > 50"
+#MATCHUP_QUERY_SINGLE_RIGHT = "select count(*) from matchup where source = $1::text and deckb = $2::text and period = $3::text and win + lose > 50"
 
 DAILY_COUNT =
   'SELECT day, sum(' +
@@ -39,12 +40,12 @@ DAILY_COUNT =
   'GROUP BY day ORDER BY day DESC;'
 
 
-MATCHUP_QUERY_SINGLE =
-"select *, (cast (win as Float) / (T.win + T.draw + T.lose)) win_rate from (
-  select source, decka, deckb, period, draw, lose, win from matchup where decka = $2::text and source = $1::text and period = $3::text
-  union select source, deckb, decka, period, draw, win, lose from matchup where deckb = $2::text and source = $1::text and period = $3::text
-                ) as T where T.win + T.lose > 50
-order by win_rate desc limit #{PAGE_LIMIT} offset $4"
+#MATCHUP_QUERY_SINGLE =
+#"select *, (cast (win as Float) / (T.win + T.draw + T.lose)) win_rate from (
+#  select source, decka, deckb, period, draw, lose, win from matchup where decka = $2::text and source = $1::text and period = $3::text
+#  union select source, deckb, decka, period, draw, win, lose from matchup where deckb = $2::text and source = $1::text and period = $3::text
+#                ) as T where T.win + T.lose > 50
+#order by win_rate desc limit #{PAGE_LIMIT} offset $4"
 
 RANK_QUERY_SQL = 
 "with limited_battle_history as (select * from battle_history where end_time > $1 and end_time < $2) 
@@ -145,19 +146,22 @@ dailyCount = (type, start_time, end_time) ->
     type = '%' if !type or type == 'all'
     ygoproPool.query DAILY_COUNT, [type, start_time, end_time], (err, result) -> database.standardPromiseCallback resolve, reject, err, result
 
-queryMatchup = (source, decka, deckb, period) ->
-  [decka, deckb] = [deckb, decka] if decka > deckb
-  ans = await ygoproPool.query MATCHUP_QUERY_SQL, [source, decka, deckb, period]
+queryMatchup = (source, decka, deckb, period, page) ->
+  return [] if !decka and !deckb
+  low_bound = if decka and deckb then 0 else 50
+  decka = '' if !decka
+  deckb = '' if !deckb
+  console.log [source, database.formatText(decka), database.formatText(deckb), period, low_bound, page * PAGE_LIMIT]
+  ans = await ygoproPool.query MATCHUP_QUERY_SQL, [source, database.formatText(decka), database.formatText(deckb), period, low_bound, (page - 1) * PAGE_LIMIT]
   ans.rows
 
-queryMatchupSingle = (source, decka, period, page) ->
-  ans = await ygoproPool.query MATCHUP_QUERY_SINGLE, [source, decka, period, page * PAGE_LIMIT]
-  ans.rows
-
-queryMatchupSingleCount = (source, decka, period) ->
-  left  = await ygoproPool.query MATCHUP_QUERY_SINGLE_LEFT,  [source, decka, period]
-  right = await ygoproPool.query MATCHUP_QUERY_SINGLE_RIGHT, [source, decka, period]
-  Math.ceil (parseInt(left.rows[0].count) + parseInt(right.rows[0].count)) / PAGE_LIMIT
+queryMatchupCount = (source, decka, deckb, period) ->
+  return 0 if !decka and !deckb
+  low_bound = if decka and deckb then 0 else 50
+  decka = '' if !decka
+  deckb = '' if !deckb
+  ans = await ygoproPool.query MATCHUP_COUNT_SQL, [source, database.formatText(decka), database.formatText(deckb), period, low_bound]
+  Math.ceil ans.rows[0].count / PAGE_LIMIT
 
 module.exports.runCommands = runCommands
 module.exports.setCommands = setCommands
@@ -166,8 +170,7 @@ module.exports.querySingle = querySingle
 module.exports.querySingleCount = querySingleCount
 module.exports.queryPureCount = queryPureCount
 module.exports.queryMatchup = queryMatchup
-module.exports.queryMatchupSingle = queryMatchupSingle
-module.exports.queryMatchupSingleCount = queryMatchupSingleCount
+module.exports.queryMatchupCount = queryMatchupCount
 module.exports.queryRank = (start_time, end_time) -> 
   console.log [start_time, end_time]
   database.standardPGQuery(ygoproPool, RANK_QUERY_SQL, [start_time, end_time])

@@ -187,27 +187,21 @@ server.get '/analyze/daily', (req, res) ->
 
 server.get '/analyze/matchup', (req, res) ->
   source = req.query.source || "athletic"
-  deckA = req.query.deckA || "迷之卡组"
+  deckA = req.query.deckA
   deckB = req.query.deckB
   period = req.query.period || moment().format("YYYY-MM")
-  page = parseInt(req.query.page) || 1
-  if deckB
-    ans = await analytics.queryMatchup source, deckA, deckB, period
-  else
-    ans = await analytics.queryMatchupSingle source, deckA, period, page - 1
+  page = parseInt(req.query.page) || 0
+  ans = await analytics.queryMatchup source, deckA, deckB, period, page
   res.json ans
 
 server.get '/analyze/matchup/count', (req, res) ->
   source = req.query.source || "athletic"
-  deckA  = req.query.deckA || "迷之卡组"
-  deckB  = req.query.deckB
+  deckA = req.query.deckA
+  deckB = req.query.deckB
   period = req.query.period || moment().format("YYYY-MM")
-  if deckB
-    count = 1
-  else
-    count = await analytics.queryMatchupSingleCount source, deckA, period
-  res.json count
-
+  count = await analytics.queryMatchupCount source, deckA, deckB, period
+  res.end count
+  
 server.get '/analyze/rank', (req, res) ->
   res.json await analytics.queryRank req.query.__start_time, req.query.__end_time
 server.get '/analyze/rank/count', (req, res) ->
