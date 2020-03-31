@@ -351,7 +351,7 @@ class MCProConsoleUserManagePage extends Component {
                                     urlGenerator={function () {
                                         let url = new URL(config.serverHost + "analyze/history");
                                         let name = this.state.username;
-                                        url.searchParams.set("name", name);
+                                        url.searchParams.set("name", "%" + name + "%");
                                         url.searchParams.set("type", "athletic");
                                         return url;
                                     }.bind(this)}
