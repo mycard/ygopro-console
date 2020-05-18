@@ -6,8 +6,8 @@ mycardPool = database.mycardPool
 ygoproPool = database.ygoproPool
 
 route_user = (route) ->
-    route.count_get '/search',                user_search_name,     { user: "s" }
-    route.count_get '/search/name',           user_search_name,     { user: "s" }
+    route.count_get '/search',                user_search_name,     { user: "o" }
+    route.count_get '/search/name',           user_search_name,     { user: "o" }
     route.count_get '/search/ip',             user_search_ip,       { ip: "o" }
     route.quick_get '/detail/:user/mc',       user_detail_mcuser,   { user: "o" }
     route.quick_get '/detail/:user/usedname', user_detail_usedname, { user: "o" }
@@ -18,10 +18,12 @@ route_user = (route) ->
     route.quick_post '/:user/exp',            user_set_exp,         { user: "o", value: "f" }
     route.quick_post '/:user/ban',            user_set_ban,         { user: "o", value: "i" }
 
-SQL_USER_SEARCH_NAME = "select * from users where name like $1::text or username like $1::text order by id limit #{config.limitCount} offset $2::integer"
-SQL_USER_SEARCH_NAME_COUNT = 'select count(*) from users where name like $1::text or username like $1::text'
+SQL_USER_SEARCH_NAME = "select * from users where name like $1::text or username like $1::text or id = $2::integer order by id limit #{config.limitCount} offset $3::integer"
+SQL_USER_SEARCH_NAME_COUNT = 'select count(*) from users where name like $1::text or username like $1::text or id = $2::integer'
 user_search_name = (username, page = 0) -> 
-    await database.standardCountedPGQuery mycardPool, SQL_USER_SEARCH_NAME, SQL_USER_SEARCH_NAME_COUNT, [username, page]
+    wrapped_user_name = database.formatText username
+    user_id = if parseInt username then parseInt username else -999
+    await database.standardCountedPGQuery mycardPool, SQL_USER_SEARCH_NAME, SQL_USER_SEARCH_NAME_COUNT, [wrapped_user_name, user_id, page]
 
 SQL_USER_SEARCH_IP = "select * from users where ip_address = $1::text or registration_ip_address = $1::text order by id limit #{config.limitCount} offset $2::integer"
 SQL_USER_SEARCH_IP_COUNT = 'select count(*) from users where ip_address = $1::text or registration_ip_address = $1::text'
