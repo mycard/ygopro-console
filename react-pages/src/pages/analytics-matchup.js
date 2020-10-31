@@ -38,9 +38,10 @@ class MCProConsoleAnalyticsMatchupPage extends Component {
                         <FormControl type="text" placeholder="迷之卡组" inputRef={ ref => this.queryDeckB = ref }/>
                         <InputGroup.Addon>类别</InputGroup.Addon>
                         <InputGroup.Button>
-                            <DropdownButton id="query_type" title={{all: '全部', entertain: '娱乐', athletic: '竞技'}[this.state.queryType]} onSelect={this.selectQueryType.bind(this)}>
+                            <DropdownButton id="query_type" title={{all: '全部', entertain: '娱乐', athletic: '竞技', 'athletic-elite': '精英'}[this.state.queryType]} onSelect={this.selectQueryType.bind(this)}>
                                 <MenuItem eventKey="entertain">娱乐</MenuItem>
                                 <MenuItem eventKey="athletic">竞技</MenuItem>
+                                <MenuItem eventKey="athletic-elite">精英</MenuItem>
                             </DropdownButton>
                             <Button type="submit" onClick={(event) => {this.refs.table.handleQuery(); event.preventDefault()}} bsStyle="primary">查询</Button>
                         </InputGroup.Button>
