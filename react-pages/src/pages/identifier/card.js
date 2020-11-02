@@ -12,8 +12,8 @@ export var MCProConsoleIdentifierCard = class MCProConsoleIdentifierCard extends
     if (!id) {
       return null;
     }
-    return <a href={"https://mycard.moe/ygopro/arena/index.html?id=" + id.toString() + "#/cardinfo"}>
-            <img src={"http://ygo233.my-card.in/ygopro/pics/" + id.toString() + ".jpg!thumb"} alt="" target='_blank'></img>
+    return <a href={"https://www.ourocg.cn/search/" + id.toString()}>
+            <img src={"http://cdn.233.momobako.com/ygopro/pics/" + id.toString() + ".jpg!thumb"} alt="" target='_blank'></img>
         </a>;
   }
 
