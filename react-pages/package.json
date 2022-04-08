@@ -6,7 +6,7 @@
     "bootstrap": "^3.3.7",
     "bootstrap-daterangepicker": "^2.1.25",
     "d3": "^3.5.17",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "rd3": "^0.8.0",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.0",
