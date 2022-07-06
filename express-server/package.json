@@ -9,7 +9,7 @@
     "body-parser": "^1.18.3",
     "coffeescript": "^2.3.2",
     "express": "^4.16.4",
-    "moment": "^2.22.2",
+    "moment": "^2.29.4",
     "pg": "^6.4.1",
     "request": "^2.88.0",
     "ygojs-data": "git+https://github.com/moecube/ygojs-data.git"
