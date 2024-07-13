@@ -23,7 +23,17 @@ SQL_USER_SEARCH_NAME_COUNT = 'select count(*) from users where name like $1::tex
 user_search_name = (username, page = 0) -> 
     wrapped_user_name = database.formatText username
     user_id = if parseInt username then parseInt username else -999
-    await database.standardCountedPGQuery mycardPool, SQL_USER_SEARCH_NAME, SQL_USER_SEARCH_NAME_COUNT, [wrapped_user_name, user_id, page]
+    result = await database.standardCountedPGQuery mycardPool, SQL_USER_SEARCH_NAME, SQL_USER_SEARCH_NAME_COUNT, [wrapped_user_name, user_id, page]
+    result = (await extra_user_with_used_name(username) ? []).concat result if Array.isArray result
+    result
+
+SQL_USER_GET_ID_WITH_USEDNAME = "select distinct userid from username_change_history where old_username = $1::text"
+SQL_USER_WITH_ID = "select * from users where id = ANY ($1)"
+extra_user_with_used_name = (username) ->
+    records = await database.standardPGQuery mycardPool, SQL_USER_GET_ID_WITH_USEDNAME, [username]
+    records = records.map (record) => record.userid
+    records = records.filter (record) => record isnt null and parseInt(record) > 0
+    await database.standardPGQuery mycardPool, SQL_USER_WITH_ID, [records]
 
 SQL_USER_SEARCH_IP = "select * from users where ip_address = $1::text or registration_ip_address = $1::text order by id limit #{config.limitCount} offset $2::integer"
 SQL_USER_SEARCH_IP_COUNT = 'select count(*) from users where ip_address = $1::text or registration_ip_address = $1::text'
