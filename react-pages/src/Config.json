@@ -1,7 +1,7 @@
 {
-  "serverHost": "https://api.mycard.moe/ygopro/console/",
-  "imageServerHost": "https://api.mycard.moe/ygopro/console/images/",
-  "analyticsServerHost": "https://api.mycard.moe/ygopro/analytics/",
-  "packageServerHost": "https://api.mycard.moe/ygopro/packager/",
-  "updateServerHost": "https://api.mycard.moe/ygopro-update/"
+  "serverHost": "https://sapi.moecube.com:444/ygopro/console/",
+  "imageServerHost": "https://sapi.moecube.com:444/ygopro/console/images/",
+  "analyticsServerHost": "https://sapi.moecube.com:444/ygopro/analytics/",
+  "packageServerHost": "https://sapi.moecube.com:444/ygopro/packager/",
+  "updateServerHost": "https://sapi.moecube.com:444/ygopro-update/"
 }
