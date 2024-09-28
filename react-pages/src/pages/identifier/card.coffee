@@ -5,7 +5,7 @@ export class MCProConsoleIdentifierCard extends Component
     render: ->
         id = this.props.id
         return null unless id
-        <a href={"https://mycard.moe/ygopro/arena/index.html?id=" + id.toString() + "#/cardinfo"}>
+        <a href={"https://mycard.world/ygopro/arena/index.html?id=" + id.toString() + "#/cardinfo"}>
             <img src={"http://ygo233.my-card.in/ygopro/pics/" + id.toString() + ".jpg!thumb"} alt="" target='_blank'></img>
         </a>
 
